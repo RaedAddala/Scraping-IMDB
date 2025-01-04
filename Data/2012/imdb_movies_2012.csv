@@ -16,10 +16,10 @@ Title,Movie Link,Year,Duration,MPA,Rating,Votes
 15. Django Unchained,https://www.imdb.com/title/tt1853728/?ref_=sr_t_15,2012,2h 45m,R,8.5,1.8M
 16. Ice Age: Continental Drift,https://www.imdb.com/title/tt1667889/?ref_=sr_t_16,2012,1h 28m,PG,6.5,231K
 17. Snow White and the Huntsman,https://www.imdb.com/title/tt1735898/?ref_=sr_t_17,2012,2h 7m,PG-13,6.1,307K
-18. Les Misérables,https://www.imdb.com/title/tt1707386/?ref_=sr_t_18,2012,2h 38m,PG-13,7.5,351K
+18. Les Misérables,https://www.imdb.com/title/tt1707386/?ref_=sr_t_18,2012,2h 38m,PG-13,7.5,352K
 19. Hotel Transylvania,https://www.imdb.com/title/tt0837562/?ref_=sr_t_19,2012,1h 31m,PG,7.0,292K
 20. Taken 2,https://www.imdb.com/title/tt1397280/?ref_=sr_t_20,2012,1h 32m,PG-13,6.2,328K
-21. 21 Jump Street,https://www.imdb.com/title/tt1232829/?ref_=sr_t_21,2012,1h 49m,R,7.2,614K
+21. 21 Jump Street,https://www.imdb.com/title/tt1232829/?ref_=sr_t_21,2012,1h 49m,R,7.2,615K
 22. Argo,https://www.imdb.com/title/tt1024648/?ref_=sr_t_22,2012,2h,R,7.7,648K
 23. Silver Linings Playbook,https://www.imdb.com/title/tt1045658/?ref_=sr_t_23,2012,2h 2m,R,7.7,754K
 24. Prometheus,https://www.imdb.com/title/tt1446714/?ref_=sr_t_24,2012,2h 4m,R,7.0,670K
@@ -29,7 +29,7 @@ Title,Movie Link,Year,Duration,MPA,Rating,Votes
 28. Magic Mike,https://www.imdb.com/title/tt1915581/?ref_=sr_t_28,2012,1h 50m,R,6.1,149K
 29. The Bourne Legacy,https://www.imdb.com/title/tt1194173/?ref_=sr_t_29,2012,2h 15m,PG-13,6.6,320K
 30. Journey 2: The Mysterious Island,https://www.imdb.com/title/tt1397514/?ref_=sr_t_30,2012,1h 34m,PG,5.7,115K
-31. Rise of the Guardians,https://www.imdb.com/title/tt1446192/?ref_=sr_t_31,2012,1h 37m,PG,7.2,198K
+31. Rise of the Guardians,https://www.imdb.com/title/tt1446192/?ref_=sr_t_31,2012,1h 37m,PG,7.2,199K
 32. Zero Dark Thirty,https://www.imdb.com/title/tt1790885/?ref_=sr_t_32,2012,2h 37m,R,7.4,326K
 33. Flight,https://www.imdb.com/title/tt1907668/?ref_=sr_t_33,2012,2h 18m,R,7.3,383K
 34. Think Like a Man,https://www.imdb.com/title/tt1621045/?ref_=sr_t_34,2012,2h 2m,PG-13,6.5,51K
@@ -40,7 +40,7 @@ Title,Movie Link,Year,Duration,MPA,Rating,Votes
 39. Dark Shadows,https://www.imdb.com/title/tt1077368/?ref_=sr_t_39,2012,1h 53m,PG-13,6.2,286K
 40. Parental Guidance,https://www.imdb.com/title/tt1047540/?ref_=sr_t_40,2012,1h 45m,PG,6.0,27K
 41. John Carter,https://www.imdb.com/title/tt0401729/?ref_=sr_t_41,2012,2h 12m,PG-13,6.6,291K
-42. Act of Valor,https://www.imdb.com/title/tt1591479/?ref_=sr_t_42,2012,1h 50m,R,6.4,72K
+42. Act of Valor,https://www.imdb.com/title/tt1591479/?ref_=sr_t_42,2012,1h 50m,R,6.4,73K
 43. This Is 40,https://www.imdb.com/title/tt1758830/?ref_=sr_t_43,2012,2h 14m,R,6.2,154K
 44. Contraband,https://www.imdb.com/title/tt1524137/?ref_=sr_t_44,2012,1h 49m,R,6.4,127K
 45. Looper,https://www.imdb.com/title/tt1276104/?ref_=sr_t_45,2012,1h 59m,R,7.4,613K
@@ -51,7 +51,7 @@ Title,Movie Link,Year,Duration,MPA,Rating,Votes
 50. Chronicle,https://www.imdb.com/title/tt1706593/?ref_=sr_t_50,2012,1h 24m,PG-13,7.0,268K
 51. Hope Springs,https://www.imdb.com/title/tt1535438/?ref_=sr_t_51,2012,1h 40m,PG-13,6.3,45K
 52. Underworld: Awakening,https://www.imdb.com/title/tt1496025/?ref_=sr_t_52,2012,1h 28m,R,6.3,163K
-53. The Lucky One,https://www.imdb.com/title/tt1327194/?ref_=sr_t_53,2012,1h 41m,PG-13,6.4,115K
+53. The Lucky One,https://www.imdb.com/title/tt1327194/?ref_=sr_t_53,2012,1h 41m,PG-13,6.4,116K
 54. The Dictator,https://www.imdb.com/title/tt1645170/?ref_=sr_t_54,2012,1h 23m,R,6.5,346K
 55. Total Recall,https://www.imdb.com/title/tt1386703/?ref_=sr_t_55,2012,1h 58m,PG-13,6.2,270K
 56. Escape from Planet Earth,https://www.imdb.com/title/tt0765446/?ref_=sr_t_56,2012,1h 29m,PG,5.8,27K
@@ -129,7 +129,7 @@ Title,Movie Link,Year,Duration,MPA,Rating,Votes
 128. Fun Size,https://www.imdb.com/title/tt1663143/?ref_=sr_t_128,2012,1h 26m,PG-13,5.4,16K
 129. Arbitrage,https://www.imdb.com/title/tt1764183/?ref_=sr_t_129,2012,1h 47m,R,6.6,56K
 130. Promised Land,https://www.imdb.com/title/tt2091473/?ref_=sr_t_130,2012,1h 46m,R,6.6,40K
-131. Seeking a Friend for the End of the World,https://www.imdb.com/title/tt1307068/?ref_=sr_t_131,2012,1h 41m,R,6.7,120K
+131. Seeking a Friend for the End of the World,https://www.imdb.com/title/tt1307068/?ref_=sr_t_131,2012,1h 41m,R,6.7,121K
 132. The Collection,https://www.imdb.com/title/tt1748227/?ref_=sr_t_132,2012,1h 22m,R,6.1,56K
 133. Amour,https://www.imdb.com/title/tt1602620/?ref_=sr_t_133,2012,2h 7m,PG-13,7.9,107K
 134. Hyde Park on Hudson,https://www.imdb.com/title/tt1477855/?ref_=sr_t_134,2012,1h 34m,R,5.9,12K
@@ -385,7 +385,7 @@ Title,Movie Link,Year,Duration,MPA,Rating,Votes
 384. Occupy Unmasked,https://www.imdb.com/title/tt2234315/?ref_=sr_t_384,2012,1h 16m,Not Rated,5.0,615
 385. Red Lights,https://www.imdb.com/title/tt1748179/?ref_=sr_t_385,2012,1h 54m,R,6.2,68K
 386. Jodi Breakers,https://www.imdb.com/title/tt2191721/?ref_=sr_t_386,2012,2h 7m,Not Rated,3.7,1.2K
-387. Venus and Serena,https://www.imdb.com/title/tt2376024/?ref_=sr_t_387,2012,1h 39m,PG-13,6.5,884
+387. Venus and Serena,https://www.imdb.com/title/tt2376024/?ref_=sr_t_387,2012,1h 39m,PG-13,6.5,885
 388. Painted Skin: The Resurrection,https://www.imdb.com/title/tt2371411/?ref_=sr_t_388,2012,2h 11m,Not Rated,6.2,3.7K
 389. The Fitzgerald Family Christmas,https://www.imdb.com/title/tt2331880/?ref_=sr_t_389,2012,1h 39m,PG-13,6.3,1.7K
 390. The Discoverers,https://www.imdb.com/title/tt1715876/?ref_=sr_t_390,2012,1h 44m,TV-14,5.6,578
