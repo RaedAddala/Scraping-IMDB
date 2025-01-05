@@ -4,6 +4,8 @@ This Python project extracts comprehensive movie data from IMDb, focusing on the
 
 I uploaded the [Dataset](https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023) to Kaggle. Check it out.
 
+Here is the Merged Dataset alongside several notebooks related to its study: Check this [Kaggle link](https://www.kaggle.com/datasets/raedaddala/top-500-600-movies-of-each-year-from-1960-to-2024)
+
 ## Features
 
 ### Data Collection
@@ -124,7 +126,7 @@ Provides detailed movie data, including:
 - **Languages**: Available languages for the movie.  
 - **wins**: Number of award wins.  
 - **nominations**: Number of award nominations.  
-- **oscars**: Number of Oscar nominations.  
+- **Oscars**: Number of Oscar nominations.  
 - **release_date**: Official release date.  
 
 ### `merged_movies_data_[year].csv`  
