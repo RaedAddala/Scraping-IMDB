@@ -1,21 +1,52 @@
 # IMDB Movie Data Scraper
 
-This Python script extracts comprehensive movie data from IMDB, focusing on top-grossing movies from 1960 to 2024. The scraper collects detailed information including box office performance, cast & crew, awards, and other key metrics.
+This Python project extracts comprehensive movie data from IMDb, focusing on the **top-grossing movies** from **1960 to 2024**. It collects detailed information, including box office performance, cast & crew, awards, and other key metrics, organizing the data in a structured format for analysis.  
 
-## Data Collection
+I uploaded the [Dataset](https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023) to Kaggle. Check it out.
 
-For each year, the script collects:
+## Features
 
-- Basic movie information (title, year, duration, MPA rating, IMDb rating, votes).
-- Financial data (budget, worldwide gross, US/Canada gross, opening weekend).
-- Credits (directors, writers, stars).
-- Additional details (genres, countries, filming locations, production companies, languages).
-- Awards information (wins, nominations, Oscars).
-- Release date information.
+### Data Collection
+
+The scraper collects the following details for each year:  
+
+- **Basic Information**: Title, year, duration, MPA rating, IMDb rating, and user votes.  
+- **Financial Data**: Budget, worldwide gross, US/Canada gross, and opening weekend revenue.  
+- **Credits**: Directors, writers, and main cast.  
+- **Additional Details**: Genres, production countries, filming locations, production companies, and available languages.  
+- **Awards**: Wins, nominations, and Oscar statistics.  
+- **Release Information**: Official release dates.  
+
+### Output Structure
+
+For each year, the script generates:  
+
+1. **`imdb_movies_[year].csv`**: Contains basic movie information.  
+2. **`advanced_movies_details_[year].csv`**: Contains detailed movie data.  
+3. **`merged_movies_data_[year].csv`**: Combines data from the other two files for a complete dataset.  
+
+### Consistent Data Structure
+
+All files follow a consistent template across years, enabling seamless analysis. Below are the templates for each file:  
+
+- **`imdb_movies_[year].csv`**:  
+  `Title, Movie Link, Year, Duration, MPA, Rating, Votes`  
+
+- **`advanced_movies_details_[year].csv`**:  
+  `Movie Link, budget, grossWorldWide, gross_US_Canada, opening_weekend_Gross, directors, writers, stars, genres, countries_origin, filming_locations, production_companies, Languages, wins, nominations, oscars, release_date`  
+
+- **`merged_movies_data_[year].csv`**:  
+  `Title, Movie Link, Year, Duration, MPA, Rating, Votes, budget, grossWorldWide, gross_US_Canada, opening_weekend_Gross, directors, writers, stars, genres, countries_origin, filming_locations, production_companies, Languages, wins, nominations, oscars, release_date`  
+
+### Updates
+
+The dataset is updated annually every **December** to include the most recent data.
 
 ## Requirements
 
-```python
+Ensure you have the following installed:  
+
+```bash
 python 3
 Jupyter
 selenium
@@ -25,24 +56,28 @@ pandas
 
 ## Setup
 
-1. Install the required packages:
+1. Install the required Python packages:
 
     ```bash
     pip install selenium beautifulsoup4 pandas
     ```
 
 2. Download a WebDriver:
-   - The script uses Microsoft Edge WebDriver by default.
-   - Can be modified to use Chrome, Firefox, or other WebDrivers.
-   - Place the driver executable in the project directory.
+   - The script uses **Microsoft Edge WebDriver** by default.
+   - Modify the code to use Chrome, Firefox, or another WebDriver if preferred.
+   - Place the WebDriver executable in the project directory or add it to your PATH.
 
 ## Usage
 
-1. The script will create a `Data` directory organized by year
-2. For each year, it generates three CSV files:
-   - `imdb_movies_[year].csv`: Basic movie information
-   - `advanced_movies_details_[year].csv`: Detailed movie data
-   - `merged_movies_data_[year].csv`: Combined dataset
+### Run the Scraper  
+
+The scraper organizes the output into a `Data` directory, structured by year. For each year, it generates 3 CSV files:
+
+- `imdb_movies_[year].csv`: Basic movie information
+- `advanced_movies_details_[year].csv`: Detailed movie data
+- `merged_movies_data_[year].csv`: Combined dataset
+
+Use the following commands to run the scraper:
 
 ```python
 # Run for a specific year
@@ -54,97 +89,119 @@ for year in years_to_crawl:
     crawl_imdb_movies(year)
 ```
 
-## Data Usage
+---
 
-The collected data is available under the MIT License. You are free to:
+## Data Structure and Files  
 
-- Use the data commercially.
-- Modify and distribute the data.
-- Sublicense and sell the data.
-- Use the data for private use.
+### `imdb_movies_[year].csv`  
 
-## Notes
+Contains essential movie information, including:  
 
-- Respects IMDB's robots.txt and implements appropriate delays between requests.
-- Some movies may have incomplete data if information is not available on IMDB.
-- Box office data availability may vary, especially for older movies.
+- **Title**: Movie title.  
+- **Movie Link**: IMDb URL for the movie.  
+- **Year**: Year of release.  
+- **Duration**: Movie runtime (in minutes).  
+- **MPA**: Motion Picture Association rating (e.g., PG, R).  
+- **Rating**: IMDb rating (on a scale of 1–10).  
+- **Votes**: Number of user votes on IMDb.
 
-## Data Structure
+### `advanced_movies_details_[year].csv`
 
-### imdb_movies_[year].csv
+Provides detailed movie data, including:
 
-- Title: Movie title
-- Movie Link: IMDB URL
-- Year: Release year
-- Duration: Movie length
-- MPA: Rating (PG, R, etc.)
-- Rating: IMDB rating
-- Votes: Number of user votes
+- **Movie Link**: IMDb URL for the movie.  
+- **budget**: Production budget (in USD).  
+- **grossWorldWide**: Total global box office earnings.  
+- **gross_US_Canada**: North American box office earnings.  
+- **opening_weekend_Gross**: Opening weekend revenue.  
+- **directors**: List of directors.  
+- **writers**: List of writers.  
+- **stars**: Main cast members.  
+- **genres**: Movie genres.  
+- **countries_origin**: Countries of production.  
+- **filming_locations**: Primary shooting locations.  
+- **production_companies**: Associated production companies.  
+- **Languages**: Available languages for the movie.  
+- **wins**: Number of award wins.  
+- **nominations**: Number of award nominations.  
+- **oscars**: Number of Oscar nominations.  
+- **release_date**: Official release date.  
 
-### advanced_movies_details_[year].csv
+### `merged_movies_data_[year].csv`  
 
-- Movie Link: IMDB URL
-- budget: Production budget
-- grossWorldWide: Global box office
-- gross_US_Canada: North American box office
-- opening_weekend_Gross: Opening weekend earnings
-- directors: Director list
-- writers: Writer list
-- stars: Main cast
-- genres: Movie genres
-- countries_origin: Production countries
-- filming_locations: Shooting locations
-- production_companies: Production companies
-- Languages: Available languages
-- wins: Award wins
-- nominations: Award nominations
-- oscars: Oscar nominations
-- release_date: Release date
+Combines all columns from `imdb_movies_[year].csv` and `advanced_movies_details_[year].csv` for a unified dataset.  
 
-## Troubleshooting
+---
 
-1. WebDriver Issues:
+## Applications  
 
-    ```python
-    options = Options()
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")
-    ```
+This dataset is ideal for:  
 
-2. Rate Limiting:
+- **Analyzing trends** in the movie industry over time.  
+- Building **predictive models** for box office performance or awards.  
+- Developing **recommendation systems** based on movie attributes.  
 
-- Adjust `time.sleep()` values if encountering blocks.
-- Use proxy rotation if needed.
+---
 
-## Error Handling
+## Troubleshooting  
 
-The script includes robust error handling:
+### Common Issues  
 
-- Continues processing if individual movie fails.
-- Saves partial data if session interrupts.
-- Logs errors for debugging.
+1. **WebDriver Errors**:  
+   Adjust browser options:  
 
-## Memory Usage
+   ```python
+   options = Options()
+   options.add_argument("--disable-gpu")
+   options.add_argument("--no-sandbox")
+   ```  
 
-For large date ranges:
+2. **Rate Limiting**:  
+   - Increase `time.sleep()` delays between requests.  
+   - Use proxy rotation for high-volume scraping.  
 
-- Process years in batches.
-- Clear DataFrame objects regularly.
-- Monitor memory consumption.
+3. **Incomplete Data**:  
+   - Some older movies may lack detailed financial or award information.  
 
-## Contributing
+### Memory Management  
 
-1. Fork the repository.
-2. Create feature branch.
-3. Submit pull request.
+For large date ranges:  
 
-## Contact
+- Process data in smaller batches.  
+- Clear DataFrame objects regularly using `del` and `gc.collect()`.  
 
-For issues or data requests:
+---
 
-- Open GitHub issue.
-- Submit issue or data requests or suggestions for better code readability, robustness and performance.
+## Contributing  
 
-## License
+We welcome contributions to improve the scraper or extend its functionality!  
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+1. **Fork** this repository.  
+2. Create a feature branch:  
+
+   ```bash
+   git checkout -b feature-name
+   ```  
+
+3. Commit changes:  
+
+   ```bash
+   git commit -m "Add feature"  
+   ```  
+
+4. Submit a **pull request**.  
+
+---
+
+## License  
+
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.  
+
+---
+
+## Contact  
+
+For issues, suggestions, or feature requests:  
+
+- Open an issue on GitHub.  
+- Reach out with ideas to improve code readability, robustness, and performance.  
