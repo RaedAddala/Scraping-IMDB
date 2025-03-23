@@ -1,0 +1,11 @@
+2025-03-23 20:23:35,409 - results_logger_1923 - INFO - ===== Starting IMDB data processing for year 1923 =====
+2025-03-23 20:23:35,409 - results_logger_1923 - INFO - Start time: 2025-03-23 20:23:35
+2025-03-23 20:23:35,409 - results_logger_1923 - INFO - Starting link extraction for year 1923
+2025-03-23 20:24:15,800 - results_logger_1923 - INFO - Loaded 600 items before stopping
+2025-03-23 20:24:20,775 - results_logger_1923 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-23 20:24:23,050 - results_logger_1923 - INFO - Link extraction completed for year 1923
+2025-03-23 20:24:23,050 - results_logger_1923 - INFO - Total movies extracted: 600
+2025-03-23 20:24:23,053 - results_logger_1923 - INFO - Errors encountered: 0
+2025-03-23 20:24:23,053 - results_logger_1923 - INFO - Elapsed time: 47.64 seconds
+2025-03-23 20:24:23,057 - results_logger_1923 - INFO - Saved basic movie information to Data/1923/imdb_movies_1923.csv
+2025-03-23 20:24:23,057 - results_logger_1923 - INFO - Starting advanced data extraction for year 1923
