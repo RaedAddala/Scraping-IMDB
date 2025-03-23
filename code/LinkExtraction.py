@@ -7,10 +7,9 @@ from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 import time
 
-# Step 1: Set up Selenium WebDriver
-driver_path = "Edgedriver.exe"
-beginning_year = 1978
-ending_year = 1980
+driver_path = "edgedriver.exe"
+beginning_year = 1950
+ending_year = 2025
 urls = [
     f"https://www.imdb.com/search/title/?title_type=feature&release_date={y}-01-01,{y}-12-31&count=50&sort=boxoffice_gross_us,desc"
     for y in range(beginning_year, ending_year + 1)
@@ -30,7 +29,7 @@ for url in urls:
     time.sleep(3)
 
     loaded_data = 50
-    while loaded_data != 250:
+    while loaded_data != 600:
         try:
 
             load_more_button = WebDriverWait(driver, 10).until(

@@ -6,7 +6,7 @@ import pandas as pd
 all_movie_data = []
 df = pd.read_csv(f"imdb_movies1978_1980.csv")
 
-driver_path = "Edgedriver.exe"
+driver_path = "edgedriver.exe"
 options = webdriver.EdgeOptions()
 options.add_argument("--lang=en-US")
 
