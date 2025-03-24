@@ -1,0 +1,11 @@
+2025-03-25 00:23:21,136 - results_logger_1950 - INFO - ===== Starting IMDB data processing for year 1950 =====
+2025-03-25 00:23:21,137 - results_logger_1950 - INFO - Start time: 2025-03-25 00:23:21
+2025-03-25 00:23:21,137 - results_logger_1950 - INFO - Starting link extraction for year 1950
+2025-03-25 00:24:23,019 - results_logger_1950 - INFO - Loaded 600 items before stopping
+2025-03-25 00:24:28,488 - results_logger_1950 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 00:24:32,514 - results_logger_1950 - INFO - Link extraction completed for year 1950
+2025-03-25 00:24:32,514 - results_logger_1950 - INFO - Total movies extracted: 600
+2025-03-25 00:24:32,515 - results_logger_1950 - INFO - Errors encountered: 0
+2025-03-25 00:24:32,516 - results_logger_1950 - INFO - Elapsed time: 71.38 seconds
+2025-03-25 00:24:32,537 - results_logger_1950 - INFO - Saved basic movie information to Data/1950/imdb_movies_1950.csv
+2025-03-25 00:24:32,538 - results_logger_1950 - INFO - Starting advanced data extraction for year 1950
