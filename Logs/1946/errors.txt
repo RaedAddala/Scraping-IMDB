@@ -1,0 +1,26 @@
+2025-03-24 21:41:53,259 - error_logger_1946 - ERROR - No more 'Load More' button found or an error occurred: Message: invalid session id: session deleted as the browser has closed the connection
+from disconnected: not connected to DevTools
+  (Session info: MicrosoftEdge=134.0.3124.83)
+Stacktrace:
+	GetHandleVerifier [0x00007FF7F5CFAA95+20677]
+	simdutf::get_active_implementation [0x00007FF7F5C57240+492672]
+	Microsoft::Applications::Events::EventProperty::to_string [0x00007FF7F5F4DCAA+1807418]
+	(No symbol) [0x00007FF7F5A3B8B0]
+	(No symbol) [0x00007FF7F5A5A32A]
+	(No symbol) [0x00007FF7F5ABE0E6]
+	(No symbol) [0x00007FF7F5AD56CD]
+	(No symbol) [0x00007FF7F5AB81C3]
+	(No symbol) [0x00007FF7F5A8CC36]
+	(No symbol) [0x00007FF7F5A8C0C4]
+	(No symbol) [0x00007FF7F5A8CA63]
+	(No symbol) [0x00007FF7F5B75B7D]
+	(No symbol) [0x00007FF7F5B81FE2]
+	(No symbol) [0x00007FF7F5B7A9A3]
+	Microsoft::Applications::Events::EventProperty::to_string [0x00007FF7F5DD47FA+262026]
+	simdutf::get_active_implementation [0x00007FF7F5C64971+547761]
+	simdutf::get_active_implementation [0x00007FF7F5C5DC24+519780]
+	simdutf::get_active_implementation [0x00007FF7F5C5DD69+520105]
+	simdutf::get_active_implementation [0x00007FF7F5C4F916+461654]
+	BaseThreadInitThunk [0x00007FFDAC43259D+29]
+	RtlUserThreadStart [0x00007FFDAD08AF38+40]
+

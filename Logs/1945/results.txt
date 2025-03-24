@@ -1,0 +1,24 @@
+2025-03-24 21:08:00,051 - results_logger_1945 - INFO - ===== Starting IMDB data processing for year 1945 =====
+2025-03-24 21:08:00,052 - results_logger_1945 - INFO - Start time: 2025-03-24 21:08:00
+2025-03-24 21:08:00,052 - results_logger_1945 - INFO - Starting link extraction for year 1945
+2025-03-24 21:09:01,591 - results_logger_1945 - INFO - Loaded 600 items before stopping
+2025-03-24 21:09:07,025 - results_logger_1945 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 21:09:11,083 - results_logger_1945 - INFO - Link extraction completed for year 1945
+2025-03-24 21:09:11,083 - results_logger_1945 - INFO - Total movies extracted: 600
+2025-03-24 21:09:11,086 - results_logger_1945 - INFO - Errors encountered: 0
+2025-03-24 21:09:11,086 - results_logger_1945 - INFO - Elapsed time: 71.03 seconds
+2025-03-24 21:09:11,191 - results_logger_1945 - INFO - Saved basic movie information to Data/1945/imdb_movies_1945.csv
+2025-03-24 21:09:11,191 - results_logger_1945 - INFO - Starting advanced data extraction for year 1945
+2025-03-24 21:41:13,121 - results_logger_1945 - INFO - Advanced data extraction completed for year 1945
+2025-03-24 21:41:13,121 - results_logger_1945 - INFO - Total movies processed: 600
+2025-03-24 21:41:13,121 - results_logger_1945 - INFO - Errors encountered: 0
+2025-03-24 21:41:13,121 - results_logger_1945 - INFO - Elapsed time: 1921.93 seconds
+2025-03-24 21:41:13,135 - results_logger_1945 - INFO - Saved advanced movie details to Data/1945/advanced_movies_details_1945.csv
+2025-03-24 21:41:13,136 - results_logger_1945 - INFO - Starting data merging for year 1945
+2025-03-24 21:41:13,278 - results_logger_1945 - INFO - Basic data rows: 600
+2025-03-24 21:41:13,279 - results_logger_1945 - INFO - Advanced data rows: 600
+2025-03-24 21:41:13,279 - results_logger_1945 - INFO - Merged data rows: 600
+2025-03-24 21:41:13,279 - results_logger_1945 - INFO - Data merging completed in 0.14 seconds
+2025-03-24 21:41:13,323 - results_logger_1945 - INFO - Saved merged movie data to Data/1945/merged_movies_data_1945.csv
+2025-03-24 21:41:13,323 - results_logger_1945 - INFO - Total processing time for year 1945: 1993.29 seconds
+2025-03-24 21:41:13,323 - results_logger_1945 - INFO - ===== Completed IMDB data processing for year 1945 =====

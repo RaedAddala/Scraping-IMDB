@@ -1,3 +1,24 @@
 2025-03-24 17:55:01,122 - results_logger_1939 - INFO - ===== Starting IMDB data processing for year 1939 =====
 2025-03-24 17:55:01,123 - results_logger_1939 - INFO - Start time: 2025-03-24 17:55:01
 2025-03-24 17:55:01,123 - results_logger_1939 - INFO - Starting link extraction for year 1939
+2025-03-24 17:56:02,862 - results_logger_1939 - INFO - Loaded 600 items before stopping
+2025-03-24 17:56:04,081 - results_logger_1939 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 17:56:08,121 - results_logger_1939 - INFO - Link extraction completed for year 1939
+2025-03-24 17:56:08,122 - results_logger_1939 - INFO - Total movies extracted: 600
+2025-03-24 17:56:08,124 - results_logger_1939 - INFO - Errors encountered: 0
+2025-03-24 17:56:08,124 - results_logger_1939 - INFO - Elapsed time: 67.00 seconds
+2025-03-24 17:56:08,172 - results_logger_1939 - INFO - Saved basic movie information to Data/1939/imdb_movies_1939.csv
+2025-03-24 17:56:08,173 - results_logger_1939 - INFO - Starting advanced data extraction for year 1939
+2025-03-24 18:28:18,104 - results_logger_1939 - INFO - Advanced data extraction completed for year 1939
+2025-03-24 18:28:18,105 - results_logger_1939 - INFO - Total movies processed: 600
+2025-03-24 18:28:18,105 - results_logger_1939 - INFO - Errors encountered: 0
+2025-03-24 18:28:18,105 - results_logger_1939 - INFO - Elapsed time: 1929.93 seconds
+2025-03-24 18:28:18,126 - results_logger_1939 - INFO - Saved advanced movie details to Data/1939/advanced_movies_details_1939.csv
+2025-03-24 18:28:18,127 - results_logger_1939 - INFO - Starting data merging for year 1939
+2025-03-24 18:28:18,172 - results_logger_1939 - INFO - Basic data rows: 600
+2025-03-24 18:28:18,172 - results_logger_1939 - INFO - Advanced data rows: 600
+2025-03-24 18:28:18,173 - results_logger_1939 - INFO - Merged data rows: 600
+2025-03-24 18:28:18,173 - results_logger_1939 - INFO - Data merging completed in 0.05 seconds
+2025-03-24 18:28:19,856 - results_logger_1939 - INFO - Saved merged movie data to Data/1939/merged_movies_data_1939.csv
+2025-03-24 18:28:19,856 - results_logger_1939 - INFO - Total processing time for year 1939: 1998.74 seconds
+2025-03-24 18:28:19,856 - results_logger_1939 - INFO - ===== Completed IMDB data processing for year 1939 =====
