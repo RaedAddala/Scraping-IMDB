@@ -1,0 +1,3 @@
+2025-03-24 09:26:43,827 - results_logger_1928 - INFO - ===== Starting IMDB data processing for year 1928 =====
+2025-03-24 09:26:43,827 - results_logger_1928 - INFO - Start time: 2025-03-24 09:26:43
+2025-03-24 09:26:43,827 - results_logger_1928 - INFO - Starting link extraction for year 1928
