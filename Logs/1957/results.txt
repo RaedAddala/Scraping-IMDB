@@ -1,0 +1,24 @@
+2025-03-25 04:01:08,341 - results_logger_1957 - INFO - ===== Starting IMDB data processing for year 1957 =====
+2025-03-25 04:01:08,341 - results_logger_1957 - INFO - Start time: 2025-03-25 04:01:08
+2025-03-25 04:01:08,341 - results_logger_1957 - INFO - Starting link extraction for year 1957
+2025-03-25 04:02:10,161 - results_logger_1957 - INFO - Loaded 600 items before stopping
+2025-03-25 04:02:14,944 - results_logger_1957 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 04:02:18,834 - results_logger_1957 - INFO - Link extraction completed for year 1957
+2025-03-25 04:02:18,834 - results_logger_1957 - INFO - Total movies extracted: 600
+2025-03-25 04:02:18,837 - results_logger_1957 - INFO - Errors encountered: 0
+2025-03-25 04:02:18,837 - results_logger_1957 - INFO - Elapsed time: 70.49 seconds
+2025-03-25 04:02:18,844 - results_logger_1957 - INFO - Saved basic movie information to Data/1957/imdb_movies_1957.csv
+2025-03-25 04:02:18,844 - results_logger_1957 - INFO - Starting advanced data extraction for year 1957
+2025-03-25 04:29:53,362 - results_logger_1957 - INFO - Advanced data extraction completed for year 1957
+2025-03-25 04:29:53,362 - results_logger_1957 - INFO - Total movies processed: 600
+2025-03-25 04:29:53,362 - results_logger_1957 - INFO - Errors encountered: 0
+2025-03-25 04:29:53,362 - results_logger_1957 - INFO - Elapsed time: 1654.52 seconds
+2025-03-25 04:29:55,038 - results_logger_1957 - INFO - Saved advanced movie details to Data/1957/advanced_movies_details_1957.csv
+2025-03-25 04:29:55,039 - results_logger_1957 - INFO - Starting data merging for year 1957
+2025-03-25 04:29:55,098 - results_logger_1957 - INFO - Basic data rows: 600
+2025-03-25 04:29:55,098 - results_logger_1957 - INFO - Advanced data rows: 600
+2025-03-25 04:29:55,098 - results_logger_1957 - INFO - Merged data rows: 600
+2025-03-25 04:29:55,098 - results_logger_1957 - INFO - Data merging completed in 0.06 seconds
+2025-03-25 04:29:55,136 - results_logger_1957 - INFO - Saved merged movie data to Data/1957/merged_movies_data_1957.csv
+2025-03-25 04:29:55,136 - results_logger_1957 - INFO - Total processing time for year 1957: 1726.80 seconds
+2025-03-25 04:29:55,136 - results_logger_1957 - INFO - ===== Completed IMDB data processing for year 1957 =====

@@ -1,0 +1,24 @@
+2025-03-25 07:23:20,478 - results_logger_1964 - INFO - ===== Starting IMDB data processing for year 1964 =====
+2025-03-25 07:23:20,478 - results_logger_1964 - INFO - Start time: 2025-03-25 07:23:20
+2025-03-25 07:23:20,478 - results_logger_1964 - INFO - Starting link extraction for year 1964
+2025-03-25 07:24:21,693 - results_logger_1964 - INFO - Loaded 600 items before stopping
+2025-03-25 07:24:26,453 - results_logger_1964 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 07:24:30,369 - results_logger_1964 - INFO - Link extraction completed for year 1964
+2025-03-25 07:24:30,369 - results_logger_1964 - INFO - Total movies extracted: 600
+2025-03-25 07:24:30,372 - results_logger_1964 - INFO - Errors encountered: 0
+2025-03-25 07:24:30,372 - results_logger_1964 - INFO - Elapsed time: 69.89 seconds
+2025-03-25 07:24:30,377 - results_logger_1964 - INFO - Saved basic movie information to Data/1964/imdb_movies_1964.csv
+2025-03-25 07:24:30,377 - results_logger_1964 - INFO - Starting advanced data extraction for year 1964
+2025-03-25 07:53:14,245 - results_logger_1964 - INFO - Advanced data extraction completed for year 1964
+2025-03-25 07:53:14,246 - results_logger_1964 - INFO - Total movies processed: 600
+2025-03-25 07:53:14,246 - results_logger_1964 - INFO - Errors encountered: 0
+2025-03-25 07:53:14,246 - results_logger_1964 - INFO - Elapsed time: 1723.87 seconds
+2025-03-25 07:53:14,253 - results_logger_1964 - INFO - Saved advanced movie details to Data/1964/advanced_movies_details_1964.csv
+2025-03-25 07:53:14,253 - results_logger_1964 - INFO - Starting data merging for year 1964
+2025-03-25 07:53:14,280 - results_logger_1964 - INFO - Basic data rows: 600
+2025-03-25 07:53:14,280 - results_logger_1964 - INFO - Advanced data rows: 600
+2025-03-25 07:53:14,280 - results_logger_1964 - INFO - Merged data rows: 600
+2025-03-25 07:53:14,280 - results_logger_1964 - INFO - Data merging completed in 0.03 seconds
+2025-03-25 07:53:14,286 - results_logger_1964 - INFO - Saved merged movie data to Data/1964/merged_movies_data_1964.csv
+2025-03-25 07:53:14,286 - results_logger_1964 - INFO - Total processing time for year 1964: 1793.81 seconds
+2025-03-25 07:53:14,287 - results_logger_1964 - INFO - ===== Completed IMDB data processing for year 1964 =====

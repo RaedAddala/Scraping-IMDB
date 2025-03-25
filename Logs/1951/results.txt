@@ -1,0 +1,24 @@
+2025-03-25 00:59:46,488 - results_logger_1951 - INFO - ===== Starting IMDB data processing for year 1951 =====
+2025-03-25 00:59:46,488 - results_logger_1951 - INFO - Start time: 2025-03-25 00:59:46
+2025-03-25 00:59:46,488 - results_logger_1951 - INFO - Starting link extraction for year 1951
+2025-03-25 01:00:50,009 - results_logger_1951 - INFO - Loaded 600 items before stopping
+2025-03-25 01:00:50,990 - results_logger_1951 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 01:00:54,964 - results_logger_1951 - INFO - Link extraction completed for year 1951
+2025-03-25 01:00:54,964 - results_logger_1951 - INFO - Total movies extracted: 600
+2025-03-25 01:00:55,034 - results_logger_1951 - INFO - Errors encountered: 0
+2025-03-25 01:00:55,034 - results_logger_1951 - INFO - Elapsed time: 68.48 seconds
+2025-03-25 01:00:55,042 - results_logger_1951 - INFO - Saved basic movie information to Data/1951/imdb_movies_1951.csv
+2025-03-25 01:00:55,044 - results_logger_1951 - INFO - Starting advanced data extraction for year 1951
+2025-03-25 01:32:19,199 - results_logger_1951 - INFO - Advanced data extraction completed for year 1951
+2025-03-25 01:32:19,199 - results_logger_1951 - INFO - Total movies processed: 600
+2025-03-25 01:32:19,199 - results_logger_1951 - INFO - Errors encountered: 0
+2025-03-25 01:32:19,199 - results_logger_1951 - INFO - Elapsed time: 1884.15 seconds
+2025-03-25 01:32:19,212 - results_logger_1951 - INFO - Saved advanced movie details to Data/1951/advanced_movies_details_1951.csv
+2025-03-25 01:32:19,212 - results_logger_1951 - INFO - Starting data merging for year 1951
+2025-03-25 01:32:19,341 - results_logger_1951 - INFO - Basic data rows: 600
+2025-03-25 01:32:19,341 - results_logger_1951 - INFO - Advanced data rows: 600
+2025-03-25 01:32:19,341 - results_logger_1951 - INFO - Merged data rows: 600
+2025-03-25 01:32:19,341 - results_logger_1951 - INFO - Data merging completed in 0.13 seconds
+2025-03-25 01:32:19,362 - results_logger_1951 - INFO - Saved merged movie data to Data/1951/merged_movies_data_1951.csv
+2025-03-25 01:32:19,362 - results_logger_1951 - INFO - Total processing time for year 1951: 1952.88 seconds
+2025-03-25 01:32:19,362 - results_logger_1951 - INFO - ===== Completed IMDB data processing for year 1951 =====

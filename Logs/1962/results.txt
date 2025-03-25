@@ -1,0 +1,24 @@
+2025-03-25 06:25:46,575 - results_logger_1962 - INFO - ===== Starting IMDB data processing for year 1962 =====
+2025-03-25 06:25:46,575 - results_logger_1962 - INFO - Start time: 2025-03-25 06:25:46
+2025-03-25 06:25:46,575 - results_logger_1962 - INFO - Starting link extraction for year 1962
+2025-03-25 06:26:48,124 - results_logger_1962 - INFO - Loaded 600 items before stopping
+2025-03-25 06:26:48,685 - results_logger_1962 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 06:26:52,551 - results_logger_1962 - INFO - Link extraction completed for year 1962
+2025-03-25 06:26:52,551 - results_logger_1962 - INFO - Total movies extracted: 600
+2025-03-25 06:26:52,554 - results_logger_1962 - INFO - Errors encountered: 0
+2025-03-25 06:26:52,554 - results_logger_1962 - INFO - Elapsed time: 65.98 seconds
+2025-03-25 06:26:52,561 - results_logger_1962 - INFO - Saved basic movie information to Data/1962/imdb_movies_1962.csv
+2025-03-25 06:26:52,561 - results_logger_1962 - INFO - Starting advanced data extraction for year 1962
+2025-03-25 06:54:36,621 - results_logger_1962 - INFO - Advanced data extraction completed for year 1962
+2025-03-25 06:54:36,621 - results_logger_1962 - INFO - Total movies processed: 600
+2025-03-25 06:54:36,621 - results_logger_1962 - INFO - Errors encountered: 0
+2025-03-25 06:54:36,621 - results_logger_1962 - INFO - Elapsed time: 1664.06 seconds
+2025-03-25 06:54:38,328 - results_logger_1962 - INFO - Saved advanced movie details to Data/1962/advanced_movies_details_1962.csv
+2025-03-25 06:54:38,328 - results_logger_1962 - INFO - Starting data merging for year 1962
+2025-03-25 06:54:38,389 - results_logger_1962 - INFO - Basic data rows: 600
+2025-03-25 06:54:38,389 - results_logger_1962 - INFO - Advanced data rows: 600
+2025-03-25 06:54:38,389 - results_logger_1962 - INFO - Merged data rows: 600
+2025-03-25 06:54:38,389 - results_logger_1962 - INFO - Data merging completed in 0.06 seconds
+2025-03-25 06:54:38,396 - results_logger_1962 - INFO - Saved merged movie data to Data/1962/merged_movies_data_1962.csv
+2025-03-25 06:54:38,396 - results_logger_1962 - INFO - Total processing time for year 1962: 1731.91 seconds
+2025-03-25 06:54:38,396 - results_logger_1962 - INFO - ===== Completed IMDB data processing for year 1962 =====

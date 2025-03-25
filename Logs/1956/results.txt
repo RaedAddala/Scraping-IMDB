@@ -1,0 +1,24 @@
+2025-03-25 03:32:34,084 - results_logger_1956 - INFO - ===== Starting IMDB data processing for year 1956 =====
+2025-03-25 03:32:34,084 - results_logger_1956 - INFO - Start time: 2025-03-25 03:32:34
+2025-03-25 03:32:34,085 - results_logger_1956 - INFO - Starting link extraction for year 1956
+2025-03-25 03:33:35,546 - results_logger_1956 - INFO - Loaded 600 items before stopping
+2025-03-25 03:33:40,312 - results_logger_1956 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 03:33:44,186 - results_logger_1956 - INFO - Link extraction completed for year 1956
+2025-03-25 03:33:44,187 - results_logger_1956 - INFO - Total movies extracted: 600
+2025-03-25 03:33:44,189 - results_logger_1956 - INFO - Errors encountered: 0
+2025-03-25 03:33:44,190 - results_logger_1956 - INFO - Elapsed time: 70.10 seconds
+2025-03-25 03:33:44,287 - results_logger_1956 - INFO - Saved basic movie information to Data/1956/imdb_movies_1956.csv
+2025-03-25 03:33:44,287 - results_logger_1956 - INFO - Starting advanced data extraction for year 1956
+2025-03-25 04:00:58,577 - results_logger_1956 - INFO - Advanced data extraction completed for year 1956
+2025-03-25 04:00:58,578 - results_logger_1956 - INFO - Total movies processed: 600
+2025-03-25 04:00:58,578 - results_logger_1956 - INFO - Errors encountered: 0
+2025-03-25 04:00:58,578 - results_logger_1956 - INFO - Elapsed time: 1634.29 seconds
+2025-03-25 04:01:00,277 - results_logger_1956 - INFO - Saved advanced movie details to Data/1956/advanced_movies_details_1956.csv
+2025-03-25 04:01:00,278 - results_logger_1956 - INFO - Starting data merging for year 1956
+2025-03-25 04:01:00,327 - results_logger_1956 - INFO - Basic data rows: 600
+2025-03-25 04:01:00,327 - results_logger_1956 - INFO - Advanced data rows: 600
+2025-03-25 04:01:00,327 - results_logger_1956 - INFO - Merged data rows: 600
+2025-03-25 04:01:00,327 - results_logger_1956 - INFO - Data merging completed in 0.05 seconds
+2025-03-25 04:01:00,337 - results_logger_1956 - INFO - Saved merged movie data to Data/1956/merged_movies_data_1956.csv
+2025-03-25 04:01:00,337 - results_logger_1956 - INFO - Total processing time for year 1956: 1706.34 seconds
+2025-03-25 04:01:00,337 - results_logger_1956 - INFO - ===== Completed IMDB data processing for year 1956 =====
