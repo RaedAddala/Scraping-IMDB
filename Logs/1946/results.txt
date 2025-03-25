@@ -2,3 +2,27 @@
 2025-03-24 21:41:21,350 - results_logger_1946 - INFO - Start time: 2025-03-24 21:41:21
 2025-03-24 21:41:21,350 - results_logger_1946 - INFO - Starting link extraction for year 1946
 2025-03-24 21:41:53,259 - results_logger_1946 - INFO - Loaded 300 items before stopping
+2025-03-24 22:13:25,274 - results_logger_1946 - INFO - ===== Starting IMDB data processing for year 1946 =====
+2025-03-24 22:13:25,274 - results_logger_1946 - INFO - Start time: 2025-03-24 22:13:25
+2025-03-24 22:13:25,274 - results_logger_1946 - INFO - Starting link extraction for year 1946
+2025-03-24 22:14:28,165 - results_logger_1946 - INFO - Loaded 600 items before stopping
+2025-03-24 22:14:28,860 - results_logger_1946 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 22:14:32,576 - results_logger_1946 - INFO - Link extraction completed for year 1946
+2025-03-24 22:14:32,576 - results_logger_1946 - INFO - Total movies extracted: 600
+2025-03-24 22:14:32,576 - results_logger_1946 - INFO - Errors encountered: 0
+2025-03-24 22:14:32,576 - results_logger_1946 - INFO - Elapsed time: 67.30 seconds
+2025-03-24 22:14:32,585 - results_logger_1946 - INFO - Saved basic movie information to Data/1946/imdb_movies_1946.csv
+2025-03-24 22:14:32,586 - results_logger_1946 - INFO - Starting advanced data extraction for year 1946
+2025-03-24 22:45:45,207 - results_logger_1946 - INFO - Advanced data extraction completed for year 1946
+2025-03-24 22:45:45,207 - results_logger_1946 - INFO - Total movies processed: 600
+2025-03-24 22:45:45,207 - results_logger_1946 - INFO - Errors encountered: 0
+2025-03-24 22:45:45,207 - results_logger_1946 - INFO - Elapsed time: 1872.62 seconds
+2025-03-24 22:45:45,219 - results_logger_1946 - INFO - Saved advanced movie details to Data/1946/advanced_movies_details_1946.csv
+2025-03-24 22:45:45,219 - results_logger_1946 - INFO - Starting data merging for year 1946
+2025-03-24 22:45:45,317 - results_logger_1946 - INFO - Basic data rows: 600
+2025-03-24 22:45:45,317 - results_logger_1946 - INFO - Advanced data rows: 600
+2025-03-24 22:45:45,317 - results_logger_1946 - INFO - Merged data rows: 600
+2025-03-24 22:45:45,317 - results_logger_1946 - INFO - Data merging completed in 0.10 seconds
+2025-03-24 22:45:45,326 - results_logger_1946 - INFO - Saved merged movie data to Data/1946/merged_movies_data_1946.csv
+2025-03-24 22:45:45,326 - results_logger_1946 - INFO - Total processing time for year 1946: 1940.05 seconds
+2025-03-24 22:45:45,326 - results_logger_1946 - INFO - ===== Completed IMDB data processing for year 1946 =====
