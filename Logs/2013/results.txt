@@ -1,0 +1,24 @@
+2025-03-26 18:33:34,800 - results_logger_2013 - INFO - ===== Starting IMDB data processing for year 2013 =====
+2025-03-26 18:33:34,800 - results_logger_2013 - INFO - Start time: 2025-03-26 18:33:34
+2025-03-26 18:33:34,800 - results_logger_2013 - INFO - Starting link extraction for year 2013
+2025-03-26 18:34:36,543 - results_logger_2013 - INFO - Loaded 600 items before stopping
+2025-03-26 18:34:41,368 - results_logger_2013 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 18:34:45,274 - results_logger_2013 - INFO - Link extraction completed for year 2013
+2025-03-26 18:34:45,274 - results_logger_2013 - INFO - Total movies extracted: 600
+2025-03-26 18:34:45,275 - results_logger_2013 - INFO - Errors encountered: 0
+2025-03-26 18:34:45,275 - results_logger_2013 - INFO - Elapsed time: 70.47 seconds
+2025-03-26 18:34:45,284 - results_logger_2013 - INFO - Saved basic movie information to Data/2013/imdb_movies_2013.csv
+2025-03-26 18:34:45,285 - results_logger_2013 - INFO - Starting advanced data extraction for year 2013
+2025-03-26 19:04:01,901 - results_logger_2013 - INFO - Advanced data extraction completed for year 2013
+2025-03-26 19:04:01,902 - results_logger_2013 - INFO - Total movies processed: 600
+2025-03-26 19:04:01,902 - results_logger_2013 - INFO - Errors encountered: 0
+2025-03-26 19:04:01,902 - results_logger_2013 - INFO - Elapsed time: 1756.62 seconds
+2025-03-26 19:04:01,910 - results_logger_2013 - INFO - Saved advanced movie details to Data/2013/advanced_movies_details_2013.csv
+2025-03-26 19:04:01,911 - results_logger_2013 - INFO - Starting data merging for year 2013
+2025-03-26 19:04:01,940 - results_logger_2013 - INFO - Basic data rows: 600
+2025-03-26 19:04:01,940 - results_logger_2013 - INFO - Advanced data rows: 600
+2025-03-26 19:04:01,940 - results_logger_2013 - INFO - Merged data rows: 600
+2025-03-26 19:04:01,940 - results_logger_2013 - INFO - Data merging completed in 0.03 seconds
+2025-03-26 19:04:01,947 - results_logger_2013 - INFO - Saved merged movie data to Data/2013/merged_movies_data_2013.csv
+2025-03-26 19:04:01,947 - results_logger_2013 - INFO - Total processing time for year 2013: 1827.15 seconds
+2025-03-26 19:04:01,947 - results_logger_2013 - INFO - ===== Completed IMDB data processing for year 2013 =====

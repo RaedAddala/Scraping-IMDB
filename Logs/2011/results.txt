@@ -1,0 +1,24 @@
+2025-03-26 17:20:31,597 - results_logger_2011 - INFO - ===== Starting IMDB data processing for year 2011 =====
+2025-03-26 17:20:31,597 - results_logger_2011 - INFO - Start time: 2025-03-26 17:20:31
+2025-03-26 17:20:31,597 - results_logger_2011 - INFO - Starting link extraction for year 2011
+2025-03-26 17:21:33,495 - results_logger_2011 - INFO - Loaded 600 items before stopping
+2025-03-26 17:21:38,505 - results_logger_2011 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 17:21:42,335 - results_logger_2011 - INFO - Link extraction completed for year 2011
+2025-03-26 17:21:42,335 - results_logger_2011 - INFO - Total movies extracted: 600
+2025-03-26 17:21:42,336 - results_logger_2011 - INFO - Errors encountered: 0
+2025-03-26 17:21:42,336 - results_logger_2011 - INFO - Elapsed time: 70.74 seconds
+2025-03-26 17:21:42,348 - results_logger_2011 - INFO - Saved basic movie information to Data/2011/imdb_movies_2011.csv
+2025-03-26 17:21:42,348 - results_logger_2011 - INFO - Starting advanced data extraction for year 2011
+2025-03-26 17:57:40,775 - results_logger_2011 - INFO - Advanced data extraction completed for year 2011
+2025-03-26 17:57:40,775 - results_logger_2011 - INFO - Total movies processed: 600
+2025-03-26 17:57:40,775 - results_logger_2011 - INFO - Errors encountered: 0
+2025-03-26 17:57:40,776 - results_logger_2011 - INFO - Elapsed time: 2158.43 seconds
+2025-03-26 17:57:40,787 - results_logger_2011 - INFO - Saved advanced movie details to Data/2011/advanced_movies_details_2011.csv
+2025-03-26 17:57:40,787 - results_logger_2011 - INFO - Starting data merging for year 2011
+2025-03-26 17:57:40,886 - results_logger_2011 - INFO - Basic data rows: 600
+2025-03-26 17:57:40,887 - results_logger_2011 - INFO - Advanced data rows: 600
+2025-03-26 17:57:40,887 - results_logger_2011 - INFO - Merged data rows: 600
+2025-03-26 17:57:40,887 - results_logger_2011 - INFO - Data merging completed in 0.10 seconds
+2025-03-26 17:57:40,902 - results_logger_2011 - INFO - Saved merged movie data to Data/2011/merged_movies_data_2011.csv
+2025-03-26 17:57:40,902 - results_logger_2011 - INFO - Total processing time for year 2011: 2229.31 seconds
+2025-03-26 17:57:40,902 - results_logger_2011 - INFO - ===== Completed IMDB data processing for year 2011 =====

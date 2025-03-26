@@ -1,0 +1,11 @@
+2025-03-26 20:40:04,545 - results_logger_2017 - INFO - ===== Starting IMDB data processing for year 2017 =====
+2025-03-26 20:40:04,545 - results_logger_2017 - INFO - Start time: 2025-03-26 20:40:04
+2025-03-26 20:40:04,545 - results_logger_2017 - INFO - Starting link extraction for year 2017
+2025-03-26 20:41:06,393 - results_logger_2017 - INFO - Loaded 600 items before stopping
+2025-03-26 20:41:07,033 - results_logger_2017 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 20:41:10,949 - results_logger_2017 - INFO - Link extraction completed for year 2017
+2025-03-26 20:41:10,949 - results_logger_2017 - INFO - Total movies extracted: 600
+2025-03-26 20:41:10,951 - results_logger_2017 - INFO - Errors encountered: 0
+2025-03-26 20:41:10,951 - results_logger_2017 - INFO - Elapsed time: 66.40 seconds
+2025-03-26 20:41:11,051 - results_logger_2017 - INFO - Saved basic movie information to Data/2017/imdb_movies_2017.csv
+2025-03-26 20:41:11,051 - results_logger_2017 - INFO - Starting advanced data extraction for year 2017
