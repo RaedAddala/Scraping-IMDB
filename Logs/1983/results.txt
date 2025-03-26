@@ -1,3 +1,24 @@
 2025-03-25 23:45:41,313 - results_logger_1983 - INFO - ===== Starting IMDB data processing for year 1983 =====
 2025-03-25 23:45:41,313 - results_logger_1983 - INFO - Start time: 2025-03-25 23:45:41
 2025-03-25 23:45:41,314 - results_logger_1983 - INFO - Starting link extraction for year 1983
+2025-03-25 23:46:43,287 - results_logger_1983 - INFO - Loaded 600 items before stopping
+2025-03-25 23:46:43,832 - results_logger_1983 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 23:46:47,666 - results_logger_1983 - INFO - Link extraction completed for year 1983
+2025-03-25 23:46:47,666 - results_logger_1983 - INFO - Total movies extracted: 600
+2025-03-25 23:46:47,668 - results_logger_1983 - INFO - Errors encountered: 0
+2025-03-25 23:46:47,668 - results_logger_1983 - INFO - Elapsed time: 66.35 seconds
+2025-03-25 23:46:47,764 - results_logger_1983 - INFO - Saved basic movie information to Data/1983/imdb_movies_1983.csv
+2025-03-25 23:46:47,764 - results_logger_1983 - INFO - Starting advanced data extraction for year 1983
+2025-03-26 00:17:13,778 - results_logger_1983 - INFO - Advanced data extraction completed for year 1983
+2025-03-26 00:17:13,778 - results_logger_1983 - INFO - Total movies processed: 600
+2025-03-26 00:17:13,778 - results_logger_1983 - INFO - Errors encountered: 0
+2025-03-26 00:17:13,778 - results_logger_1983 - INFO - Elapsed time: 1826.01 seconds
+2025-03-26 00:17:13,799 - results_logger_1983 - INFO - Saved advanced movie details to Data/1983/advanced_movies_details_1983.csv
+2025-03-26 00:17:13,800 - results_logger_1983 - INFO - Starting data merging for year 1983
+2025-03-26 00:17:13,842 - results_logger_1983 - INFO - Basic data rows: 600
+2025-03-26 00:17:13,842 - results_logger_1983 - INFO - Advanced data rows: 600
+2025-03-26 00:17:13,842 - results_logger_1983 - INFO - Merged data rows: 600
+2025-03-26 00:17:13,842 - results_logger_1983 - INFO - Data merging completed in 0.04 seconds
+2025-03-26 00:17:13,856 - results_logger_1983 - INFO - Saved merged movie data to Data/1983/merged_movies_data_1983.csv
+2025-03-26 00:17:13,856 - results_logger_1983 - INFO - Total processing time for year 1983: 1892.57 seconds
+2025-03-26 00:17:13,856 - results_logger_1983 - INFO - ===== Completed IMDB data processing for year 1983 =====

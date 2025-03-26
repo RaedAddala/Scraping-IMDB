@@ -1,0 +1,24 @@
+2025-03-26 07:02:22,344 - results_logger_2001 - INFO - ===== Starting IMDB data processing for year 2001 =====
+2025-03-26 07:02:22,345 - results_logger_2001 - INFO - Start time: 2025-03-26 07:02:22
+2025-03-26 07:02:22,345 - results_logger_2001 - INFO - Starting link extraction for year 2001
+2025-03-26 07:03:23,929 - results_logger_2001 - INFO - Loaded 600 items before stopping
+2025-03-26 07:03:24,940 - results_logger_2001 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 07:03:28,873 - results_logger_2001 - INFO - Link extraction completed for year 2001
+2025-03-26 07:03:28,873 - results_logger_2001 - INFO - Total movies extracted: 600
+2025-03-26 07:03:28,876 - results_logger_2001 - INFO - Errors encountered: 0
+2025-03-26 07:03:28,876 - results_logger_2001 - INFO - Elapsed time: 66.53 seconds
+2025-03-26 07:03:28,889 - results_logger_2001 - INFO - Saved basic movie information to Data/2001/imdb_movies_2001.csv
+2025-03-26 07:03:28,890 - results_logger_2001 - INFO - Starting advanced data extraction for year 2001
+2025-03-26 07:32:02,896 - results_logger_2001 - INFO - Advanced data extraction completed for year 2001
+2025-03-26 07:32:02,896 - results_logger_2001 - INFO - Total movies processed: 600
+2025-03-26 07:32:02,896 - results_logger_2001 - INFO - Errors encountered: 0
+2025-03-26 07:32:02,896 - results_logger_2001 - INFO - Elapsed time: 1714.01 seconds
+2025-03-26 07:32:02,910 - results_logger_2001 - INFO - Saved advanced movie details to Data/2001/advanced_movies_details_2001.csv
+2025-03-26 07:32:02,910 - results_logger_2001 - INFO - Starting data merging for year 2001
+2025-03-26 07:32:02,945 - results_logger_2001 - INFO - Basic data rows: 600
+2025-03-26 07:32:02,945 - results_logger_2001 - INFO - Advanced data rows: 600
+2025-03-26 07:32:02,945 - results_logger_2001 - INFO - Merged data rows: 600
+2025-03-26 07:32:02,945 - results_logger_2001 - INFO - Data merging completed in 0.03 seconds
+2025-03-26 07:32:04,636 - results_logger_2001 - INFO - Saved merged movie data to Data/2001/merged_movies_data_2001.csv
+2025-03-26 07:32:04,636 - results_logger_2001 - INFO - Total processing time for year 2001: 1782.39 seconds
+2025-03-26 07:32:04,636 - results_logger_2001 - INFO - ===== Completed IMDB data processing for year 2001 =====

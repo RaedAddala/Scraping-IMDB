@@ -1,0 +1,24 @@
+2025-03-26 08:32:18,601 - results_logger_2004 - INFO - ===== Starting IMDB data processing for year 2004 =====
+2025-03-26 08:32:18,601 - results_logger_2004 - INFO - Start time: 2025-03-26 08:32:18
+2025-03-26 08:32:18,601 - results_logger_2004 - INFO - Starting link extraction for year 2004
+2025-03-26 08:33:20,163 - results_logger_2004 - INFO - Loaded 600 items before stopping
+2025-03-26 08:33:25,564 - results_logger_2004 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 08:33:28,543 - results_logger_2004 - INFO - Link extraction completed for year 2004
+2025-03-26 08:33:28,543 - results_logger_2004 - INFO - Total movies extracted: 600
+2025-03-26 08:33:28,546 - results_logger_2004 - INFO - Errors encountered: 0
+2025-03-26 08:33:28,546 - results_logger_2004 - INFO - Elapsed time: 69.94 seconds
+2025-03-26 08:33:28,551 - results_logger_2004 - INFO - Saved basic movie information to Data/2004/imdb_movies_2004.csv
+2025-03-26 08:33:28,551 - results_logger_2004 - INFO - Starting advanced data extraction for year 2004
+2025-03-26 09:04:22,131 - results_logger_2004 - INFO - Advanced data extraction completed for year 2004
+2025-03-26 09:04:22,131 - results_logger_2004 - INFO - Total movies processed: 600
+2025-03-26 09:04:22,131 - results_logger_2004 - INFO - Errors encountered: 0
+2025-03-26 09:04:22,131 - results_logger_2004 - INFO - Elapsed time: 1853.58 seconds
+2025-03-26 09:04:22,147 - results_logger_2004 - INFO - Saved advanced movie details to Data/2004/advanced_movies_details_2004.csv
+2025-03-26 09:04:22,148 - results_logger_2004 - INFO - Starting data merging for year 2004
+2025-03-26 09:04:22,196 - results_logger_2004 - INFO - Basic data rows: 600
+2025-03-26 09:04:22,196 - results_logger_2004 - INFO - Advanced data rows: 600
+2025-03-26 09:04:22,196 - results_logger_2004 - INFO - Merged data rows: 600
+2025-03-26 09:04:22,196 - results_logger_2004 - INFO - Data merging completed in 0.05 seconds
+2025-03-26 09:04:22,207 - results_logger_2004 - INFO - Saved merged movie data to Data/2004/merged_movies_data_2004.csv
+2025-03-26 09:04:22,207 - results_logger_2004 - INFO - Total processing time for year 2004: 1923.61 seconds
+2025-03-26 09:04:22,207 - results_logger_2004 - INFO - ===== Completed IMDB data processing for year 2004 =====

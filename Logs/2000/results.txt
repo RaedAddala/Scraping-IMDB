@@ -1,0 +1,24 @@
+2025-03-26 06:31:10,798 - results_logger_2000 - INFO - ===== Starting IMDB data processing for year 2000 =====
+2025-03-26 06:31:10,798 - results_logger_2000 - INFO - Start time: 2025-03-26 06:31:10
+2025-03-26 06:31:10,798 - results_logger_2000 - INFO - Starting link extraction for year 2000
+2025-03-26 06:32:12,563 - results_logger_2000 - INFO - Loaded 600 items before stopping
+2025-03-26 06:32:13,443 - results_logger_2000 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 06:32:17,385 - results_logger_2000 - INFO - Link extraction completed for year 2000
+2025-03-26 06:32:17,385 - results_logger_2000 - INFO - Total movies extracted: 600
+2025-03-26 06:32:17,388 - results_logger_2000 - INFO - Errors encountered: 0
+2025-03-26 06:32:17,389 - results_logger_2000 - INFO - Elapsed time: 66.59 seconds
+2025-03-26 06:32:17,400 - results_logger_2000 - INFO - Saved basic movie information to Data/2000/imdb_movies_2000.csv
+2025-03-26 06:32:17,400 - results_logger_2000 - INFO - Starting advanced data extraction for year 2000
+2025-03-26 07:02:12,486 - results_logger_2000 - INFO - Advanced data extraction completed for year 2000
+2025-03-26 07:02:12,486 - results_logger_2000 - INFO - Total movies processed: 600
+2025-03-26 07:02:12,486 - results_logger_2000 - INFO - Errors encountered: 0
+2025-03-26 07:02:12,487 - results_logger_2000 - INFO - Elapsed time: 1795.09 seconds
+2025-03-26 07:02:12,503 - results_logger_2000 - INFO - Saved advanced movie details to Data/2000/advanced_movies_details_2000.csv
+2025-03-26 07:02:12,503 - results_logger_2000 - INFO - Starting data merging for year 2000
+2025-03-26 07:02:12,545 - results_logger_2000 - INFO - Basic data rows: 600
+2025-03-26 07:02:12,545 - results_logger_2000 - INFO - Advanced data rows: 600
+2025-03-26 07:02:12,545 - results_logger_2000 - INFO - Merged data rows: 600
+2025-03-26 07:02:12,545 - results_logger_2000 - INFO - Data merging completed in 0.04 seconds
+2025-03-26 07:02:14,238 - results_logger_2000 - INFO - Saved merged movie data to Data/2000/merged_movies_data_2000.csv
+2025-03-26 07:02:14,238 - results_logger_2000 - INFO - Total processing time for year 2000: 1863.47 seconds
+2025-03-26 07:02:14,238 - results_logger_2000 - INFO - ===== Completed IMDB data processing for year 2000 =====

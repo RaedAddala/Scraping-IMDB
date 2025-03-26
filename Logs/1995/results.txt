@@ -1,0 +1,10 @@
+2025-03-26 05:30:17,444 - results_logger_1995 - INFO - ===== Starting IMDB data processing for year 1995 =====
+2025-03-26 05:30:17,445 - results_logger_1995 - INFO - Start time: 2025-03-26 05:30:17
+2025-03-26 05:30:17,445 - results_logger_1995 - INFO - Starting link extraction for year 1995
+2025-03-26 05:30:23,334 - results_logger_1995 - INFO - Link extraction completed for year 1995
+2025-03-26 05:30:23,334 - results_logger_1995 - INFO - Total movies extracted: 0
+2025-03-26 05:30:23,334 - results_logger_1995 - INFO - Errors encountered: 1
+2025-03-26 05:30:23,334 - results_logger_1995 - INFO - Elapsed time: 5.89 seconds
+2025-03-26 05:30:23,335 - results_logger_1995 - INFO - Saved basic movie information to Data/1995/imdb_movies_1995.csv
+2025-03-26 05:30:23,336 - results_logger_1995 - INFO - Starting advanced data extraction for year 1995
+2025-03-26 05:30:26,257 - results_logger_1995 - INFO - Processing failed for year 1995
