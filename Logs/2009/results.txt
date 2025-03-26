@@ -1,0 +1,3 @@
+2025-03-26 16:01:38,477 - results_logger_2009 - INFO - ===== Starting IMDB data processing for year 2009 =====
+2025-03-26 16:01:38,477 - results_logger_2009 - INFO - Start time: 2025-03-26 16:01:38
+2025-03-26 16:01:38,477 - results_logger_2009 - INFO - Starting link extraction for year 2009
