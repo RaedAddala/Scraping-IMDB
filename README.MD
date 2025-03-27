@@ -218,3 +218,14 @@ For issues, suggestions, or feature requests:
 
 - Open an issue on GitHub.  
 - Reach out with ideas to improve code readability, robustness, and performance.  
+
+## TYPOS NOTE
+
+In the csvs I made some mistakes that I need to fix:
+
+- `grossWorldWide` instead of the current `grossWorldWWide`.
+- `meta_score` instead of the current `méta_score`.
+- `production_companies` instead of the current `production_company`.
+- `Movie Link` instead of the current `link`.
+
+Consistent naming convention is needed too.
