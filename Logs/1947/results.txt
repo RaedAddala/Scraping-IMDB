@@ -1,0 +1,24 @@
+2025-03-24 22:45:53,345 - results_logger_1947 - INFO - ===== Starting IMDB data processing for year 1947 =====
+2025-03-24 22:45:53,345 - results_logger_1947 - INFO - Start time: 2025-03-24 22:45:53
+2025-03-24 22:45:53,345 - results_logger_1947 - INFO - Starting link extraction for year 1947
+2025-03-24 22:46:55,704 - results_logger_1947 - INFO - Loaded 600 items before stopping
+2025-03-24 22:47:00,649 - results_logger_1947 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 22:47:04,544 - results_logger_1947 - INFO - Link extraction completed for year 1947
+2025-03-24 22:47:04,544 - results_logger_1947 - INFO - Total movies extracted: 600
+2025-03-24 22:47:04,546 - results_logger_1947 - INFO - Errors encountered: 0
+2025-03-24 22:47:04,547 - results_logger_1947 - INFO - Elapsed time: 71.20 seconds
+2025-03-24 22:47:04,550 - results_logger_1947 - INFO - Saved basic movie information to Data/1947/imdb_movies_1947.csv
+2025-03-24 22:47:04,551 - results_logger_1947 - INFO - Starting advanced data extraction for year 1947
+2025-03-24 23:18:30,635 - results_logger_1947 - INFO - Advanced data extraction completed for year 1947
+2025-03-24 23:18:30,635 - results_logger_1947 - INFO - Total movies processed: 600
+2025-03-24 23:18:30,635 - results_logger_1947 - INFO - Errors encountered: 0
+2025-03-24 23:18:30,635 - results_logger_1947 - INFO - Elapsed time: 1886.08 seconds
+2025-03-24 23:18:30,645 - results_logger_1947 - INFO - Saved advanced movie details to Data/1947/advanced_movies_details_1947.csv
+2025-03-24 23:18:30,645 - results_logger_1947 - INFO - Starting data merging for year 1947
+2025-03-24 23:18:30,709 - results_logger_1947 - INFO - Basic data rows: 600
+2025-03-24 23:18:30,709 - results_logger_1947 - INFO - Advanced data rows: 600
+2025-03-24 23:18:30,709 - results_logger_1947 - INFO - Merged data rows: 600
+2025-03-24 23:18:30,710 - results_logger_1947 - INFO - Data merging completed in 0.06 seconds
+2025-03-24 23:18:30,718 - results_logger_1947 - INFO - Saved merged movie data to Data/1947/merged_movies_data_1947.csv
+2025-03-24 23:18:30,718 - results_logger_1947 - INFO - Total processing time for year 1947: 1957.39 seconds
+2025-03-24 23:18:30,718 - results_logger_1947 - INFO - ===== Completed IMDB data processing for year 1947 =====

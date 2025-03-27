@@ -1,0 +1,24 @@
+2025-03-25 15:26:55,485 - results_logger_1968 - INFO - ===== Starting IMDB data processing for year 1968 =====
+2025-03-25 15:26:55,485 - results_logger_1968 - INFO - Start time: 2025-03-25 15:26:55
+2025-03-25 15:26:55,485 - results_logger_1968 - INFO - Starting link extraction for year 1968
+2025-03-25 15:28:00,517 - results_logger_1968 - INFO - Loaded 600 items before stopping
+2025-03-25 15:28:05,296 - results_logger_1968 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 15:28:09,036 - results_logger_1968 - INFO - Link extraction completed for year 1968
+2025-03-25 15:28:09,036 - results_logger_1968 - INFO - Total movies extracted: 600
+2025-03-25 15:28:09,037 - results_logger_1968 - INFO - Errors encountered: 0
+2025-03-25 15:28:09,037 - results_logger_1968 - INFO - Elapsed time: 73.55 seconds
+2025-03-25 15:28:09,047 - results_logger_1968 - INFO - Saved basic movie information to Data/1968/imdb_movies_1968.csv
+2025-03-25 15:28:09,048 - results_logger_1968 - INFO - Starting advanced data extraction for year 1968
+2025-03-25 15:57:10,296 - results_logger_1968 - INFO - Advanced data extraction completed for year 1968
+2025-03-25 15:57:10,296 - results_logger_1968 - INFO - Total movies processed: 600
+2025-03-25 15:57:10,296 - results_logger_1968 - INFO - Errors encountered: 0
+2025-03-25 15:57:10,296 - results_logger_1968 - INFO - Elapsed time: 1741.25 seconds
+2025-03-25 15:57:10,321 - results_logger_1968 - INFO - Saved advanced movie details to Data/1968/advanced_movies_details_1968.csv
+2025-03-25 15:57:10,321 - results_logger_1968 - INFO - Starting data merging for year 1968
+2025-03-25 15:57:10,351 - results_logger_1968 - INFO - Basic data rows: 600
+2025-03-25 15:57:10,351 - results_logger_1968 - INFO - Advanced data rows: 600
+2025-03-25 15:57:10,351 - results_logger_1968 - INFO - Merged data rows: 600
+2025-03-25 15:57:10,351 - results_logger_1968 - INFO - Data merging completed in 0.03 seconds
+2025-03-25 15:57:10,361 - results_logger_1968 - INFO - Saved merged movie data to Data/1968/merged_movies_data_1968.csv
+2025-03-25 15:57:10,361 - results_logger_1968 - INFO - Total processing time for year 1968: 1814.88 seconds
+2025-03-25 15:57:10,361 - results_logger_1968 - INFO - ===== Completed IMDB data processing for year 1968 =====

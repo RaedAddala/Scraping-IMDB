@@ -1,8 +1,8 @@
 # IMDB Movie Data Scraper
 
-This Python project extracts comprehensive movie data from IMDb, focusing on the **top-grossing movies** from **1960 to 2024**. It collects detailed information, including box office performance, cast & crew, awards, and other key metrics, organizing the data in a structured format for analysis.  
+This Python project scrapes comprehensive movie data from *IMDb*, focusing on the **top-grossing movies** across an expanded range of years: **1920 to 2025**. It extracts detailed information, including *box office performance*, *cast & crew*, *awards*, and other key metrics, organizing the data in a structured format for analysis.  
 
-I uploaded the [Dataset](https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023) to Kaggle. Check it out.
+I uploaded the [Dataset](https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023) to Kaggle.
 
 Here is the Merged Dataset alongside several notebooks related to its study: Check this [Kaggle link](https://www.kaggle.com/datasets/raedaddala/top-500-600-movies-of-each-year-from-1960-to-2024)
 
@@ -12,19 +12,18 @@ Here is the Merged Dataset alongside several notebooks related to its study: Che
 
 The scraper collects the following details for each year:  
 
-- **Basic Information**: Title, year, duration, MPA rating, IMDb rating, and user votes.  
+- **Basic Information**: Title, year, duration, MPA rating, IMDb rating, user votes, meta score, and description.
 - **Financial Data**: Budget, worldwide gross, US/Canada gross, and opening weekend revenue.  
-- **Credits**: Directors, writers, and main cast.  
-- **Additional Details**: Genres, production countries, filming locations, production companies, and available languages.  
-- **Awards**: Wins, nominations, and Oscar statistics.  
-- **Release Information**: Official release dates.  
+- **Credits**: Directors, writers, and main cast (stars/actors).  
+- **Additional Details**: Genres, production countries, filming locations, production companies, languages, and release dates.  
+- **Awards**: Wins, nominations, Oscars, and detailed awards content.  
 
 ### Output Structure
 
 For each year, the script generates:  
 
 1. **`imdb_movies_[year].csv`**: Contains basic movie information.  
-2. **`advanced_movies_details_[year].csv`**: Contains detailed movie data.  
+2. **`advanced_movies_details_[year].csv`**: Contains detailed movie metadata.  
 3. **`merged_movies_data_[year].csv`**: Combines data from the other two files for a complete dataset.  
 
 ### Consistent Data Structure
@@ -32,36 +31,40 @@ For each year, the script generates:
 All files follow a consistent template across years, enabling seamless analysis. Below are the templates for each file:  
 
 - **`imdb_movies_[year].csv`**:  
-  `Title, Movie Link, Year, Duration, MPA, Rating, Votes`  
+  `Title, Year, Duration, MPA, Rating, Votes, meta_score, description, Movie Link`  
 
 - **`advanced_movies_details_[year].csv`**:  
-  `Movie Link, budget, grossWorldWide, gross_US_Canada, opening_weekend_Gross, directors, writers, stars, genres, countries_origin, filming_locations, production_companies, Languages, wins, nominations, oscars, release_date`  
+  `link, writers, directors, stars, budget, opening_weekend_Gross, grossWorldWide, gross_US_Canada, release_date, countries_origin, filming_locations, production_company, awards_content, genres, Languages`  
 
 - **`merged_movies_data_[year].csv`**:  
-  `Title, Movie Link, Year, Duration, MPA, Rating, Votes, budget, grossWorldWide, gross_US_Canada, opening_weekend_Gross, directors, writers, stars, genres, countries_origin, filming_locations, production_companies, Languages, wins, nominations, oscars, release_date`  
+  `Title, Year, Duration, MPA, Rating, Votes, meta_score, description, Movie Link, writers, directors, stars, budget, opening_weekend_Gross, grossWorldWide, gross_US_Canada, release_date, countries_origin, filming_locations, production_company, awards_content, genres, Languages`  
 
 ### Updates
 
-The dataset is updated annually every **December** to include the most recent data.
+The dataset is updated annually every **December** to include the latest data, with historical data now extending back to 1920.
 
 ## Requirements
 
-Ensure you have the following installed:  
+- This is Cross platform and browser agnostic, you can use any modern web browser (e.g., Edge, Chrome, Firefox) with a matching WebDriver.
+- Ensure you have the following installed:
 
-```bash
-python 3
-Jupyter
-selenium
-beautifulsoup4
-pandas
-```
+   ```bash
+   python 3
+   Jupyter
+   selenium
+   beautifulsoup4
+   pandas
+   lxml
+   ```
+
+- Stable Internet Connection.
 
 ## Setup
 
 1. Install the required Python packages:
 
     ```bash
-    pip install selenium beautifulsoup4 pandas
+    pip install selenium beautifulsoup4 pandas lxml
     ```
 
 2. Download a WebDriver:
@@ -73,7 +76,7 @@ pandas
 
 ### Run the Scraper  
 
-The scraper organizes the output into a `Data` directory, structured by year. For each year, it generates 3 CSV files:
+The scraper organizes the output into a `Data/[year]` directory structure. For each year, it generates 3 CSV files:
 
 - `imdb_movies_[year].csv`: Basic movie information
 - `advanced_movies_details_[year].csv`: Detailed movie data
@@ -83,13 +86,21 @@ Use the following commands to run the scraper:
 
 ```python
 # Run for a specific year
-crawl_imdb_movies(2023)
+process_year(2023)
 
 # Run for multiple years
-years_to_crawl = range(1960, 2024)
+years_to_crawl = range(1920, 2025)
 for year in years_to_crawl:
-    crawl_imdb_movies(year)
+    process_year(year)
 ```
+
+### Logging
+
+- Separate log files are created for each year in `Logs/[year]`.  
+- Logs track errors, processing results, and runtime statistics.
+- For each year there are **2 log files**:
+  - errors
+  - results
 
 ---
 
@@ -106,28 +117,28 @@ Contains essential movie information, including:
 - **MPA**: Motion Picture Association rating (e.g., PG, R).  
 - **Rating**: IMDb rating (on a scale of 1–10).  
 - **Votes**: Number of user votes on IMDb.
+- **meta_score**: MetaCritic score (if available).  
+- **description**: Brief movie synopsis.  
 
 ### `advanced_movies_details_[year].csv`
 
 Provides detailed movie data, including:
 
-- **Movie Link**: IMDb URL for the movie.  
-- **budget**: Production budget (in USD).  
-- **grossWorldWide**: Total global box office earnings.  
-- **gross_US_Canada**: North American box office earnings.  
-- **opening_weekend_Gross**: Opening weekend revenue.  
-- **directors**: List of directors.  
+- **link**: IMDb URL.  
 - **writers**: List of writers.  
+- **directors**: List of directors.  
 - **stars**: Main cast members.  
-- **genres**: Movie genres.  
-- **countries_origin**: Countries of production.  
-- **filming_locations**: Primary shooting locations.  
-- **production_companies**: Associated production companies.  
-- **Languages**: Available languages for the movie.  
-- **wins**: Number of award wins.  
-- **nominations**: Number of award nominations.  
-- **Oscars**: Number of Oscar nominations.  
+- **budget**: Production budget (USD).  
+- **opening_weekend_Gross**: Opening weekend earnings.  
+- **grossWorldWide**: Global box office earnings.  
+- **gross_US_Canada**: North American earnings.  
 - **release_date**: Official release date.  
+- **countries_origin**: Production countries.  
+- **filming_locations**: Primary shooting locations.  
+- **production_company**: Associated companies.  
+- **awards_content**: Detailed awards data (wins/nominations).  
+- **genres**: Movie genres.  
+- **Languages**: Available languages.
 
 ### `merged_movies_data_[year].csv`  
 
@@ -207,3 +218,14 @@ For issues, suggestions, or feature requests:
 
 - Open an issue on GitHub.  
 - Reach out with ideas to improve code readability, robustness, and performance.  
+
+## TYPOS NOTE
+
+In the csvs I made some mistakes that I need to fix:
+
+- `grossWorldWide` instead of the current `grossWorldWWide`.
+- `meta_score` instead of the current `méta_score`.
+- `production_companies` instead of the current `production_company`.
+- `Movie Link` instead of the current `link`.
+
+Consistent naming convention is needed too.

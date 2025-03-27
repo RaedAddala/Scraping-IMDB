@@ -1,0 +1,24 @@
+2025-03-26 22:23:44,075 - results_logger_2019 - INFO - ===== Starting IMDB data processing for year 2019 =====
+2025-03-26 22:23:44,075 - results_logger_2019 - INFO - Start time: 2025-03-26 22:23:44
+2025-03-26 22:23:44,075 - results_logger_2019 - INFO - Starting link extraction for year 2019
+2025-03-26 22:24:46,501 - results_logger_2019 - INFO - Loaded 600 items before stopping
+2025-03-26 22:24:51,474 - results_logger_2019 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 22:24:55,223 - results_logger_2019 - INFO - Link extraction completed for year 2019
+2025-03-26 22:24:55,223 - results_logger_2019 - INFO - Total movies extracted: 600
+2025-03-26 22:24:55,225 - results_logger_2019 - INFO - Errors encountered: 0
+2025-03-26 22:24:55,225 - results_logger_2019 - INFO - Elapsed time: 71.15 seconds
+2025-03-26 22:24:55,230 - results_logger_2019 - INFO - Saved basic movie information to Data/2019/imdb_movies_2019.csv
+2025-03-26 22:24:55,231 - results_logger_2019 - INFO - Starting advanced data extraction for year 2019
+2025-03-26 23:02:25,297 - results_logger_2019 - INFO - Advanced data extraction completed for year 2019
+2025-03-26 23:02:25,297 - results_logger_2019 - INFO - Total movies processed: 600
+2025-03-26 23:02:25,297 - results_logger_2019 - INFO - Errors encountered: 0
+2025-03-26 23:02:25,297 - results_logger_2019 - INFO - Elapsed time: 2250.07 seconds
+2025-03-26 23:02:25,326 - results_logger_2019 - INFO - Saved advanced movie details to Data/2019/advanced_movies_details_2019.csv
+2025-03-26 23:02:25,326 - results_logger_2019 - INFO - Starting data merging for year 2019
+2025-03-26 23:02:25,481 - results_logger_2019 - INFO - Basic data rows: 600
+2025-03-26 23:02:25,482 - results_logger_2019 - INFO - Advanced data rows: 600
+2025-03-26 23:02:25,482 - results_logger_2019 - INFO - Merged data rows: 600
+2025-03-26 23:02:25,482 - results_logger_2019 - INFO - Data merging completed in 0.16 seconds
+2025-03-26 23:02:25,512 - results_logger_2019 - INFO - Saved merged movie data to Data/2019/merged_movies_data_2019.csv
+2025-03-26 23:02:25,512 - results_logger_2019 - INFO - Total processing time for year 2019: 2321.44 seconds
+2025-03-26 23:02:25,512 - results_logger_2019 - INFO - ===== Completed IMDB data processing for year 2019 =====

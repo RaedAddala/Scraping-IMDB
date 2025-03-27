@@ -1,0 +1,24 @@
+2025-03-25 16:59:23,852 - results_logger_1971 - INFO - ===== Starting IMDB data processing for year 1971 =====
+2025-03-25 16:59:23,852 - results_logger_1971 - INFO - Start time: 2025-03-25 16:59:23
+2025-03-25 16:59:23,852 - results_logger_1971 - INFO - Starting link extraction for year 1971
+2025-03-25 17:00:25,662 - results_logger_1971 - INFO - Loaded 600 items before stopping
+2025-03-25 17:00:26,252 - results_logger_1971 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 17:00:29,967 - results_logger_1971 - INFO - Link extraction completed for year 1971
+2025-03-25 17:00:29,967 - results_logger_1971 - INFO - Total movies extracted: 600
+2025-03-25 17:00:29,968 - results_logger_1971 - INFO - Errors encountered: 0
+2025-03-25 17:00:29,968 - results_logger_1971 - INFO - Elapsed time: 66.11 seconds
+2025-03-25 17:00:29,971 - results_logger_1971 - INFO - Saved basic movie information to Data/1971/imdb_movies_1971.csv
+2025-03-25 17:00:29,971 - results_logger_1971 - INFO - Starting advanced data extraction for year 1971
+2025-03-25 17:29:12,006 - results_logger_1971 - INFO - Advanced data extraction completed for year 1971
+2025-03-25 17:29:12,006 - results_logger_1971 - INFO - Total movies processed: 600
+2025-03-25 17:29:12,006 - results_logger_1971 - INFO - Errors encountered: 0
+2025-03-25 17:29:12,006 - results_logger_1971 - INFO - Elapsed time: 1722.04 seconds
+2025-03-25 17:29:12,015 - results_logger_1971 - INFO - Saved advanced movie details to Data/1971/advanced_movies_details_1971.csv
+2025-03-25 17:29:12,016 - results_logger_1971 - INFO - Starting data merging for year 1971
+2025-03-25 17:29:12,052 - results_logger_1971 - INFO - Basic data rows: 600
+2025-03-25 17:29:12,052 - results_logger_1971 - INFO - Advanced data rows: 600
+2025-03-25 17:29:12,052 - results_logger_1971 - INFO - Merged data rows: 600
+2025-03-25 17:29:12,052 - results_logger_1971 - INFO - Data merging completed in 0.04 seconds
+2025-03-25 17:29:12,073 - results_logger_1971 - INFO - Saved merged movie data to Data/1971/merged_movies_data_1971.csv
+2025-03-25 17:29:12,073 - results_logger_1971 - INFO - Total processing time for year 1971: 1788.22 seconds
+2025-03-25 17:29:12,073 - results_logger_1971 - INFO - ===== Completed IMDB data processing for year 1971 =====

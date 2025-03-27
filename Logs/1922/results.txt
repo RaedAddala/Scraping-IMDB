@@ -1,0 +1,48 @@
+2025-03-24 03:57:12,519 - results_logger_1922 - INFO - ===== Starting IMDB data processing for year 1922 =====
+2025-03-24 03:57:12,519 - results_logger_1922 - INFO - Start time: 2025-03-24 03:57:12
+2025-03-24 03:57:12,519 - results_logger_1922 - INFO - Starting link extraction for year 1922
+2025-03-24 03:57:41,548 - results_logger_1922 - INFO - Loaded 600 items before stopping
+2025-03-24 03:57:42,376 - results_logger_1922 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 03:57:44,693 - results_logger_1922 - INFO - Link extraction completed for year 1922
+2025-03-24 03:57:44,694 - results_logger_1922 - INFO - Total movies extracted: 600
+2025-03-24 03:57:44,912 - results_logger_1922 - INFO - Errors encountered: 0
+2025-03-24 03:57:44,913 - results_logger_1922 - INFO - Elapsed time: 32.17 seconds
+2025-03-24 03:57:44,921 - results_logger_1922 - INFO - Saved basic movie information to Data/1922/imdb_movies_1922.csv
+2025-03-24 03:57:44,921 - results_logger_1922 - INFO - Starting advanced data extraction for year 1922
+2025-03-24 04:46:56,390 - results_logger_1922 - INFO - Advanced data extraction completed for year 1922
+2025-03-24 04:46:56,390 - results_logger_1922 - INFO - Total movies processed: 558
+2025-03-24 04:46:56,390 - results_logger_1922 - INFO - Errors encountered: 42
+2025-03-24 04:46:56,390 - results_logger_1922 - INFO - Elapsed time: 2951.47 seconds
+2025-03-24 04:46:56,397 - results_logger_1922 - INFO - Saved advanced movie details to Data/1922/advanced_movies_details_1922.csv
+2025-03-24 04:46:56,397 - results_logger_1922 - INFO - Starting data merging for year 1922
+2025-03-24 04:46:56,515 - results_logger_1922 - INFO - Basic data rows: 600
+2025-03-24 04:46:56,515 - results_logger_1922 - INFO - Advanced data rows: 558
+2025-03-24 04:46:56,515 - results_logger_1922 - INFO - Merged data rows: 558
+2025-03-24 04:46:56,515 - results_logger_1922 - INFO - Data merging completed in 0.12 seconds
+2025-03-24 04:46:58,012 - results_logger_1922 - INFO - Saved merged movie data to Data/1922/merged_movies_data_1922.csv
+2025-03-24 04:46:58,012 - results_logger_1922 - INFO - Total processing time for year 1922: 2985.59 seconds
+2025-03-24 04:46:58,012 - results_logger_1922 - INFO - ===== Completed IMDB data processing for year 1922 =====
+2025-03-24 09:31:39,604 - results_logger_1922 - INFO - ===== Starting IMDB data processing for year 1922 =====
+2025-03-24 09:31:39,604 - results_logger_1922 - INFO - Start time: 2025-03-24 09:31:39
+2025-03-24 09:31:39,604 - results_logger_1922 - INFO - Starting link extraction for year 1922
+2025-03-24 09:32:09,266 - results_logger_1922 - INFO - Loaded 600 items before stopping
+2025-03-24 09:32:10,619 - results_logger_1922 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 09:32:13,049 - results_logger_1922 - INFO - Link extraction completed for year 1922
+2025-03-24 09:32:13,049 - results_logger_1922 - INFO - Total movies extracted: 600
+2025-03-24 09:32:13,049 - results_logger_1922 - INFO - Errors encountered: 0
+2025-03-24 09:32:13,049 - results_logger_1922 - INFO - Elapsed time: 33.45 seconds
+2025-03-24 09:32:13,066 - results_logger_1922 - INFO - Saved basic movie information to Data/1922/imdb_movies_1922.csv
+2025-03-24 09:32:13,066 - results_logger_1922 - INFO - Starting advanced data extraction for year 1922
+2025-03-24 10:12:39,287 - results_logger_1922 - INFO - Advanced data extraction completed for year 1922
+2025-03-24 10:12:39,287 - results_logger_1922 - INFO - Total movies processed: 600
+2025-03-24 10:12:39,287 - results_logger_1922 - INFO - Errors encountered: 0
+2025-03-24 10:12:39,287 - results_logger_1922 - INFO - Elapsed time: 2426.22 seconds
+2025-03-24 10:12:39,298 - results_logger_1922 - INFO - Saved advanced movie details to Data/1922/advanced_movies_details_1922.csv
+2025-03-24 10:12:39,298 - results_logger_1922 - INFO - Starting data merging for year 1922
+2025-03-24 10:12:39,508 - results_logger_1922 - INFO - Basic data rows: 600
+2025-03-24 10:12:39,508 - results_logger_1922 - INFO - Advanced data rows: 600
+2025-03-24 10:12:39,508 - results_logger_1922 - INFO - Merged data rows: 600
+2025-03-24 10:12:39,508 - results_logger_1922 - INFO - Data merging completed in 0.21 seconds
+2025-03-24 10:12:39,541 - results_logger_1922 - INFO - Saved merged movie data to Data/1922/merged_movies_data_1922.csv
+2025-03-24 10:12:39,542 - results_logger_1922 - INFO - Total processing time for year 1922: 2459.94 seconds
+2025-03-24 10:12:39,542 - results_logger_1922 - INFO - ===== Completed IMDB data processing for year 1922 =====

@@ -1,0 +1,24 @@
+2025-03-27 00:23:56,411 - results_logger_2022 - INFO - ===== Starting IMDB data processing for year 2022 =====
+2025-03-27 00:23:56,411 - results_logger_2022 - INFO - Start time: 2025-03-27 00:23:56
+2025-03-27 00:23:56,411 - results_logger_2022 - INFO - Starting link extraction for year 2022
+2025-03-27 00:24:58,898 - results_logger_2022 - INFO - Loaded 600 items before stopping
+2025-03-27 00:25:04,098 - results_logger_2022 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-27 00:25:06,552 - results_logger_2022 - INFO - Link extraction completed for year 2022
+2025-03-27 00:25:06,553 - results_logger_2022 - INFO - Total movies extracted: 600
+2025-03-27 00:25:06,555 - results_logger_2022 - INFO - Errors encountered: 0
+2025-03-27 00:25:06,555 - results_logger_2022 - INFO - Elapsed time: 70.14 seconds
+2025-03-27 00:25:06,565 - results_logger_2022 - INFO - Saved basic movie information to Data/2022/imdb_movies_2022.csv
+2025-03-27 00:25:06,565 - results_logger_2022 - INFO - Starting advanced data extraction for year 2022
+2025-03-27 00:56:16,842 - results_logger_2022 - INFO - Advanced data extraction completed for year 2022
+2025-03-27 00:56:16,842 - results_logger_2022 - INFO - Total movies processed: 600
+2025-03-27 00:56:16,842 - results_logger_2022 - INFO - Errors encountered: 0
+2025-03-27 00:56:16,842 - results_logger_2022 - INFO - Elapsed time: 1870.28 seconds
+2025-03-27 00:56:16,861 - results_logger_2022 - INFO - Saved advanced movie details to Data/2022/advanced_movies_details_2022.csv
+2025-03-27 00:56:16,861 - results_logger_2022 - INFO - Starting data merging for year 2022
+2025-03-27 00:56:17,010 - results_logger_2022 - INFO - Basic data rows: 600
+2025-03-27 00:56:17,010 - results_logger_2022 - INFO - Advanced data rows: 600
+2025-03-27 00:56:17,010 - results_logger_2022 - INFO - Merged data rows: 600
+2025-03-27 00:56:17,010 - results_logger_2022 - INFO - Data merging completed in 0.15 seconds
+2025-03-27 00:56:17,041 - results_logger_2022 - INFO - Saved merged movie data to Data/2022/merged_movies_data_2022.csv
+2025-03-27 00:56:17,041 - results_logger_2022 - INFO - Total processing time for year 2022: 1940.64 seconds
+2025-03-27 00:56:17,041 - results_logger_2022 - INFO - ===== Completed IMDB data processing for year 2022 =====

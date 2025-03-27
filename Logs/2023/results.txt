@@ -1,0 +1,24 @@
+2025-03-27 00:56:25,127 - results_logger_2023 - INFO - ===== Starting IMDB data processing for year 2023 =====
+2025-03-27 00:56:25,128 - results_logger_2023 - INFO - Start time: 2025-03-27 00:56:25
+2025-03-27 00:56:25,128 - results_logger_2023 - INFO - Starting link extraction for year 2023
+2025-03-27 00:57:27,683 - results_logger_2023 - INFO - Loaded 600 items before stopping
+2025-03-27 00:57:32,994 - results_logger_2023 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-27 00:57:35,395 - results_logger_2023 - INFO - Link extraction completed for year 2023
+2025-03-27 00:57:35,396 - results_logger_2023 - INFO - Total movies extracted: 600
+2025-03-27 00:57:35,484 - results_logger_2023 - INFO - Errors encountered: 0
+2025-03-27 00:57:35,484 - results_logger_2023 - INFO - Elapsed time: 70.27 seconds
+2025-03-27 00:57:35,494 - results_logger_2023 - INFO - Saved basic movie information to Data/2023/imdb_movies_2023.csv
+2025-03-27 00:57:35,494 - results_logger_2023 - INFO - Starting advanced data extraction for year 2023
+2025-03-27 01:27:19,479 - results_logger_2023 - INFO - Advanced data extraction completed for year 2023
+2025-03-27 01:27:19,479 - results_logger_2023 - INFO - Total movies processed: 600
+2025-03-27 01:27:19,479 - results_logger_2023 - INFO - Errors encountered: 0
+2025-03-27 01:27:19,479 - results_logger_2023 - INFO - Elapsed time: 1783.98 seconds
+2025-03-27 01:27:19,512 - results_logger_2023 - INFO - Saved advanced movie details to Data/2023/advanced_movies_details_2023.csv
+2025-03-27 01:27:19,513 - results_logger_2023 - INFO - Starting data merging for year 2023
+2025-03-27 01:27:19,657 - results_logger_2023 - INFO - Basic data rows: 600
+2025-03-27 01:27:19,657 - results_logger_2023 - INFO - Advanced data rows: 600
+2025-03-27 01:27:19,658 - results_logger_2023 - INFO - Merged data rows: 600
+2025-03-27 01:27:19,658 - results_logger_2023 - INFO - Data merging completed in 0.14 seconds
+2025-03-27 01:27:19,671 - results_logger_2023 - INFO - Saved merged movie data to Data/2023/merged_movies_data_2023.csv
+2025-03-27 01:27:19,671 - results_logger_2023 - INFO - Total processing time for year 2023: 1854.63 seconds
+2025-03-27 01:27:19,671 - results_logger_2023 - INFO - ===== Completed IMDB data processing for year 2023 =====

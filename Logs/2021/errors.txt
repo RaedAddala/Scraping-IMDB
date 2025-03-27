@@ -1,0 +1,1 @@
+2025-03-27 00:16:58,615 - error_logger_2021 - ERROR - Error extracting awards for https://www.imdb.com/title/tt16492678/?ref_=sr_i_493: 'NoneType' object has no attribute 'get_text'

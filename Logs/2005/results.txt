@@ -1,0 +1,27 @@
+2025-03-26 09:04:30,217 - results_logger_2005 - INFO - ===== Starting IMDB data processing for year 2005 =====
+2025-03-26 09:04:30,218 - results_logger_2005 - INFO - Start time: 2025-03-26 09:04:30
+2025-03-26 09:04:30,218 - results_logger_2005 - INFO - Starting link extraction for year 2005
+2025-03-26 13:26:48,108 - results_logger_2005 - INFO - ===== Starting IMDB data processing for year 2005 =====
+2025-03-26 13:26:48,108 - results_logger_2005 - INFO - Start time: 2025-03-26 13:26:48
+2025-03-26 13:26:48,108 - results_logger_2005 - INFO - Starting link extraction for year 2005
+2025-03-26 13:27:50,498 - results_logger_2005 - INFO - Loaded 600 items before stopping
+2025-03-26 13:27:51,940 - results_logger_2005 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 13:27:54,420 - results_logger_2005 - INFO - Link extraction completed for year 2005
+2025-03-26 13:27:54,420 - results_logger_2005 - INFO - Total movies extracted: 600
+2025-03-26 13:27:54,421 - results_logger_2005 - INFO - Errors encountered: 0
+2025-03-26 13:27:54,421 - results_logger_2005 - INFO - Elapsed time: 66.31 seconds
+2025-03-26 13:27:54,437 - results_logger_2005 - INFO - Saved basic movie information to Data/2005/imdb_movies_2005.csv
+2025-03-26 13:27:54,438 - results_logger_2005 - INFO - Starting advanced data extraction for year 2005
+2025-03-26 14:06:31,614 - results_logger_2005 - INFO - Advanced data extraction completed for year 2005
+2025-03-26 14:06:31,614 - results_logger_2005 - INFO - Total movies processed: 600
+2025-03-26 14:06:31,614 - results_logger_2005 - INFO - Errors encountered: 0
+2025-03-26 14:06:31,614 - results_logger_2005 - INFO - Elapsed time: 2317.18 seconds
+2025-03-26 14:06:31,626 - results_logger_2005 - INFO - Saved advanced movie details to Data/2005/advanced_movies_details_2005.csv
+2025-03-26 14:06:31,626 - results_logger_2005 - INFO - Starting data merging for year 2005
+2025-03-26 14:06:31,787 - results_logger_2005 - INFO - Basic data rows: 600
+2025-03-26 14:06:31,787 - results_logger_2005 - INFO - Advanced data rows: 600
+2025-03-26 14:06:31,787 - results_logger_2005 - INFO - Merged data rows: 600
+2025-03-26 14:06:31,787 - results_logger_2005 - INFO - Data merging completed in 0.16 seconds
+2025-03-26 14:06:31,817 - results_logger_2005 - INFO - Saved merged movie data to Data/2005/merged_movies_data_2005.csv
+2025-03-26 14:06:31,817 - results_logger_2005 - INFO - Total processing time for year 2005: 2383.71 seconds
+2025-03-26 14:06:31,817 - results_logger_2005 - INFO - ===== Completed IMDB data processing for year 2005 =====

@@ -1,0 +1,24 @@
+2025-03-26 12:44:52,862 - results_logger_1997 - INFO - ===== Starting IMDB data processing for year 1997 =====
+2025-03-26 12:44:52,862 - results_logger_1997 - INFO - Start time: 2025-03-26 12:44:52
+2025-03-26 12:44:52,862 - results_logger_1997 - INFO - Starting link extraction for year 1997
+2025-03-26 12:45:54,234 - results_logger_1997 - INFO - Loaded 600 items before stopping
+2025-03-26 12:45:59,493 - results_logger_1997 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 12:46:01,849 - results_logger_1997 - INFO - Link extraction completed for year 1997
+2025-03-26 12:46:01,849 - results_logger_1997 - INFO - Total movies extracted: 600
+2025-03-26 12:46:01,851 - results_logger_1997 - INFO - Errors encountered: 0
+2025-03-26 12:46:01,851 - results_logger_1997 - INFO - Elapsed time: 68.99 seconds
+2025-03-26 12:46:01,860 - results_logger_1997 - INFO - Saved basic movie information to Data/1997/imdb_movies_1997.csv
+2025-03-26 12:46:01,861 - results_logger_1997 - INFO - Starting advanced data extraction for year 1997
+2025-03-26 13:20:10,603 - results_logger_1997 - INFO - Advanced data extraction completed for year 1997
+2025-03-26 13:20:10,604 - results_logger_1997 - INFO - Total movies processed: 600
+2025-03-26 13:20:10,604 - results_logger_1997 - INFO - Errors encountered: 0
+2025-03-26 13:20:10,604 - results_logger_1997 - INFO - Elapsed time: 2048.74 seconds
+2025-03-26 13:20:10,636 - results_logger_1997 - INFO - Saved advanced movie details to Data/1997/advanced_movies_details_1997.csv
+2025-03-26 13:20:10,636 - results_logger_1997 - INFO - Starting data merging for year 1997
+2025-03-26 13:20:10,723 - results_logger_1997 - INFO - Basic data rows: 600
+2025-03-26 13:20:10,724 - results_logger_1997 - INFO - Advanced data rows: 600
+2025-03-26 13:20:10,724 - results_logger_1997 - INFO - Merged data rows: 600
+2025-03-26 13:20:10,724 - results_logger_1997 - INFO - Data merging completed in 0.09 seconds
+2025-03-26 13:20:10,750 - results_logger_1997 - INFO - Saved merged movie data to Data/1997/merged_movies_data_1997.csv
+2025-03-26 13:20:10,750 - results_logger_1997 - INFO - Total processing time for year 1997: 2117.89 seconds
+2025-03-26 13:20:10,750 - results_logger_1997 - INFO - ===== Completed IMDB data processing for year 1997 =====

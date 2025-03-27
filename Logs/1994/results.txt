@@ -1,0 +1,24 @@
+2025-03-26 11:02:39,142 - results_logger_1994 - INFO - ===== Starting IMDB data processing for year 1994 =====
+2025-03-26 11:02:39,142 - results_logger_1994 - INFO - Start time: 2025-03-26 11:02:39
+2025-03-26 11:02:39,142 - results_logger_1994 - INFO - Starting link extraction for year 1994
+2025-03-26 11:03:41,407 - results_logger_1994 - INFO - Loaded 600 items before stopping
+2025-03-26 11:03:42,254 - results_logger_1994 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 11:03:44,561 - results_logger_1994 - INFO - Link extraction completed for year 1994
+2025-03-26 11:03:44,561 - results_logger_1994 - INFO - Total movies extracted: 600
+2025-03-26 11:03:44,563 - results_logger_1994 - INFO - Errors encountered: 0
+2025-03-26 11:03:44,563 - results_logger_1994 - INFO - Elapsed time: 65.42 seconds
+2025-03-26 11:03:44,584 - results_logger_1994 - INFO - Saved basic movie information to Data/1994/imdb_movies_1994.csv
+2025-03-26 11:03:44,585 - results_logger_1994 - INFO - Starting advanced data extraction for year 1994
+2025-03-26 11:42:41,739 - results_logger_1994 - INFO - Advanced data extraction completed for year 1994
+2025-03-26 11:42:41,739 - results_logger_1994 - INFO - Total movies processed: 600
+2025-03-26 11:42:41,739 - results_logger_1994 - INFO - Errors encountered: 0
+2025-03-26 11:42:41,739 - results_logger_1994 - INFO - Elapsed time: 2337.15 seconds
+2025-03-26 11:42:41,761 - results_logger_1994 - INFO - Saved advanced movie details to Data/1994/advanced_movies_details_1994.csv
+2025-03-26 11:42:41,762 - results_logger_1994 - INFO - Starting data merging for year 1994
+2025-03-26 11:42:41,821 - results_logger_1994 - INFO - Basic data rows: 600
+2025-03-26 11:42:41,821 - results_logger_1994 - INFO - Advanced data rows: 600
+2025-03-26 11:42:41,821 - results_logger_1994 - INFO - Merged data rows: 600
+2025-03-26 11:42:41,821 - results_logger_1994 - INFO - Data merging completed in 0.06 seconds
+2025-03-26 11:42:41,838 - results_logger_1994 - INFO - Saved merged movie data to Data/1994/merged_movies_data_1994.csv
+2025-03-26 11:42:41,838 - results_logger_1994 - INFO - Total processing time for year 1994: 2402.70 seconds
+2025-03-26 11:42:41,838 - results_logger_1994 - INFO - ===== Completed IMDB data processing for year 1994 =====

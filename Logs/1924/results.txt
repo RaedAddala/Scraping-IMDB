@@ -1,0 +1,24 @@
+2025-03-24 05:40:48,793 - results_logger_1924 - INFO - ===== Starting IMDB data processing for year 1924 =====
+2025-03-24 05:40:48,793 - results_logger_1924 - INFO - Start time: 2025-03-24 05:40:48
+2025-03-24 05:40:48,793 - results_logger_1924 - INFO - Starting link extraction for year 1924
+2025-03-24 05:41:18,414 - results_logger_1924 - INFO - Loaded 600 items before stopping
+2025-03-24 05:41:19,141 - results_logger_1924 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 05:41:21,417 - results_logger_1924 - INFO - Link extraction completed for year 1924
+2025-03-24 05:41:21,417 - results_logger_1924 - INFO - Total movies extracted: 600
+2025-03-24 05:41:21,418 - results_logger_1924 - INFO - Errors encountered: 0
+2025-03-24 05:41:21,419 - results_logger_1924 - INFO - Elapsed time: 32.62 seconds
+2025-03-24 05:41:21,452 - results_logger_1924 - INFO - Saved basic movie information to Data/1924/imdb_movies_1924.csv
+2025-03-24 05:41:21,453 - results_logger_1924 - INFO - Starting advanced data extraction for year 1924
+2025-03-24 06:35:08,992 - results_logger_1924 - INFO - Advanced data extraction completed for year 1924
+2025-03-24 06:35:08,992 - results_logger_1924 - INFO - Total movies processed: 600
+2025-03-24 06:35:08,992 - results_logger_1924 - INFO - Errors encountered: 0
+2025-03-24 06:35:08,992 - results_logger_1924 - INFO - Elapsed time: 3227.54 seconds
+2025-03-24 06:35:08,999 - results_logger_1924 - INFO - Saved advanced movie details to Data/1924/advanced_movies_details_1924.csv
+2025-03-24 06:35:08,999 - results_logger_1924 - INFO - Starting data merging for year 1924
+2025-03-24 06:35:09,030 - results_logger_1924 - INFO - Basic data rows: 600
+2025-03-24 06:35:09,030 - results_logger_1924 - INFO - Advanced data rows: 600
+2025-03-24 06:35:09,030 - results_logger_1924 - INFO - Merged data rows: 600
+2025-03-24 06:35:09,030 - results_logger_1924 - INFO - Data merging completed in 0.03 seconds
+2025-03-24 06:35:10,633 - results_logger_1924 - INFO - Saved merged movie data to Data/1924/merged_movies_data_1924.csv
+2025-03-24 06:35:10,633 - results_logger_1924 - INFO - Total processing time for year 1924: 3261.94 seconds
+2025-03-24 06:35:10,633 - results_logger_1924 - INFO - ===== Completed IMDB data processing for year 1924 =====

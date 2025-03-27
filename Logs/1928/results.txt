@@ -1,0 +1,24 @@
+2025-03-24 10:18:00,057 - results_logger_1928 - INFO - ===== Starting IMDB data processing for year 1928 =====
+2025-03-24 10:18:00,057 - results_logger_1928 - INFO - Start time: 2025-03-24 10:18:00
+2025-03-24 10:18:00,057 - results_logger_1928 - INFO - Starting link extraction for year 1928
+2025-03-24 10:18:29,106 - results_logger_1928 - INFO - Loaded 600 items before stopping
+2025-03-24 10:18:30,526 - results_logger_1928 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 10:18:34,463 - results_logger_1928 - INFO - Link extraction completed for year 1928
+2025-03-24 10:18:34,463 - results_logger_1928 - INFO - Total movies extracted: 550
+2025-03-24 10:18:34,466 - results_logger_1928 - INFO - Errors encountered: 0
+2025-03-24 10:18:34,466 - results_logger_1928 - INFO - Elapsed time: 34.41 seconds
+2025-03-24 10:18:34,473 - results_logger_1928 - INFO - Saved basic movie information to Data/1928/imdb_movies_1928.csv
+2025-03-24 10:18:34,473 - results_logger_1928 - INFO - Starting advanced data extraction for year 1928
+2025-03-24 11:41:20,333 - results_logger_1928 - INFO - Advanced data extraction completed for year 1928
+2025-03-24 11:41:20,343 - results_logger_1928 - INFO - Total movies processed: 550
+2025-03-24 11:41:20,343 - results_logger_1928 - INFO - Errors encountered: 0
+2025-03-24 11:41:20,343 - results_logger_1928 - INFO - Elapsed time: 4965.86 seconds
+2025-03-24 11:41:20,390 - results_logger_1928 - INFO - Saved advanced movie details to Data/1928/advanced_movies_details_1928.csv
+2025-03-24 11:41:20,396 - results_logger_1928 - INFO - Starting data merging for year 1928
+2025-03-24 11:41:20,562 - results_logger_1928 - INFO - Basic data rows: 550
+2025-03-24 11:41:20,562 - results_logger_1928 - INFO - Advanced data rows: 550
+2025-03-24 11:41:20,562 - results_logger_1928 - INFO - Merged data rows: 550
+2025-03-24 11:41:20,562 - results_logger_1928 - INFO - Data merging completed in 0.17 seconds
+2025-03-24 11:41:20,572 - results_logger_1928 - INFO - Saved merged movie data to Data/1928/merged_movies_data_1928.csv
+2025-03-24 11:41:20,572 - results_logger_1928 - INFO - Total processing time for year 1928: 5000.52 seconds
+2025-03-24 11:41:20,572 - results_logger_1928 - INFO - ===== Completed IMDB data processing for year 1928 =====

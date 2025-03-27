@@ -1,0 +1,24 @@
+2025-03-25 21:04:12,871 - results_logger_1979 - INFO - ===== Starting IMDB data processing for year 1979 =====
+2025-03-25 21:04:12,871 - results_logger_1979 - INFO - Start time: 2025-03-25 21:04:12
+2025-03-25 21:04:12,871 - results_logger_1979 - INFO - Starting link extraction for year 1979
+2025-03-25 21:05:15,529 - results_logger_1979 - INFO - Loaded 600 items before stopping
+2025-03-25 21:05:20,995 - results_logger_1979 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 21:05:25,070 - results_logger_1979 - INFO - Link extraction completed for year 1979
+2025-03-25 21:05:25,070 - results_logger_1979 - INFO - Total movies extracted: 600
+2025-03-25 21:05:25,071 - results_logger_1979 - INFO - Errors encountered: 0
+2025-03-25 21:05:25,072 - results_logger_1979 - INFO - Elapsed time: 72.20 seconds
+2025-03-25 21:05:25,095 - results_logger_1979 - INFO - Saved basic movie information to Data/1979/imdb_movies_1979.csv
+2025-03-25 21:05:25,095 - results_logger_1979 - INFO - Starting advanced data extraction for year 1979
+2025-03-25 21:42:35,874 - results_logger_1979 - INFO - Advanced data extraction completed for year 1979
+2025-03-25 21:42:35,874 - results_logger_1979 - INFO - Total movies processed: 600
+2025-03-25 21:42:35,874 - results_logger_1979 - INFO - Errors encountered: 0
+2025-03-25 21:42:35,874 - results_logger_1979 - INFO - Elapsed time: 2230.78 seconds
+2025-03-25 21:42:35,902 - results_logger_1979 - INFO - Saved advanced movie details to Data/1979/advanced_movies_details_1979.csv
+2025-03-25 21:42:35,902 - results_logger_1979 - INFO - Starting data merging for year 1979
+2025-03-25 21:42:35,996 - results_logger_1979 - INFO - Basic data rows: 600
+2025-03-25 21:42:35,996 - results_logger_1979 - INFO - Advanced data rows: 600
+2025-03-25 21:42:35,996 - results_logger_1979 - INFO - Merged data rows: 600
+2025-03-25 21:42:35,996 - results_logger_1979 - INFO - Data merging completed in 0.09 seconds
+2025-03-25 21:42:36,011 - results_logger_1979 - INFO - Saved merged movie data to Data/1979/merged_movies_data_1979.csv
+2025-03-25 21:42:36,011 - results_logger_1979 - INFO - Total processing time for year 1979: 2303.25 seconds
+2025-03-25 21:42:36,011 - results_logger_1979 - INFO - ===== Completed IMDB data processing for year 1979 =====

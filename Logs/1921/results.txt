@@ -1,0 +1,24 @@
+2025-03-24 03:03:26,184 - results_logger_1921 - INFO - ===== Starting IMDB data processing for year 1921 =====
+2025-03-24 03:03:26,185 - results_logger_1921 - INFO - Start time: 2025-03-24 03:03:26
+2025-03-24 03:03:26,186 - results_logger_1921 - INFO - Starting link extraction for year 1921
+2025-03-24 03:03:59,483 - results_logger_1921 - INFO - Loaded 600 items before stopping
+2025-03-24 03:04:05,027 - results_logger_1921 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 03:04:07,408 - results_logger_1921 - INFO - Link extraction completed for year 1921
+2025-03-24 03:04:07,408 - results_logger_1921 - INFO - Total movies extracted: 600
+2025-03-24 03:04:07,411 - results_logger_1921 - INFO - Errors encountered: 0
+2025-03-24 03:04:07,411 - results_logger_1921 - INFO - Elapsed time: 41.22 seconds
+2025-03-24 03:04:07,510 - results_logger_1921 - INFO - Saved basic movie information to Data/1921/imdb_movies_1921.csv
+2025-03-24 03:04:07,510 - results_logger_1921 - INFO - Starting advanced data extraction for year 1921
+2025-03-24 03:57:05,754 - results_logger_1921 - INFO - Advanced data extraction completed for year 1921
+2025-03-24 03:57:05,754 - results_logger_1921 - INFO - Total movies processed: 600
+2025-03-24 03:57:05,754 - results_logger_1921 - INFO - Errors encountered: 0
+2025-03-24 03:57:05,754 - results_logger_1921 - INFO - Elapsed time: 3178.24 seconds
+2025-03-24 03:57:05,766 - results_logger_1921 - INFO - Saved advanced movie details to Data/1921/advanced_movies_details_1921.csv
+2025-03-24 03:57:05,766 - results_logger_1921 - INFO - Starting data merging for year 1921
+2025-03-24 03:57:05,797 - results_logger_1921 - INFO - Basic data rows: 600
+2025-03-24 03:57:05,797 - results_logger_1921 - INFO - Advanced data rows: 600
+2025-03-24 03:57:05,797 - results_logger_1921 - INFO - Merged data rows: 600
+2025-03-24 03:57:05,797 - results_logger_1921 - INFO - Data merging completed in 0.03 seconds
+2025-03-24 03:57:07,423 - results_logger_1921 - INFO - Saved merged movie data to Data/1921/merged_movies_data_1921.csv
+2025-03-24 03:57:07,423 - results_logger_1921 - INFO - Total processing time for year 1921: 3221.27 seconds
+2025-03-24 03:57:07,423 - results_logger_1921 - INFO - ===== Completed IMDB data processing for year 1921 =====

@@ -1,0 +1,24 @@
+2025-03-26 01:24:07,647 - results_logger_1986 - INFO - ===== Starting IMDB data processing for year 1986 =====
+2025-03-26 01:24:07,647 - results_logger_1986 - INFO - Start time: 2025-03-26 01:24:07
+2025-03-26 01:24:07,647 - results_logger_1986 - INFO - Starting link extraction for year 1986
+2025-03-26 01:25:09,293 - results_logger_1986 - INFO - Loaded 600 items before stopping
+2025-03-26 01:25:14,469 - results_logger_1986 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 01:25:18,480 - results_logger_1986 - INFO - Link extraction completed for year 1986
+2025-03-26 01:25:18,480 - results_logger_1986 - INFO - Total movies extracted: 600
+2025-03-26 01:25:18,483 - results_logger_1986 - INFO - Errors encountered: 0
+2025-03-26 01:25:18,483 - results_logger_1986 - INFO - Elapsed time: 70.83 seconds
+2025-03-26 01:25:18,494 - results_logger_1986 - INFO - Saved basic movie information to Data/1986/imdb_movies_1986.csv
+2025-03-26 01:25:18,495 - results_logger_1986 - INFO - Starting advanced data extraction for year 1986
+2025-03-26 01:54:07,957 - results_logger_1986 - INFO - Advanced data extraction completed for year 1986
+2025-03-26 01:54:07,957 - results_logger_1986 - INFO - Total movies processed: 600
+2025-03-26 01:54:07,957 - results_logger_1986 - INFO - Errors encountered: 0
+2025-03-26 01:54:07,957 - results_logger_1986 - INFO - Elapsed time: 1729.46 seconds
+2025-03-26 01:54:07,975 - results_logger_1986 - INFO - Saved advanced movie details to Data/1986/advanced_movies_details_1986.csv
+2025-03-26 01:54:07,975 - results_logger_1986 - INFO - Starting data merging for year 1986
+2025-03-26 01:54:08,007 - results_logger_1986 - INFO - Basic data rows: 600
+2025-03-26 01:54:08,007 - results_logger_1986 - INFO - Advanced data rows: 600
+2025-03-26 01:54:08,007 - results_logger_1986 - INFO - Merged data rows: 600
+2025-03-26 01:54:08,007 - results_logger_1986 - INFO - Data merging completed in 0.03 seconds
+2025-03-26 01:54:09,733 - results_logger_1986 - INFO - Saved merged movie data to Data/1986/merged_movies_data_1986.csv
+2025-03-26 01:54:09,733 - results_logger_1986 - INFO - Total processing time for year 1986: 1802.10 seconds
+2025-03-26 01:54:09,733 - results_logger_1986 - INFO - ===== Completed IMDB data processing for year 1986 =====

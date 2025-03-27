@@ -1,0 +1,24 @@
+2025-03-24 14:37:07,936 - results_logger_1932 - INFO - ===== Starting IMDB data processing for year 1932 =====
+2025-03-24 14:37:07,936 - results_logger_1932 - INFO - Start time: 2025-03-24 14:37:07
+2025-03-24 14:37:07,936 - results_logger_1932 - INFO - Starting link extraction for year 1932
+2025-03-24 14:38:09,304 - results_logger_1932 - INFO - Loaded 600 items before stopping
+2025-03-24 14:38:10,038 - results_logger_1932 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 14:38:13,770 - results_logger_1932 - INFO - Link extraction completed for year 1932
+2025-03-24 14:38:13,770 - results_logger_1932 - INFO - Total movies extracted: 600
+2025-03-24 14:38:13,773 - results_logger_1932 - INFO - Errors encountered: 0
+2025-03-24 14:38:13,773 - results_logger_1932 - INFO - Elapsed time: 65.83 seconds
+2025-03-24 14:38:13,863 - results_logger_1932 - INFO - Saved basic movie information to Data/1932/imdb_movies_1932.csv
+2025-03-24 14:38:13,863 - results_logger_1932 - INFO - Starting advanced data extraction for year 1932
+2025-03-24 15:06:00,348 - results_logger_1932 - INFO - Advanced data extraction completed for year 1932
+2025-03-24 15:06:00,348 - results_logger_1932 - INFO - Total movies processed: 600
+2025-03-24 15:06:00,348 - results_logger_1932 - INFO - Errors encountered: 0
+2025-03-24 15:06:00,348 - results_logger_1932 - INFO - Elapsed time: 1666.48 seconds
+2025-03-24 15:06:00,356 - results_logger_1932 - INFO - Saved advanced movie details to Data/1932/advanced_movies_details_1932.csv
+2025-03-24 15:06:00,356 - results_logger_1932 - INFO - Starting data merging for year 1932
+2025-03-24 15:06:00,406 - results_logger_1932 - INFO - Basic data rows: 600
+2025-03-24 15:06:00,406 - results_logger_1932 - INFO - Advanced data rows: 600
+2025-03-24 15:06:00,406 - results_logger_1932 - INFO - Merged data rows: 600
+2025-03-24 15:06:00,406 - results_logger_1932 - INFO - Data merging completed in 0.05 seconds
+2025-03-24 15:06:02,117 - results_logger_1932 - INFO - Saved merged movie data to Data/1932/merged_movies_data_1932.csv
+2025-03-24 15:06:02,117 - results_logger_1932 - INFO - Total processing time for year 1932: 1734.28 seconds
+2025-03-24 15:06:02,117 - results_logger_1932 - INFO - ===== Completed IMDB data processing for year 1932 =====

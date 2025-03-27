@@ -1,0 +1,24 @@
+2025-03-24 12:50:32,824 - results_logger_1930 - INFO - ===== Starting IMDB data processing for year 1930 =====
+2025-03-24 12:50:32,825 - results_logger_1930 - INFO - Start time: 2025-03-24 12:50:32
+2025-03-24 12:50:32,825 - results_logger_1930 - INFO - Starting link extraction for year 1930
+2025-03-24 12:51:35,423 - results_logger_1930 - INFO - Loaded 600 items before stopping
+2025-03-24 12:51:36,147 - results_logger_1930 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-24 12:51:40,052 - results_logger_1930 - INFO - Link extraction completed for year 1930
+2025-03-24 12:51:40,052 - results_logger_1930 - INFO - Total movies extracted: 600
+2025-03-24 12:51:40,054 - results_logger_1930 - INFO - Errors encountered: 0
+2025-03-24 12:51:40,054 - results_logger_1930 - INFO - Elapsed time: 67.23 seconds
+2025-03-24 12:51:40,068 - results_logger_1930 - INFO - Saved basic movie information to Data/1930/imdb_movies_1930.csv
+2025-03-24 12:51:40,069 - results_logger_1930 - INFO - Starting advanced data extraction for year 1930
+2025-03-24 13:24:49,405 - results_logger_1930 - INFO - Advanced data extraction completed for year 1930
+2025-03-24 13:24:49,405 - results_logger_1930 - INFO - Total movies processed: 600
+2025-03-24 13:24:49,405 - results_logger_1930 - INFO - Errors encountered: 0
+2025-03-24 13:24:49,405 - results_logger_1930 - INFO - Elapsed time: 1989.34 seconds
+2025-03-24 13:24:49,442 - results_logger_1930 - INFO - Saved advanced movie details to Data/1930/advanced_movies_details_1930.csv
+2025-03-24 13:24:49,443 - results_logger_1930 - INFO - Starting data merging for year 1930
+2025-03-24 13:24:49,553 - results_logger_1930 - INFO - Basic data rows: 600
+2025-03-24 13:24:49,553 - results_logger_1930 - INFO - Advanced data rows: 600
+2025-03-24 13:24:49,553 - results_logger_1930 - INFO - Merged data rows: 600
+2025-03-24 13:24:49,553 - results_logger_1930 - INFO - Data merging completed in 0.11 seconds
+2025-03-24 13:24:49,582 - results_logger_1930 - INFO - Saved merged movie data to Data/1930/merged_movies_data_1930.csv
+2025-03-24 13:24:49,582 - results_logger_1930 - INFO - Total processing time for year 1930: 2056.86 seconds
+2025-03-24 13:24:49,582 - results_logger_1930 - INFO - ===== Completed IMDB data processing for year 1930 =====

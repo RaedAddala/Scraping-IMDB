@@ -1,0 +1,24 @@
+2025-03-26 04:30:03,996 - results_logger_1992 - INFO - ===== Starting IMDB data processing for year 1992 =====
+2025-03-26 04:30:03,997 - results_logger_1992 - INFO - Start time: 2025-03-26 04:30:03
+2025-03-26 04:30:03,997 - results_logger_1992 - INFO - Starting link extraction for year 1992
+2025-03-26 04:31:05,461 - results_logger_1992 - INFO - Loaded 600 items before stopping
+2025-03-26 04:31:06,612 - results_logger_1992 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-26 04:31:10,577 - results_logger_1992 - INFO - Link extraction completed for year 1992
+2025-03-26 04:31:10,577 - results_logger_1992 - INFO - Total movies extracted: 600
+2025-03-26 04:31:10,579 - results_logger_1992 - INFO - Errors encountered: 0
+2025-03-26 04:31:10,579 - results_logger_1992 - INFO - Elapsed time: 66.58 seconds
+2025-03-26 04:31:10,585 - results_logger_1992 - INFO - Saved basic movie information to Data/1992/imdb_movies_1992.csv
+2025-03-26 04:31:10,586 - results_logger_1992 - INFO - Starting advanced data extraction for year 1992
+2025-03-26 05:00:32,976 - results_logger_1992 - INFO - Advanced data extraction completed for year 1992
+2025-03-26 05:00:32,976 - results_logger_1992 - INFO - Total movies processed: 600
+2025-03-26 05:00:32,976 - results_logger_1992 - INFO - Errors encountered: 0
+2025-03-26 05:00:32,976 - results_logger_1992 - INFO - Elapsed time: 1762.39 seconds
+2025-03-26 05:00:34,690 - results_logger_1992 - INFO - Saved advanced movie details to Data/1992/advanced_movies_details_1992.csv
+2025-03-26 05:00:34,690 - results_logger_1992 - INFO - Starting data merging for year 1992
+2025-03-26 05:00:34,738 - results_logger_1992 - INFO - Basic data rows: 600
+2025-03-26 05:00:34,738 - results_logger_1992 - INFO - Advanced data rows: 600
+2025-03-26 05:00:34,738 - results_logger_1992 - INFO - Merged data rows: 600
+2025-03-26 05:00:34,738 - results_logger_1992 - INFO - Data merging completed in 0.05 seconds
+2025-03-26 05:00:34,775 - results_logger_1992 - INFO - Saved merged movie data to Data/1992/merged_movies_data_1992.csv
+2025-03-26 05:00:34,775 - results_logger_1992 - INFO - Total processing time for year 1992: 1830.88 seconds
+2025-03-26 05:00:34,775 - results_logger_1992 - INFO - ===== Completed IMDB data processing for year 1992 =====

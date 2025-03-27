@@ -1,0 +1,24 @@
+2025-03-25 18:58:25,134 - results_logger_1975 - INFO - ===== Starting IMDB data processing for year 1975 =====
+2025-03-25 18:58:25,134 - results_logger_1975 - INFO - Start time: 2025-03-25 18:58:25
+2025-03-25 18:58:25,134 - results_logger_1975 - INFO - Starting link extraction for year 1975
+2025-03-25 18:59:27,166 - results_logger_1975 - INFO - Loaded 600 items before stopping
+2025-03-25 18:59:27,766 - results_logger_1975 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-e22973a9-0', 'khSCXM', 'detailed-list-view', 'ipc-metadata-list--base']
+2025-03-25 18:59:31,539 - results_logger_1975 - INFO - Link extraction completed for year 1975
+2025-03-25 18:59:31,539 - results_logger_1975 - INFO - Total movies extracted: 600
+2025-03-25 18:59:31,540 - results_logger_1975 - INFO - Errors encountered: 0
+2025-03-25 18:59:31,540 - results_logger_1975 - INFO - Elapsed time: 66.40 seconds
+2025-03-25 18:59:31,543 - results_logger_1975 - INFO - Saved basic movie information to Data/1975/imdb_movies_1975.csv
+2025-03-25 18:59:31,543 - results_logger_1975 - INFO - Starting advanced data extraction for year 1975
+2025-03-25 19:29:00,133 - results_logger_1975 - INFO - Advanced data extraction completed for year 1975
+2025-03-25 19:29:00,133 - results_logger_1975 - INFO - Total movies processed: 600
+2025-03-25 19:29:00,133 - results_logger_1975 - INFO - Errors encountered: 0
+2025-03-25 19:29:00,133 - results_logger_1975 - INFO - Elapsed time: 1768.59 seconds
+2025-03-25 19:29:00,893 - results_logger_1975 - INFO - Saved advanced movie details to Data/1975/advanced_movies_details_1975.csv
+2025-03-25 19:29:00,894 - results_logger_1975 - INFO - Starting data merging for year 1975
+2025-03-25 19:29:00,947 - results_logger_1975 - INFO - Basic data rows: 600
+2025-03-25 19:29:00,947 - results_logger_1975 - INFO - Advanced data rows: 600
+2025-03-25 19:29:00,947 - results_logger_1975 - INFO - Merged data rows: 600
+2025-03-25 19:29:00,947 - results_logger_1975 - INFO - Data merging completed in 0.05 seconds
+2025-03-25 19:29:01,029 - results_logger_1975 - INFO - Saved merged movie data to Data/1975/merged_movies_data_1975.csv
+2025-03-25 19:29:01,029 - results_logger_1975 - INFO - Total processing time for year 1975: 1835.90 seconds
+2025-03-25 19:29:01,029 - results_logger_1975 - INFO - ===== Completed IMDB data processing for year 1975 =====
