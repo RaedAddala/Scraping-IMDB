@@ -6,6 +6,36 @@ I uploaded the [Dataset](https://www.kaggle.com/datasets/raedaddala/imdb-movies-
 
 Here is the Merged Dataset alongside several notebooks related to its study: Check this [Kaggle link](https://www.kaggle.com/datasets/raedaddala/top-500-600-movies-of-each-year-from-1960-to-2024)
 
+## Table Of Content
+
+- [IMDB Movie Data Scraper](#imdb-movie-data-scraper)
+- [Dataset](#dataset)
+- [Features](#features)
+  - [Data Collection](#data-collection)
+  - [Output Structure](#output-structure)
+  - [Consistent Data Structure](#consistent-data-structure)
+  - [Updates](#updates)
+- [Requirements](#requirements)
+- [Setup](#setup)
+- [Usage](#usage)
+  - [Run the Scraper](#run-the-scraper)
+  - [Logging](#logging)
+- [Data Structure and Files](#data-structure-and-files)
+  - [`imdb_movies_[year].csv`](#imdb_movies_yearcsv)
+  - [`advanced_movies_details_[year].csv`](#advanced_movies_details_yearcsv)
+  - [`merged_movies_data_[year].csv`](#merged_movies_data_yearcsv)
+- [Applications](#applications)
+- [Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Memory Management](#memory-management)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+## Dataset
+
+Check [the notebook](./Dataset/guide-to-extracting-data-from-this-dataset.ipynb) that generated the [dataset](./Dataset/cleaned_data_from_1920_to_2025.csv).
+
 ## Features
 
 ### Data Collection
@@ -217,15 +247,4 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for d
 For issues, suggestions, or feature requests:  
 
 - Open an issue on GitHub.  
-- Reach out with ideas to improve code readability, robustness, and performance.  
-
-## TYPOS NOTE
-
-In the csvs I made some mistakes that I need to fix:
-
-- `grossWorldWide` instead of the current `grossWorldWWide`.
-- `meta_score` instead of the current `méta_score`.
-- `production_companies` instead of the current `production_company`.
-- `Movie Link` instead of the current `link`.
-
-Consistent naming convention is needed too.
+- Reach out with ideas to improve code readability, robustness, and performance.
