@@ -36,6 +36,8 @@ Here is the Merged Dataset alongside several notebooks related to its study: Che
 
 Check [the notebook](./Dataset/guide-to-extracting-data-from-this-dataset.ipynb) that generated the [dataset](./Dataset/cleaned_data_from_1920_to_2025.csv).
 
+For futher data cleaning and normalization, check this [notebook](./Dataset/cleaning-and-normalizing-data.ipynb).
+
 ## Features
 
 ### Data Collection
