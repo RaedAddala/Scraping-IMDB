@@ -1,0 +1,24 @@
+2026-07-14 14:43:11,273 - results_logger_2024 - INFO - ===== Starting IMDB data processing for year 2024 =====
+2026-07-14 14:43:11,273 - results_logger_2024 - INFO - Start time: 2026-07-14 14:43:11
+2026-07-14 14:43:11,273 - results_logger_2024 - INFO - Starting link extraction for year 2024
+2026-07-14 14:43:48,986 - results_logger_2024 - INFO - Loaded 600 items before stopping
+2026-07-14 14:43:52,017 - results_logger_2024 - INFO - Found film list container: ul, classes: ['ipc-metadata-list', 'ipc-metadata-list--dividers-between', 'sc-4b25d7ad-0', 'fovuLN', 'detailed-list-view', 'base', 'ipc-metadata-list--base']
+2026-07-14 14:43:55,139 - results_logger_2024 - INFO - Link extraction completed for year 2024
+2026-07-14 14:43:55,141 - results_logger_2024 - INFO - Total movies extracted: 600
+2026-07-14 14:43:55,143 - results_logger_2024 - INFO - Errors encountered: 0
+2026-07-14 14:43:55,144 - results_logger_2024 - INFO - Elapsed time: 43.87 seconds
+2026-07-14 14:43:55,188 - results_logger_2024 - INFO - Saved basic movie information to Data/2024/imdb_movies_2024.csv
+2026-07-14 14:43:55,189 - results_logger_2024 - INFO - Starting advanced data extraction for year 2024
+2026-07-14 15:33:46,631 - results_logger_2024 - INFO - Advanced data extraction completed for year 2024
+2026-07-14 15:33:46,632 - results_logger_2024 - INFO - Total movies processed: 600
+2026-07-14 15:33:46,632 - results_logger_2024 - INFO - Errors encountered: 0
+2026-07-14 15:33:46,633 - results_logger_2024 - INFO - Elapsed time: 2991.44 seconds
+2026-07-14 15:33:46,778 - results_logger_2024 - INFO - Saved advanced movie details to Data/2024/advanced_movies_details_2024.csv
+2026-07-14 15:33:46,781 - results_logger_2024 - INFO - Starting data merging for year 2024
+2026-07-14 15:33:46,948 - results_logger_2024 - INFO - Basic data rows: 600
+2026-07-14 15:33:46,948 - results_logger_2024 - INFO - Advanced data rows: 600
+2026-07-14 15:33:46,948 - results_logger_2024 - INFO - Merged data rows: 600
+2026-07-14 15:33:46,948 - results_logger_2024 - INFO - Data merging completed in 0.17 seconds
+2026-07-14 15:33:46,984 - results_logger_2024 - INFO - Saved merged movie data to Data/2024/merged_movies_data_2024.csv
+2026-07-14 15:33:46,984 - results_logger_2024 - INFO - Total processing time for year 2024: 3035.71 seconds
+2026-07-14 15:33:46,984 - results_logger_2024 - INFO - ===== Completed IMDB data processing for year 2024 =====
