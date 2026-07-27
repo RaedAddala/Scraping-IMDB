@@ -20,11 +20,13 @@ Local dataset notebooks, when present, can be used for extraction guidance, clea
 ## Features
 
 - Collects feature films by release year, sorted by US box office gross on IMDb.
-- Loads up to 600 movies per year by default, with a configurable limit.
+- Loads up to 1000 movies per year by default, with a configurable limit.
 - Extracts basic listing fields such as title, year, duration, MPA rating, IMDb rating, votes, Metascore, description, and IMDb link.
-- Extracts detailed fields such as writers, directors, stars, budget, opening weekend gross, worldwide gross, US/Canada gross, release date, countries of origin, filming locations, production companies, awards, genres, and languages.
+- Extracts detailed fields such as writers, directors, stars and characters, financials, release data, countries, filming locations, production companies, awards, reviews, similar movies, JSON-LD metadata, parental-guide severities, full credits, AKA titles, genres, and languages.
+- Adds derived analysis fields including numeric financial values, profit, ROI, award totals, runtime, release calendar fields, collection counts, and a rating consistency flag.
 - Creates separate basic, advanced, and merged CSV files for every processed year.
-- Writes per-year logs for errors and processing results.
+- Tracks advanced-scrape status for every movie link and supports retrying failed links later.
+- Writes per-year logs for errors, processing results, and detailed advanced-scrape attempts.
 
 ## Requirements
 
@@ -48,7 +50,7 @@ This installs the dependencies declared in `pyproject.toml`, including Selenium,
 
 ## Usage
 
-Run the scraper for the default range, 2024 through 2025:
+Run the scraper for the default range, 1920 through 2026:
 
 ```powershell
 uv run python .\scrapping.py
@@ -66,7 +68,13 @@ Limit how many movies are loaded per year:
 uv run python .\scrapping.py --start-year 2024 --end-year 2025 --max-movies 100
 ```
 
-The default movie limit is 600 per year.
+The default movie limit is 1000 per year.
+
+Retry failed advanced-detail scrapes for a year without re-running the basic listing scrape:
+
+```powershell
+uv run python .\scrapping.py --retry-failed --start-year 1920 --end-year 1920
+```
 
 ## Outputs
 
@@ -74,9 +82,11 @@ For each processed year, the scraper creates:
 
 - `Data/<year>/imdb_movies_<year>.csv`
 - `Data/<year>/advanced_movies_details_<year>.csv`
+- `Data/<year>/advanced_scrape_status_<year>.csv`
 - `Data/<year>/merged_movies_data_<year>.csv`
 - `Logs/<year>/errors.txt`
 - `Logs/<year>/results.txt`
+- `Logs/<year>/advanced_scrape_attempts_<year>.jsonl`
 
 ## CSV Structure
 
@@ -105,7 +115,7 @@ Field notes:
 Detailed movie metadata:
 
 ```text
-link, writers, directors, stars, budget, opening_weekend_Gross, grossWorldWWide, gross_US_Canada, release_date, countries_origin, filming_locations, production_company, awards_content, genres, Languages
+link, writers, directors, stars, characters, budget, opening_weekend_Gross, grossWorldWWide, gross_US_Canada, release_date, countries_origin, filming_locations, production_company, awards_content, awards_wins_nominations_total, critic_reviews_count, user_reviews_count, genres, Languages, similar_movies, similar_movies_links, json_ld_rating, json_ld_vote_count, json_ld_content_rating, json_ld_keywords, json_ld_poster_url, json_ld_directors, json_ld_writers, json_ld_actors, json_ld_runtime_minutes, parental-guide fields, full-credit fields, release_dates_by_country, aka_titles
 ```
 
 Field notes:
@@ -125,13 +135,28 @@ Field notes:
 - `awards_content`: Awards summary or detailed awards text.
 - `genres`: Movie genres.
 - `Languages`: Listed languages.
+- Additional fields capture review counts, similar-title relationships, structured JSON-LD values, parental-guide categories, full-credit departments, country-specific release dates, and AKA titles.
+- Enrichment now performs three additional IMDb subpage requests per title, so full-year runs take substantially longer than the basic scraper.
+- Failed advanced-detail pages are tracked in `advanced_scrape_status_<year>.csv`; normal runs retry failed links once automatically, and `--retry-failed` retries remaining failed links later.
+
+### `advanced_scrape_status_<year>.csv`
+
+Advanced scrape checkpoint and retry state:
+
+```text
+link, title, status, attempt_count, last_error, last_attempted_at, completed_at
+```
+
+The status file keeps completed and failed links together so interrupted or partially failed years can be retried without starting advanced extraction from scratch.
 
 ### `merged_movies_data_<year>.csv`
 
 Combined dataset produced by joining the basic and advanced files on the IMDb movie link.
 
+The merged output also contains numeric financial fields, `profit`, `roi`, award totals, `runtime_minutes`, release calendar fields, cast/genre/country counts, and `rating_mismatch`. `profit` and `roi` are left empty when the budget and worldwide gross appear to use different currency symbols.
+
 ```text
-Title, Year, Duration, MPA, Rating, Votes, meta_score, description, Movie Link, writers, directors, stars, budget, opening_weekend_Gross, grossWorldWWide, gross_US_Canada, release_date, countries_origin, filming_locations, production_company, awards_content, genres, Languages
+Title, Year, Duration, MPA, Rating, Votes, meta_score, description, Movie Link, link, writers, directors, stars, characters, budget, opening_weekend_Gross, grossWorldWWide, gross_US_Canada, release_date, countries_origin, filming_locations, production_company, awards_content, awards_wins_nominations_total, critic_reviews_count, user_reviews_count, genres, Languages, similar_movies, similar_movies_links, JSON-LD fields, parental-guide fields, full-credit fields, release_dates_by_country, aka_titles, derived analysis fields
 ```
 
 ## Logging
@@ -140,6 +165,7 @@ Each year gets its own log directory:
 
 - `Logs/<year>/errors.txt`: extraction and merge errors.
 - `Logs/<year>/results.txt`: progress, row counts, timing, and completion details.
+- `Logs/<year>/advanced_scrape_attempts_<year>.jsonl`: one JSON event per advanced-detail scrape attempt.
 
 ## Applications
 
@@ -168,6 +194,7 @@ Some older movies may not have complete financial, awards, language, or filming-
 
 - Reduce `--max-movies` while testing.
 - Process smaller year ranges.
+- Use `--retry-failed` to retry only failed advanced-detail pages after a blocked or partial run.
 - Increase waits between years or requests if IMDb starts blocking or failing loads.
 
 ## Contributing

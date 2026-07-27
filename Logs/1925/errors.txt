@@ -1,0 +1,1 @@
+2026-07-27 11:50:08,693 - error_logger_1925 - ERROR - Error extracting full credits for https://www.imdb.com/title/tt0255818/: HTTPConnectionPool(host='localhost', port=55226): Read timed out. (read timeout=120)
