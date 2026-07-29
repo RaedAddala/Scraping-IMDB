@@ -1,0 +1,1 @@
+2026-07-29 07:54:41,471 - results_logger_1930 - INFO - Loaded 1000 items; extracted 1000 movies in 74.25 seconds

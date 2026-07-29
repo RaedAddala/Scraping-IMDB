@@ -1,0 +1,4 @@
+2026-07-29 00:29:51,393 - results_logger_1928 - INFO - Loaded 1000 items; extracted 1000 movies in 74.00 seconds
+2026-07-29 04:31:16,869 - results_logger_1928 - INFO - Advanced extraction completed for 1928: 1000 new rows, 1000 total rows, 0 unresolved failures, 14482.90 seconds
+2026-07-29 04:31:17,073 - results_logger_1928 - INFO - Merged 1000 basic rows with 1000 advanced rows into 1000 rows for 1928
+2026-07-29 04:31:17,214 - results_logger_1928 - INFO - Computed derived columns for 1000 merged rows
