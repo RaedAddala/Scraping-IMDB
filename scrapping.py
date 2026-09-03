@@ -44,6 +44,14 @@ STATUS_COLUMNS = [
     "link", "title", "status", "attempt_count", "last_error",
     "last_attempted_at", "completed_at",
 ]
+PAGE_LOAD_TIMEOUT_SECONDS = 10
+CONTENT_WAIT_TIMEOUT_SECONDS = 4
+PAGE_SETTLE_SECONDS = 0.3
+SCROLLED_PAGE_SETTLE_SECONDS = 0.5
+LOAD_MORE_BUTTON_TIMEOUT_SECONDS = 6
+LOAD_MORE_RESULT_TIMEOUT_SECONDS = 10
+LOAD_MORE_RETRY_PAUSE_SECONDS = 1.0
+YEAR_PAUSE_SECONDS = 2.0
 
 
 def clean_text(element):
@@ -52,6 +60,7 @@ def clean_text(element):
 
 def create_edge_driver():
     options = webdriver.EdgeOptions()
+    options.page_load_strategy = "eager"
     options.add_argument("--lang=en-US")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0")
@@ -68,16 +77,25 @@ def create_edge_driver():
     return driver
 
 
-def _wait_for_page_ready(driver, timeout=12, min_pause=0.7, wait_for_footer=False):
-    WebDriverWait(driver, timeout).until(lambda d: d.execute_script("return document.readyState") == "complete")
+def _wait_for_page_ready(driver, timeout=PAGE_LOAD_TIMEOUT_SECONDS, min_pause=PAGE_SETTLE_SECONDS):
+    WebDriverWait(driver, timeout).until(lambda d: d.execute_script("return document.readyState") in ("interactive", "complete"))
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+    if min_pause:
+        time.sleep(min_pause)
+
+
+def _wait_for_page_text(driver, text, timeout=CONTENT_WAIT_TIMEOUT_SECONDS):
     try:
-        if wait_for_footer:
-            WebDriverWait(driver, timeout).until(EC.visibility_of_element_located((By.TAG_NAME, "footer")))
-        else:
-            WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+        WebDriverWait(driver, timeout).until(lambda d: text.lower() in d.find_element(By.TAG_NAME, "body").text.lower())
     except Exception:
-        WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-    time.sleep(min_pause)
+        pass
+
+
+def _wait_for_page_element(driver, locator, timeout=CONTENT_WAIT_TIMEOUT_SECONDS):
+    try:
+        WebDriverWait(driver, timeout).until(EC.presence_of_element_located(locator))
+    except Exception:
+        pass
 
 
 def extract_listing_metadata(film):
@@ -133,11 +151,18 @@ def write_csv_safely(df, path):
     temp_path.replace(path)
 
 
+def read_csv_fast(path):
+    try:
+        return pd.read_csv(path, engine="pyarrow")
+    except Exception:
+        return pd.read_csv(path)
+
+
 def read_csv_or_empty(path, columns):
     path = Path(path)
     if not path.exists():
         return pd.DataFrame(columns=columns)
-    df = pd.read_csv(path)
+    df = read_csv_fast(path)
     for column in columns:
         if column not in df.columns:
             df[column] = None
@@ -185,22 +210,22 @@ def extract_links(year, error_logger, results_logger, max_movies=600):
         driver = create_edge_driver()
         driver.get(url)
         _wait_for_page_ready(driver)
-        WebDriverWait(driver, 12).until(EC.presence_of_element_located((By.CSS_SELECTOR, "ul.ipc-metadata-list")))
+        WebDriverWait(driver, PAGE_LOAD_TIMEOUT_SECONDS).until(EC.presence_of_element_located((By.CSS_SELECTOR, "ul.ipc-metadata-list")))
         loaded_data = len(driver.find_elements(By.CSS_SELECTOR, "li.ipc-metadata-list-summary-item"))
         while loaded_data < max_movies and failures < 3:
             try:
-                button = WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'ipc-btn') and .//span[contains(text(), '50 more')]]")))
+                button = WebDriverWait(driver, LOAD_MORE_BUTTON_TIMEOUT_SECONDS).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'ipc-btn') and .//span[contains(text(), '50 more')]]")))
                 driver.execute_script("arguments[0].scrollIntoView(true);", button)
                 driver.execute_script("arguments[0].click();", button)
                 old_count = loaded_data
-                WebDriverWait(driver, 12).until(lambda d: len(d.find_elements(By.CSS_SELECTOR, "li.ipc-metadata-list-summary-item")) > old_count)
+                WebDriverWait(driver, LOAD_MORE_RESULT_TIMEOUT_SECONDS).until(lambda d: len(d.find_elements(By.CSS_SELECTOR, "li.ipc-metadata-list-summary-item")) > old_count)
                 _wait_for_page_ready(driver)
                 loaded_data = len(driver.find_elements(By.CSS_SELECTOR, "li.ipc-metadata-list-summary-item"))
                 failures = 0
             except Exception as exc:
                 failures += 1
                 error_logger.error("Load more attempt %s failed after %s items: %s", failures, loaded_data, exc)
-                time.sleep(1.5)
+                time.sleep(LOAD_MORE_RETRY_PAUSE_SECONDS)
         soup = BeautifulSoup(driver.page_source, "lxml")
         container = soup.select_one("ul.ipc-metadata-list")
         for film in (container.find_all("li", class_="ipc-metadata-list-summary-item") if container else [])[:max_movies]:
@@ -268,16 +293,18 @@ FULL_CREDITS_DEPARTMENTS = {
 }
 
 
-def _page_soup(driver, url):
+def _page_soup(driver, url, wait_for_text=None):
     driver.get(url)
     _wait_for_page_ready(driver)
+    if wait_for_text:
+        _wait_for_page_text(driver, wait_for_text)
     return BeautifulSoup(driver.page_source, "lxml")
 
 
 def extract_parental_guide(driver, base_url, error_logger):
     result = {key: None for key in PARENTAL_GUIDE_CATEGORIES}
     try:
-        text = _page_soup(driver, base_url + "parentalguide/").get_text(" ", strip=True)
+        text = _page_soup(driver, base_url + "parentalguide/", wait_for_text="Frightening & Intense Scenes").get_text(" ", strip=True)
         for key, label in PARENTAL_GUIDE_CATEGORIES.items():
             flexible_label = re.escape(label).replace(r"\ ", r"\s+")
             match = re.search(flexible_label + r"\s*:?\s*(None|Mild|Moderate|Severe)", text, re.I)
@@ -291,7 +318,7 @@ def extract_parental_guide(driver, base_url, error_logger):
 def extract_full_credits(driver, base_url, error_logger):
     result = {key: None for key in FULL_CREDITS_DEPARTMENTS}
     try:
-        soup = _page_soup(driver, base_url + "fullcredits/")
+        soup = _page_soup(driver, base_url + "fullcredits/", wait_for_text="Costume Design by")
         for key, heading_text in FULL_CREDITS_DEPARTMENTS.items():
             heading = soup.find(string=lambda value: value and heading_text.lower() in value.lower())
             if not heading:
@@ -308,7 +335,7 @@ def extract_full_credits(driver, base_url, error_logger):
 def extract_release_info(driver, base_url, error_logger):
     result = {"release_dates_by_country": None, "aka_titles": None}
     try:
-        soup = _page_soup(driver, base_url + "releaseinfo/")
+        soup = _page_soup(driver, base_url + "releaseinfo/", wait_for_text="Also known as")
         def pairs_after(label):
             heading = soup.find(string=lambda value: value and label.lower() in value.lower())
             container = heading.find_parent().find_next(["table", "ul"]) if heading else None
@@ -390,9 +417,10 @@ def _extract_json_ld(soup):
 
 def _extract_advanced_row(driver, url, error_logger):
     driver.get(url)
-    _wait_for_page_ready(driver, wait_for_footer=True)
+    _wait_for_page_ready(driver)
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    _wait_for_page_ready(driver, wait_for_footer=True)
+    _wait_for_page_ready(driver, min_pause=SCROLLED_PAGE_SETTLE_SECONDS)
+    _wait_for_page_element(driver, (By.XPATH, "//*[self::section or self::div][contains(translate(@aria-label, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'more like this')]"))
     soup = BeautifulSoup(driver.page_source, "lxml")
     row = {"link": url, "writers": None, "directors": None, "stars": None, "characters": None, "budget": _text_in(soup, "title-boxoffice-budget"), "opening_weekend_Gross": _text_in(soup, "title-boxoffice-openingweekenddomestic"), "grossWorldWWide": _text_in(soup, "title-boxoffice-cumulativeworldwidegross"), "gross_US_Canada": _text_in(soup, "title-boxoffice-grossdomestic"), "release_date": None, "countries_origin": None, "filming_locations": None, "production_company": None, "awards_content": None, "awards_wins_nominations_total": None, "critic_reviews_count": None, "user_reviews_count": None, "genres": [], "Languages": [], "similar_movies": None, "similar_movies_links": None}
     row.update(_extract_json_ld(soup))
@@ -574,7 +602,7 @@ def extract_advanced_data(year, links_df, error_logger, results_logger, retry_fa
 def merge_data(year, data_dir, error_logger, results_logger):
     try:
         paths = year_paths(year)
-        basic = pd.read_csv(paths["basic"])
+        basic = read_csv_fast(paths["basic"])
         advanced = read_csv_or_empty(paths["advanced"], ADVANCED_COLUMNS)
         if "Movie Link" not in basic.columns or "link" not in advanced.columns:
             raise ValueError("Input CSVs are missing the movie-link join column")
@@ -613,7 +641,7 @@ def _parse_money(value):
 def _currency_symbol(value):
     if value is None or (isinstance(value, float) and pd.isna(value)):
         return None
-    match = re.search(r"[$€£¥₹]|(?:USD|EUR|GBP|JPY|INR)\b", str(value), re.I)
+    match = re.search(r"[$\u20ac\u00a3\u00a5\u20b9]|(?:USD|EUR|GBP|JPY|INR)\b", str(value), re.I)
     return match.group(0).upper() if match else None
 
 
@@ -718,7 +746,7 @@ def retry_failed_year(year):
 
 def main():
     parser = argparse.ArgumentParser(description="Scrape IMDb movie data by year.")
-    parser.add_argument("--start-year", type=int, default=1926)
+    parser.add_argument("--start-year", type=int, default=1941)
     parser.add_argument("--end-year", type=int, default=2026)
     parser.add_argument("--max-movies", type=int, default=1000)
     parser.add_argument("--retry-failed", action="store_true", help="Retry only links marked failed in the advanced scrape status file.")
@@ -731,7 +759,7 @@ def main():
         else:
             process_year(year, args.max_movies)
         if year < args.end_year:
-            time.sleep(4)
+            time.sleep(YEAR_PAUSE_SECONDS)
 
 
 if __name__ == "__main__":
