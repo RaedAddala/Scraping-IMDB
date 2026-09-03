@@ -11,6 +11,7 @@ from urllib.parse import urljoin, urlsplit, urlunsplit
 
 import pandas as pd
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import SessionNotCreatedException
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.common.by import By
@@ -45,7 +46,7 @@ STATUS_COLUMNS = [
     "last_attempted_at", "completed_at",
 ]
 PAGE_LOAD_TIMEOUT_SECONDS = 10
-CONTENT_WAIT_TIMEOUT_SECONDS = 4
+CONTENT_WAIT_TIMEOUT_SECONDS = 2
 PAGE_SETTLE_SECONDS = 0.3
 SCROLLED_PAGE_SETTLE_SECONDS = 0.5
 LOAD_MORE_BUTTON_TIMEOUT_SECONDS = 6
@@ -69,7 +70,10 @@ def create_edge_driver():
     for argument in ("--log-level=3", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-extensions", "--disable-infobars"):
         options.add_argument(argument)
     driver_path = SCRIPT_DIR / "edgedriver.exe"
-    driver = webdriver.Edge(service=Service(executable_path=str(driver_path)), options=options)
+    try:
+        driver = webdriver.Edge(service=Service(executable_path=str(driver_path)), options=options)
+    except SessionNotCreatedException:
+        driver = webdriver.Edge(options=options)
     try:
         driver.maximize_window()
     except Exception:
@@ -91,11 +95,23 @@ def _wait_for_page_text(driver, text, timeout=CONTENT_WAIT_TIMEOUT_SECONDS):
         pass
 
 
+def _wait_for_any_page_text(driver, texts, timeout=CONTENT_WAIT_TIMEOUT_SECONDS):
+    lowered_texts = [text.lower() for text in texts]
+    try:
+        WebDriverWait(driver, timeout).until(
+            lambda d: any(text in d.find_element(By.TAG_NAME, "body").text.lower() for text in lowered_texts)
+        )
+        return True
+    except Exception:
+        return False
+
+
 def _wait_for_page_element(driver, locator, timeout=CONTENT_WAIT_TIMEOUT_SECONDS):
     try:
         WebDriverWait(driver, timeout).until(EC.presence_of_element_located(locator))
+        return True
     except Exception:
-        pass
+        return False
 
 
 def extract_listing_metadata(film):
@@ -178,6 +194,33 @@ def append_attempt_log(path, event):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(event, ensure_ascii=False) + "\n")
+
+
+def log_advanced_timing_summary(path, results_logger):
+    try:
+        with Path(path).open(encoding="utf-8") as handle:
+            events = [json.loads(line) for line in handle if line.strip()]
+        timed_events = [event for event in events if isinstance(event.get("total_seconds"), (int, float))]
+        if not timed_events:
+            return
+        stages = ("title_page", "parental_guide", "full_credits", "release_info")
+        summary = {}
+        for stage in stages:
+            durations = [event.get("timings", {}).get(f"{stage}_seconds") for event in timed_events]
+            durations = [duration for duration in durations if isinstance(duration, (int, float))]
+            ready_values = [event.get("timings", {}).get(f"{stage}_content_ready") for event in timed_events]
+            summary[stage] = {
+                "average_seconds": round(sum(durations) / len(durations), 2) if durations else None,
+                "timed_out": sum(value is False for value in ready_values),
+            }
+        results_logger.info(
+            "Advanced timing summary for %s attempts: average total %.2fs; stages=%s",
+            len(timed_events),
+            sum(event["total_seconds"] for event in timed_events) / len(timed_events),
+            json.dumps(summary, sort_keys=True),
+        )
+    except (OSError, json.JSONDecodeError) as exc:
+        results_logger.warning("Could not summarize advanced timings: %s", exc)
 
 
 def _normalize_votes(element):
@@ -293,18 +336,31 @@ FULL_CREDITS_DEPARTMENTS = {
 }
 
 
-def _page_soup(driver, url, wait_for_text=None):
-    driver.get(url)
-    _wait_for_page_ready(driver)
-    if wait_for_text:
-        _wait_for_page_text(driver, wait_for_text)
-    return BeautifulSoup(driver.page_source, "lxml")
+def _page_soup(driver, url, wait_for_texts=None, timings=None, stage=None):
+    started_at = time.perf_counter()
+    try:
+        driver.get(url)
+        _wait_for_page_ready(driver)
+        if wait_for_texts:
+            content_ready = _wait_for_any_page_text(driver, wait_for_texts)
+            if timings is not None and stage:
+                timings[f"{stage}_content_ready"] = content_ready
+        return BeautifulSoup(driver.page_source, "lxml")
+    finally:
+        if timings is not None and stage:
+            timings[f"{stage}_seconds"] = round(time.perf_counter() - started_at, 3)
 
 
-def extract_parental_guide(driver, base_url, error_logger):
+def extract_parental_guide(driver, base_url, error_logger, timings=None):
     result = {key: None for key in PARENTAL_GUIDE_CATEGORIES}
     try:
-        text = _page_soup(driver, base_url + "parentalguide/", wait_for_text="Frightening & Intense Scenes").get_text(" ", strip=True)
+        text = _page_soup(
+            driver,
+            base_url + "parentalguide/",
+            wait_for_texts=PARENTAL_GUIDE_CATEGORIES.values(),
+            timings=timings,
+            stage="parental_guide",
+        ).get_text(" ", strip=True)
         for key, label in PARENTAL_GUIDE_CATEGORIES.items():
             flexible_label = re.escape(label).replace(r"\ ", r"\s+")
             match = re.search(flexible_label + r"\s*:?\s*(None|Mild|Moderate|Severe)", text, re.I)
@@ -315,10 +371,16 @@ def extract_parental_guide(driver, base_url, error_logger):
     return result
 
 
-def extract_full_credits(driver, base_url, error_logger):
+def extract_full_credits(driver, base_url, error_logger, timings=None):
     result = {key: None for key in FULL_CREDITS_DEPARTMENTS}
     try:
-        soup = _page_soup(driver, base_url + "fullcredits/", wait_for_text="Costume Design by")
+        soup = _page_soup(
+            driver,
+            base_url + "fullcredits/",
+            wait_for_texts=FULL_CREDITS_DEPARTMENTS.values(),
+            timings=timings,
+            stage="full_credits",
+        )
         for key, heading_text in FULL_CREDITS_DEPARTMENTS.items():
             heading = soup.find(string=lambda value: value and heading_text.lower() in value.lower())
             if not heading:
@@ -332,10 +394,16 @@ def extract_full_credits(driver, base_url, error_logger):
     return result
 
 
-def extract_release_info(driver, base_url, error_logger):
+def extract_release_info(driver, base_url, error_logger, timings=None):
     result = {"release_dates_by_country": None, "aka_titles": None}
     try:
-        soup = _page_soup(driver, base_url + "releaseinfo/", wait_for_text="Also known as")
+        soup = _page_soup(
+            driver,
+            base_url + "releaseinfo/",
+            wait_for_texts=("Release date", "Also known as"),
+            timings=timings,
+            stage="release_info",
+        )
         def pairs_after(label):
             heading = soup.find(string=lambda value: value and label.lower() in value.lower())
             container = heading.find_parent().find_next(["table", "ul"]) if heading else None
@@ -415,12 +483,22 @@ def _extract_json_ld(soup):
     return result
 
 
-def _extract_advanced_row(driver, url, error_logger):
-    driver.get(url)
-    _wait_for_page_ready(driver)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    _wait_for_page_ready(driver, min_pause=SCROLLED_PAGE_SETTLE_SECONDS)
-    _wait_for_page_element(driver, (By.XPATH, "//*[self::section or self::div][contains(translate(@aria-label, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'more like this')]"))
+def _extract_advanced_row(driver, url, error_logger, timings=None):
+    main_page_started_at = time.perf_counter()
+    try:
+        driver.get(url)
+        _wait_for_page_ready(driver)
+        main_content_ready = _wait_for_page_element(
+            driver,
+            (By.CSS_SELECTOR, "script[type='application/ld+json'], div[data-testid='interests']"),
+        )
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        _wait_for_page_ready(driver, min_pause=SCROLLED_PAGE_SETTLE_SECONDS)
+    finally:
+        if timings is not None:
+            timings["title_page_seconds"] = round(time.perf_counter() - main_page_started_at, 3)
+            if "main_content_ready" in locals():
+                timings["title_page_content_ready"] = main_content_ready
     soup = BeautifulSoup(driver.page_source, "lxml")
     row = {"link": url, "writers": None, "directors": None, "stars": None, "characters": None, "budget": _text_in(soup, "title-boxoffice-budget"), "opening_weekend_Gross": _text_in(soup, "title-boxoffice-openingweekenddomestic"), "grossWorldWWide": _text_in(soup, "title-boxoffice-cumulativeworldwidegross"), "gross_US_Canada": _text_in(soup, "title-boxoffice-grossdomestic"), "release_date": None, "countries_origin": None, "filming_locations": None, "production_company": None, "awards_content": None, "awards_wins_nominations_total": None, "critic_reviews_count": None, "user_reviews_count": None, "genres": [], "Languages": [], "similar_movies": None, "similar_movies_links": None}
     row.update(_extract_json_ld(soup))
@@ -464,9 +542,9 @@ def _extract_advanced_row(driver, url, error_logger):
         pairs = list(dict.fromkeys(pairs))
         row["similar_movies"], row["similar_movies_links"] = ([p[0] for p in pairs] or None), ([p[1] for p in pairs] or None)
     base = _title_base_url(url)
-    row.update(extract_parental_guide(driver, base, error_logger))
-    row.update(extract_full_credits(driver, base, error_logger))
-    row.update(extract_release_info(driver, base, error_logger))
+    row.update(extract_parental_guide(driver, base, error_logger, timings))
+    row.update(extract_full_credits(driver, base, error_logger, timings))
+    row.update(extract_release_info(driver, base, error_logger, timings))
     return row
 
 
@@ -534,16 +612,18 @@ def _attempt_advanced_links(driver, link_records, status_records, attempt_log_pa
             status["title"] = title
         status["attempt_count"] = int(status.get("attempt_count") or 0) + 1
         status["last_attempted_at"] = now_iso()
+        timings = {}
+        started_at = time.perf_counter()
         try:
-            row = _extract_advanced_row(driver, link, error_logger)
+            row = _extract_advanced_row(driver, link, error_logger, timings)
             rows.append(row)
             status.update(status="completed", last_error=None, completed_at=now_iso())
-            append_attempt_log(attempt_log_path, {"timestamp": now_iso(), "phase": phase, "link": link, "title": status.get("title"), "status": "completed", "attempt_count": status["attempt_count"]})
+            append_attempt_log(attempt_log_path, {"timestamp": now_iso(), "phase": phase, "link": link, "title": status.get("title"), "status": "completed", "attempt_count": status["attempt_count"], "total_seconds": round(time.perf_counter() - started_at, 3), "timings": timings})
         except Exception as exc:
             message = str(exc)
             status.update(status="failed", last_error=message, completed_at=None)
             failures.append(record)
-            append_attempt_log(attempt_log_path, {"timestamp": now_iso(), "phase": phase, "link": link, "title": status.get("title"), "status": "failed", "attempt_count": status["attempt_count"], "error": message})
+            append_attempt_log(attempt_log_path, {"timestamp": now_iso(), "phase": phase, "link": link, "title": status.get("title"), "status": "failed", "attempt_count": status["attempt_count"], "error": message, "total_seconds": round(time.perf_counter() - started_at, 3), "timings": timings})
             error_logger.error("Error processing URL %s: %s", link, exc)
     return rows, failures
 
@@ -592,6 +672,7 @@ def extract_advanced_data(year, links_df, error_logger, results_logger, retry_fa
     advanced = _combine_advanced(existing_advanced, rows)
     _write_status(paths["status"], status_records)
     write_csv_safely(advanced, paths["advanced"])
+    log_advanced_timing_summary(paths["attempts"], results_logger)
     results_logger.info(
         "Advanced extraction completed for %s: %s new rows, %s total rows, %s unresolved failures, %.2f seconds",
         year, len(rows), len(advanced), len(failures), time.time() - start,
@@ -713,6 +794,10 @@ def process_year(year, max_movies=1000):
     error_logger, results_logger = setup_logging(year)
     try:
         links = extract_links(year, error_logger, results_logger, max_movies)
+        if links.empty:
+            results_logger.info("No links extracted for %s; skipping advanced extraction and merge", year)
+            print(f"No links extracted for year {year}; skipping advanced extraction and merge")
+            return
         write_csv_safely(links, paths["basic"])
         extract_advanced_data(year, links, error_logger, results_logger)
         merged = merge_data(year, data_dir, error_logger, results_logger)
@@ -746,7 +831,7 @@ def retry_failed_year(year):
 
 def main():
     parser = argparse.ArgumentParser(description="Scrape IMDb movie data by year.")
-    parser.add_argument("--start-year", type=int, default=1941)
+    parser.add_argument("--start-year", type=int, default=1942)
     parser.add_argument("--end-year", type=int, default=2026)
     parser.add_argument("--max-movies", type=int, default=1000)
     parser.add_argument("--retry-failed", action="store_true", help="Retry only links marked failed in the advanced scrape status file.")

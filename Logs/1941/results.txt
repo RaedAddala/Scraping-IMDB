@@ -1,0 +1,5 @@
+2026-09-03 15:13:58,685 - results_logger_1941 - INFO - Loaded 1000 items; extracted 1000 movies in 129.15 seconds
+2026-09-03 22:12:01,349 - results_logger_1941 - INFO - Retrying 172 failed advanced links for 1941 once
+2026-09-03 23:33:58,187 - results_logger_1941 - INFO - Advanced extraction completed for 1941: 1000 new rows, 1000 total rows, 0 unresolved failures, 29996.41 seconds
+2026-09-03 23:33:59,258 - results_logger_1941 - INFO - Merged 1000 basic rows with 1000 advanced rows into 1000 rows for 1941
+2026-09-03 23:34:00,006 - results_logger_1941 - INFO - Computed derived columns for 1000 merged rows
