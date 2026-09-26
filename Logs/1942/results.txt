@@ -1,0 +1,5 @@
+2026-09-26 01:53:36,214 - results_logger_1942 - INFO - Loaded 1000 items; extracted 1000 movies in 97.13 seconds
+2026-09-26 05:58:57,956 - results_logger_1942 - INFO - Advanced timing summary for 1000 attempts: average total 14.71s; stages={"full_credits": {"average_seconds": 6.08, "timed_out": 971}, "parental_guide": {"average_seconds": 2.41, "timed_out": 1}, "release_info": {"average_seconds": 2.45, "timed_out": 16}, "title_page": {"average_seconds": 3.08, "timed_out": 0}}
+2026-09-26 05:58:57,958 - results_logger_1942 - INFO - Advanced extraction completed for 1942: 1000 new rows, 1000 total rows, 0 unresolved failures, 14718.41 seconds
+2026-09-26 05:58:58,814 - results_logger_1942 - INFO - Merged 1000 basic rows with 1000 advanced rows into 1000 rows for 1942
+2026-09-26 05:58:59,327 - results_logger_1942 - INFO - Computed derived columns for 1000 merged rows
