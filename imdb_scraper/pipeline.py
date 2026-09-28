@@ -1,0 +1,78 @@
+import time
+
+import pandas as pd
+
+from .advanced import extract_advanced_data
+from .analysis import compute_derived_columns, merge_data
+from .config import ADVANCED_WORKERS, STATUS_COLUMNS
+from .extractors import extract_links
+from .storage import (
+    read_csv_fast,
+    read_csv_or_empty,
+    setup_directories,
+    setup_logging,
+    write_csv_safely,
+    year_paths,
+)
+
+
+def process_year(
+    year, max_movies=1000, workers=ADVANCED_WORKERS,
+    refresh_advanced=False, refresh_stages=None, refresh_missing=False,
+    complete_release_info=False,
+):
+    print(f"Starting processing for year {year}")
+    start = time.time()
+    data_dir, _ = setup_directories(year)
+    paths = year_paths(year)
+    error_logger, results_logger = setup_logging(year)
+    try:
+        refresh_requested = bool(refresh_advanced or refresh_stages or refresh_missing)
+        if refresh_requested and paths["basic"].exists():
+            links = read_csv_fast(paths["basic"])
+            if max_movies >= 0:
+                links = links.head(max_movies)
+            results_logger.info("Loaded %s existing basic rows for targeted refresh of %s", len(links), year)
+        else:
+            links = extract_links(year, error_logger, results_logger, max_movies)
+        if links.empty:
+            results_logger.info("No links extracted for %s; skipping advanced extraction and merge", year)
+            print(f"No links extracted for year {year}; skipping advanced extraction and merge")
+            return
+        if not refresh_requested or not paths["basic"].exists():
+            write_csv_safely(links, paths["basic"])
+        extract_advanced_data(
+            year, links, error_logger, results_logger, workers=workers,
+            refresh_advanced=refresh_advanced, refresh_stages=refresh_stages,
+            refresh_missing=refresh_missing, complete_release_info=complete_release_info,
+        )
+        merged = merge_data(year, data_dir, error_logger, results_logger)
+        if merged is not None:
+            write_csv_safely(compute_derived_columns(merged, error_logger, results_logger), paths["merged"])
+        print(f"Processing completed for year {year} in {time.time() - start:.2f} seconds")
+    except Exception as exc:
+        error_logger.error("Critical error during processing for year %s: %s", year, exc)
+        print(f"Error: Processing failed for year {year}: {exc}")
+
+
+def retry_failed_year(year, workers=ADVANCED_WORKERS, complete_release_info=False):
+    print(f"Retrying failed advanced links for year {year}")
+    start = time.time()
+    data_dir, _ = setup_directories(year)
+    paths = year_paths(year)
+    error_logger, results_logger = setup_logging(year)
+    status = read_csv_or_empty(paths["status"], STATUS_COLUMNS)
+    failed = status[status["status"] == "failed"] if "status" in status else pd.DataFrame(columns=STATUS_COLUMNS)
+    if failed.empty:
+        results_logger.info("No failed advanced links to retry for %s", year)
+        print(f"No failed advanced links to retry for year {year}")
+        return
+    retry_links = failed.rename(columns={"link": "Movie Link", "title": "Title"})
+    extract_advanced_data(
+        year, retry_links, error_logger, results_logger,
+        retry_failed_only=True, workers=workers, complete_release_info=complete_release_info,
+    )
+    merged = merge_data(year, data_dir, error_logger, results_logger)
+    if merged is not None:
+        write_csv_safely(compute_derived_columns(merged, error_logger, results_logger), paths["merged"])
+    print(f"Retry completed for year {year} in {time.time() - start:.2f} seconds")
