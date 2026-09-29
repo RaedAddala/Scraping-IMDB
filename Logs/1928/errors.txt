@@ -4,3 +4,297 @@
 2026-09-27 18:29:47,536 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0280121/?ref_=sr_i_211: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0280121/releaseinfo/
 2026-09-28 05:24:07,692 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0280121/?ref_=sr_i_211: StageExtractionError: parental_guide failed: PageContentError: IMDb returned an invalid or incomplete parental_guide page for https://www.imdb.com/title/tt0280121/parentalguide/
 2026-09-28 05:39:25,021 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0280121/?ref_=sr_i_211: StageExtractionError: parental_guide failed: PageContentError: IMDb returned an invalid or incomplete parental_guide page for https://www.imdb.com/title/tt0280121/parentalguide/
+2026-09-28 21:40:31,674 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt9315382/?ref_=sr_i_976: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt9315382/releaseinfo/
+2026-09-28 21:40:37,393 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018756/?ref_=sr_i_13: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018756/releaseinfo/
+2026-09-28 21:43:14,743 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt11686948/?ref_=sr_i_931: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt11686948/releaseinfo/
+2026-09-28 21:45:08,104 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019204/?ref_=sr_i_904: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019204/releaseinfo/
+2026-09-28 21:45:15,139 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018851/?ref_=sr_i_56: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018851/releaseinfo/
+2026-09-28 21:48:30,175 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019551/?ref_=sr_i_851: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019551/releaseinfo/
+2026-09-28 21:48:30,702 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019152/?ref_=sr_i_88: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019152/releaseinfo/
+2026-09-28 21:48:42,367 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018763/?ref_=sr_i_850: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018763/releaseinfo/
+2026-09-28 21:48:42,798 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0196592/?ref_=sr_i_89: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0196592/releaseinfo/
+2026-09-28 21:48:54,535 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0226443/?ref_=sr_i_849: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0226443/releaseinfo/
+2026-09-28 21:49:35,696 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019325/?ref_=sr_i_98: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019325/releaseinfo/
+2026-09-28 21:49:35,945 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt1084707/?ref_=sr_i_846: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt1084707/releaseinfo/
+2026-09-28 21:49:47,893 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018647/?ref_=sr_i_99: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018647/releaseinfo/
+2026-09-28 21:49:48,145 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0258544/?ref_=sr_i_845: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0258544/releaseinfo/
+2026-09-28 21:51:06,496 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019480/?ref_=sr_i_111: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019480/releaseinfo/
+2026-09-28 21:51:07,995 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0270294/?ref_=sr_i_828: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0270294/releaseinfo/
+2026-09-28 21:51:20,198 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt1844020/?ref_=sr_i_827: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt1844020/releaseinfo/
+2026-09-28 21:53:44,508 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0232776/?ref_=sr_i_138: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0232776/releaseinfo/
+2026-09-28 21:53:44,627 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019477/?ref_=sr_i_792: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019477/releaseinfo/
+2026-09-28 21:54:07,409 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018611/?ref_=sr_i_140: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018611/releaseinfo/
+2026-09-28 21:54:13,290 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt21415818/?ref_=sr_i_788: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt21415818/releaseinfo/
+2026-09-28 21:54:19,582 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0020368/?ref_=sr_i_141: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0020368/releaseinfo/
+2026-09-28 21:59:24,907 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0280121/?ref_=sr_i_211: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0280121/releaseinfo/
+2026-09-28 22:04:07,738 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018746/?ref_=sr_i_610: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018746/releaseinfo/
+2026-09-28 22:04:19,269 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018918/?ref_=sr_i_275: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018918/releaseinfo/
+2026-09-28 22:04:23,057 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018772/?ref_=sr_i_609: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018772/releaseinfo/
+2026-09-28 22:04:34,713 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019167/?ref_=sr_i_276: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019167/releaseinfo/
+2026-09-28 22:04:38,497 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0260075/?ref_=sr_i_608: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0260075/releaseinfo/
+2026-09-28 22:08:36,992 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019207/?ref_=sr_i_554: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019207/releaseinfo/
+2026-09-28 22:08:38,654 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0447315/?ref_=sr_i_338: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0447315/releaseinfo/
+2026-09-28 22:15:38,596 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0020091/?ref_=sr_i_439: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0020091/releaseinfo/
+2026-09-28 22:15:39,390 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019224/?ref_=sr_i_455: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019224/releaseinfo/
+2026-09-28 22:15:50,730 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018771/?ref_=sr_i_440: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018771/releaseinfo/
+2026-09-28 22:15:51,699 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019426/?ref_=sr_i_454: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019426/releaseinfo/
+2026-09-28 22:16:54,701 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt11686948/?ref_=sr_i_931: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt11686948/releaseinfo/
+2026-09-28 22:17:04,261 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018851/?ref_=sr_i_56: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018851/releaseinfo/
+2026-09-28 22:17:06,933 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019204/?ref_=sr_i_904: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0019204/releaseinfo/
+2026-09-28 22:18:00,975 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0280121/?ref_=sr_i_211: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0280121/releaseinfo/
+2026-09-28 22:26:14,953 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt11867320/?ref_=sr_i_974: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt11867320/fullcredits/
+2026-09-28 22:27:57,253 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019558/?ref_=sr_i_41: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019558/fullcredits/
+2026-09-28 22:28:02,521 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0169405/?ref_=sr_i_945: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0169405/fullcredits/
+2026-09-28 22:28:09,556 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0343052/?ref_=sr_i_42: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0343052/fullcredits/
+2026-09-28 22:28:14,736 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt3974636/?ref_=sr_i_944: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt3974636/fullcredits/
+2026-09-28 22:30:08,316 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019489/?ref_=sr_i_68: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019489/fullcredits/
+2026-09-28 22:30:23,655 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019035/?ref_=sr_i_69: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019035/fullcredits/
+2026-09-28 22:30:33,574 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0253192/?ref_=sr_i_901: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0253192/fullcredits/
+2026-09-28 22:30:39,009 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018674/?ref_=sr_i_70: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018674/fullcredits/
+2026-09-28 22:31:53,585 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019568/?ref_=sr_i_83: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019568/fullcredits/
+2026-09-28 22:31:58,375 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt11220466/?ref_=sr_i_879: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt11220466/fullcredits/
+2026-09-28 22:32:05,745 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt8262256/?ref_=sr_i_84: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt8262256/fullcredits/
+2026-09-28 22:33:29,500 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019509/?ref_=sr_i_105: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019509/fullcredits/
+2026-09-28 22:33:31,924 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt14411914/?ref_=sr_i_853: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt14411914/fullcredits/
+2026-09-28 22:33:41,760 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019381/?ref_=sr_i_106: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019381/fullcredits/
+2026-09-28 22:33:47,356 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0156557/?ref_=sr_i_852: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0156557/fullcredits/
+2026-09-28 22:33:57,142 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019159/?ref_=sr_i_107: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019159/fullcredits/
+2026-09-28 22:34:02,556 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019551/?ref_=sr_i_851: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019551/fullcredits/
+2026-09-28 22:35:03,418 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019358/?ref_=sr_i_116: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019358/fullcredits/
+2026-09-28 22:35:15,679 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0017773/?ref_=sr_i_840: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0017773/fullcredits/
+2026-09-28 22:37:21,101 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018850/?ref_=sr_i_151: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018850/fullcredits/
+2026-09-28 22:37:22,669 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0127661/?ref_=sr_i_802: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0127661/fullcredits/
+2026-09-28 22:38:04,619 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018745/?ref_=sr_i_796: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018745/fullcredits/
+2026-09-28 22:38:07,831 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019013/?ref_=sr_i_158: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019013/fullcredits/
+2026-09-28 22:38:16,822 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019008/?ref_=sr_i_795: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019008/fullcredits/
+2026-09-28 22:38:20,237 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018714/?ref_=sr_i_159: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018714/fullcredits/
+2026-09-28 22:38:24,751 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0023448/?ref_=sr_i_160: StageExtractionError: full_credits failed: WebDriverException: Message: unknown error: net::ERR_CONNECTION_CLOSED
+  (Session info: MicrosoftEdge=154.0.4258.37)
+Stacktrace:
+	msedgedriver!GetHandleVerifier [0x7ff767e7fd45+4c15]
+	msedgedriver!(No symbol) [0x7ff767dd1534]
+	msedgedriver!GetHandleVerifier [0x7ff768202e7f+387d4f]
+	msedgedriver!(No symbol) [0x7ff767b54597]
+	msedgedriver!(No symbol) [0x7ff767b49a37]
+	msedgedriver!(No symbol) [0x7ff767b4b05c]
+	msedgedriver!(No symbol) [0x7ff767b49ca7]
+	msedgedriver!(No symbol) [0x7ff767b498a8]
+	msedgedriver!(No symbol) [0x7ff767b49605]
+	msedgedriver!(No symbol) [0x7ff767b477b5]
+	msedgedriver!(No symbol) [0x7ff767b47de2]
+	msedgedriver!(No symbol) [0x7ff767b5a133]
+	msedgedriver!(No symbol) [0x7ff767be07c7]
+	msedgedriver!(No symbol) [0x7ff767bc328a]
+	msedgedriver!(No symbol) [0x7ff767b986cf]
+	msedgedriver!(No symbol) [0x7ff767be01f8]
+	msedgedriver!(No symbol) [0x7ff767b97f0c]
+	msedgedriver!(No symbol) [0x7ff767b9718d]
+	msedgedriver!(No symbol) [0x7ff767b97d33]
+	msedgedriver!(No symbol) [0x7ff767cdd764]
+	msedgedriver!(No symbol) [0x7ff767cea928]
+	msedgedriver!GetHandleVerifier [0x7ff767f254d5+aa3a5]
+	msedgedriver!GetHandleVerifier [0x7ff767f2b7d1+b06a1]
+	msedgedriver!(No symbol) [0x7ff767ddd1bf]
+	msedgedriver!(No symbol) [0x7ff767dd7c44]
+	msedgedriver!(No symbol) [0x7ff767dd7d6a]
+	msedgedriver!(No symbol) [0x7ff767dc92b8]
+	KERNEL32!BaseThreadInitThunk [0x7ffa3875cd87+17]
+	ntdll!RtlUserThreadStart [0x7ffa3982caec+2c]
+
+2026-09-28 22:38:29,138 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019347/?ref_=sr_i_794: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019347/fullcredits/
+2026-09-28 22:38:40,200 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018656/?ref_=sr_i_161: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018656/fullcredits/
+2026-09-28 22:40:29,845 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018710/?ref_=sr_i_191: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018710/fullcredits/
+2026-09-28 22:40:32,728 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0778679/?ref_=sr_i_772: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0778679/fullcredits/
+2026-09-28 22:40:41,945 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0020110/?ref_=sr_i_192: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0020110/fullcredits/
+2026-09-28 22:40:44,946 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018946/?ref_=sr_i_771: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018946/fullcredits/
+2026-09-28 22:41:31,599 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019613/?ref_=sr_i_761: StageExtractionError: full_credits failed: WebDriverException: Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: MicrosoftEdge=154.0.4258.37)
+Stacktrace:
+	msedgedriver!GetHandleVerifier [0x7ff767e7fd45+4c15]
+	msedgedriver!(No symbol) [0x7ff767dd1534]
+	msedgedriver!GetHandleVerifier [0x7ff768202e7f+387d4f]
+	msedgedriver!(No symbol) [0x7ff767b54597]
+	msedgedriver!(No symbol) [0x7ff767b49a37]
+	msedgedriver!(No symbol) [0x7ff767b4b05c]
+	msedgedriver!(No symbol) [0x7ff767b49ca7]
+	msedgedriver!(No symbol) [0x7ff767b498a8]
+	msedgedriver!(No symbol) [0x7ff767b49605]
+	msedgedriver!(No symbol) [0x7ff767b477b5]
+	msedgedriver!(No symbol) [0x7ff767b47de2]
+	msedgedriver!(No symbol) [0x7ff767b5a133]
+	msedgedriver!(No symbol) [0x7ff767be07c7]
+	msedgedriver!(No symbol) [0x7ff767bc328a]
+	msedgedriver!(No symbol) [0x7ff767b986cf]
+	msedgedriver!(No symbol) [0x7ff767be01f8]
+	msedgedriver!(No symbol) [0x7ff767b97f0c]
+	msedgedriver!(No symbol) [0x7ff767b9718d]
+	msedgedriver!(No symbol) [0x7ff767b97d33]
+	msedgedriver!(No symbol) [0x7ff767cdd764]
+	msedgedriver!(No symbol) [0x7ff767cea928]
+	msedgedriver!GetHandleVerifier [0x7ff767f254d5+aa3a5]
+	msedgedriver!GetHandleVerifier [0x7ff767f2b7d1+b06a1]
+	msedgedriver!(No symbol) [0x7ff767ddd1bf]
+	msedgedriver!(No symbol) [0x7ff767dd7c44]
+	msedgedriver!(No symbol) [0x7ff767dd7d6a]
+	msedgedriver!(No symbol) [0x7ff767dc92b8]
+	KERNEL32!BaseThreadInitThunk [0x7ffa3875cd87+17]
+	ntdll!RtlUserThreadStart [0x7ffa3982caec+2c]
+
+2026-09-28 22:41:40,032 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0280121/?ref_=sr_i_211: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0280121/fullcredits/
+2026-09-28 22:41:46,865 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018705/?ref_=sr_i_760: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018705/fullcredits/
+2026-09-28 22:42:56,884 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019298/?ref_=sr_i_234: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019298/fullcredits/
+2026-09-28 22:43:05,789 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0170673/?ref_=sr_i_742: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0170673/fullcredits/
+2026-09-28 22:43:09,017 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019309/?ref_=sr_i_235: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019309/fullcredits/
+2026-09-28 22:44:23,864 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019423/?ref_=sr_i_729: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019423/fullcredits/
+2026-09-28 22:44:24,059 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018621/?ref_=sr_i_254: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018621/fullcredits/
+2026-09-28 22:44:52,655 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019280/?ref_=sr_i_257: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019280/fullcredits/
+2026-09-28 22:44:53,242 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0450558/?ref_=sr_i_726: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0450558/fullcredits/
+2026-09-28 22:45:05,440 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0325412/?ref_=sr_i_725: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0325412/fullcredits/
+2026-09-28 22:45:07,817 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018754/?ref_=sr_i_258: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018754/fullcredits/
+2026-09-28 22:45:20,894 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt12265438/?ref_=sr_i_724: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt12265438/fullcredits/
+2026-09-28 22:45:22,982 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018830/?ref_=sr_i_259: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018830/fullcredits/
+2026-09-28 22:46:55,192 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019057/?ref_=sr_i_282: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019057/fullcredits/
+2026-09-28 22:46:57,253 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0150997/?ref_=sr_i_702: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0150997/fullcredits/
+2026-09-28 22:47:07,468 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019131/?ref_=sr_i_283: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019131/fullcredits/
+2026-09-28 22:47:12,533 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0194205/?ref_=sr_i_701: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0194205/fullcredits/
+2026-09-28 22:48:07,477 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018707/?ref_=sr_i_686: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018707/fullcredits/
+2026-09-28 22:48:49,122 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018796/?ref_=sr_i_675: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018796/fullcredits/
+2026-09-28 22:48:50,702 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018785/?ref_=sr_i_318: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018785/fullcredits/
+2026-09-28 22:49:01,235 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019575/?ref_=sr_i_674: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019575/fullcredits/
+2026-09-28 22:49:02,942 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019188/?ref_=sr_i_319: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019188/fullcredits/
+2026-09-28 22:49:03,474 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0264399/?ref_=sr_i_320: StageExtractionError: full_credits failed: WebDriverException: Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: MicrosoftEdge=154.0.4258.37)
+Stacktrace:
+	msedgedriver!GetHandleVerifier [0x7ff767e7fd45+4c15]
+	msedgedriver!(No symbol) [0x7ff767dd1534]
+	msedgedriver!GetHandleVerifier [0x7ff768202e7f+387d4f]
+	msedgedriver!(No symbol) [0x7ff767b54597]
+	msedgedriver!(No symbol) [0x7ff767b49a37]
+	msedgedriver!(No symbol) [0x7ff767b4b05c]
+	msedgedriver!(No symbol) [0x7ff767b49ca7]
+	msedgedriver!(No symbol) [0x7ff767b498a8]
+	msedgedriver!(No symbol) [0x7ff767b49605]
+	msedgedriver!(No symbol) [0x7ff767b477b5]
+	msedgedriver!(No symbol) [0x7ff767b47de2]
+	msedgedriver!(No symbol) [0x7ff767b5a133]
+	msedgedriver!(No symbol) [0x7ff767be07c7]
+	msedgedriver!(No symbol) [0x7ff767bc328a]
+	msedgedriver!(No symbol) [0x7ff767b986cf]
+	msedgedriver!(No symbol) [0x7ff767be01f8]
+	msedgedriver!(No symbol) [0x7ff767b97f0c]
+	msedgedriver!(No symbol) [0x7ff767b9718d]
+	msedgedriver!(No symbol) [0x7ff767b97d33]
+	msedgedriver!(No symbol) [0x7ff767cdd764]
+	msedgedriver!(No symbol) [0x7ff767cea928]
+	msedgedriver!GetHandleVerifier [0x7ff767f254d5+aa3a5]
+	msedgedriver!GetHandleVerifier [0x7ff767f2b7d1+b06a1]
+	msedgedriver!(No symbol) [0x7ff767ddd1bf]
+	msedgedriver!(No symbol) [0x7ff767dd7c44]
+	msedgedriver!(No symbol) [0x7ff767dd7d6a]
+	msedgedriver!(No symbol) [0x7ff767dc92b8]
+	KERNEL32!BaseThreadInitThunk [0x7ffa3875cd87+17]
+	ntdll!RtlUserThreadStart [0x7ffa3982caec+2c]
+
+2026-09-28 22:49:13,380 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0017772/?ref_=sr_i_673: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0017772/fullcredits/
+2026-09-28 22:49:36,212 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019464/?ref_=sr_i_321: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019464/fullcredits/
+2026-09-28 22:49:36,257 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0171837/?ref_=sr_i_672: StageExtractionError: full_credits failed: WebDriverException: Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: MicrosoftEdge=154.0.4258.37)
+Stacktrace:
+	msedgedriver!GetHandleVerifier [0x7ff767e7fd45+4c15]
+	msedgedriver!(No symbol) [0x7ff767dd1534]
+	msedgedriver!GetHandleVerifier [0x7ff768202e7f+387d4f]
+	msedgedriver!(No symbol) [0x7ff767b54597]
+	msedgedriver!(No symbol) [0x7ff767b49a37]
+	msedgedriver!(No symbol) [0x7ff767b4b05c]
+	msedgedriver!(No symbol) [0x7ff767b49ca7]
+	msedgedriver!(No symbol) [0x7ff767b498a8]
+	msedgedriver!(No symbol) [0x7ff767b49605]
+	msedgedriver!(No symbol) [0x7ff767b477b5]
+	msedgedriver!(No symbol) [0x7ff767b47de2]
+	msedgedriver!(No symbol) [0x7ff767b5a133]
+	msedgedriver!(No symbol) [0x7ff767be07c7]
+	msedgedriver!(No symbol) [0x7ff767bc328a]
+	msedgedriver!(No symbol) [0x7ff767b986cf]
+	msedgedriver!(No symbol) [0x7ff767be01f8]
+	msedgedriver!(No symbol) [0x7ff767b97f0c]
+	msedgedriver!(No symbol) [0x7ff767b9718d]
+	msedgedriver!(No symbol) [0x7ff767b97d33]
+	msedgedriver!(No symbol) [0x7ff767cdd764]
+	msedgedriver!(No symbol) [0x7ff767cea928]
+	msedgedriver!GetHandleVerifier [0x7ff767f254d5+aa3a5]
+	msedgedriver!GetHandleVerifier [0x7ff767f2b7d1+b06a1]
+	msedgedriver!(No symbol) [0x7ff767ddd1bf]
+	msedgedriver!(No symbol) [0x7ff767dd7c44]
+	msedgedriver!(No symbol) [0x7ff767dd7d6a]
+	msedgedriver!(No symbol) [0x7ff767dc92b8]
+	KERNEL32!BaseThreadInitThunk [0x7ffa3875cd87+17]
+	ntdll!RtlUserThreadStart [0x7ffa3982caec+2c]
+
+2026-09-28 22:49:51,493 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018642/?ref_=sr_i_671: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018642/fullcredits/
+2026-09-28 22:49:51,563 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019550/?ref_=sr_i_322: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019550/fullcredits/
+2026-09-28 22:49:57,652 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018698/?ref_=sr_i_670: StageExtractionError: full_credits failed: WebDriverException: Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: MicrosoftEdge=154.0.4258.37)
+Stacktrace:
+	msedgedriver!GetHandleVerifier [0x7ff767e7fd45+4c15]
+	msedgedriver!(No symbol) [0x7ff767dd1534]
+	msedgedriver!GetHandleVerifier [0x7ff768202e7f+387d4f]
+	msedgedriver!(No symbol) [0x7ff767b54597]
+	msedgedriver!(No symbol) [0x7ff767b49a37]
+	msedgedriver!(No symbol) [0x7ff767b4b05c]
+	msedgedriver!(No symbol) [0x7ff767b49ca7]
+	msedgedriver!(No symbol) [0x7ff767b498a8]
+	msedgedriver!(No symbol) [0x7ff767b49605]
+	msedgedriver!(No symbol) [0x7ff767b477b5]
+	msedgedriver!(No symbol) [0x7ff767b47de2]
+	msedgedriver!(No symbol) [0x7ff767b5a133]
+	msedgedriver!(No symbol) [0x7ff767be07c7]
+	msedgedriver!(No symbol) [0x7ff767bc328a]
+	msedgedriver!(No symbol) [0x7ff767b986cf]
+	msedgedriver!(No symbol) [0x7ff767be01f8]
+	msedgedriver!(No symbol) [0x7ff767b97f0c]
+	msedgedriver!(No symbol) [0x7ff767b9718d]
+	msedgedriver!(No symbol) [0x7ff767b97d33]
+	msedgedriver!(No symbol) [0x7ff767cdd764]
+	msedgedriver!(No symbol) [0x7ff767cea928]
+	msedgedriver!GetHandleVerifier [0x7ff767f254d5+aa3a5]
+	msedgedriver!GetHandleVerifier [0x7ff767f2b7d1+b06a1]
+	msedgedriver!(No symbol) [0x7ff767ddd1bf]
+	msedgedriver!(No symbol) [0x7ff767dd7c44]
+	msedgedriver!(No symbol) [0x7ff767dd7d6a]
+	msedgedriver!(No symbol) [0x7ff767dc92b8]
+	KERNEL32!BaseThreadInitThunk [0x7ffa3875cd87+17]
+	ntdll!RtlUserThreadStart [0x7ffa3982caec+2c]
+
+2026-09-28 22:50:06,815 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019292/?ref_=sr_i_323: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019292/fullcredits/
+2026-09-28 22:50:40,715 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019205/?ref_=sr_i_667: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019205/fullcredits/
+2026-09-28 22:53:14,970 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018948/?ref_=sr_i_377: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018948/fullcredits/
+2026-09-28 22:53:20,413 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018702/?ref_=sr_i_622: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018702/fullcredits/
+2026-09-28 22:53:27,145 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019375/?ref_=sr_i_378: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019375/fullcredits/
+2026-09-28 22:57:43,958 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0194523/?ref_=sr_i_466: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0194523/fullcredits/
+2026-09-28 22:58:53,297 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019470/?ref_=sr_i_485: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019470/fullcredits/
+2026-09-28 22:59:14,640 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018825/?ref_=sr_i_531: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018825/fullcredits/
+2026-09-28 22:59:14,771 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019065/?ref_=sr_i_488: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019065/fullcredits/
+2026-09-28 22:59:26,914 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0255441/?ref_=sr_i_530: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0255441/fullcredits/
+2026-09-28 22:59:26,966 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019164/?ref_=sr_i_489: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019164/fullcredits/
+2026-09-28 22:59:39,173 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt1441416/?ref_=sr_i_490: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt1441416/fullcredits/
+2026-09-28 22:59:42,141 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019514/?ref_=sr_i_529: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019514/fullcredits/
+2026-09-28 23:00:20,041 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018798/?ref_=sr_i_526: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018798/fullcredits/
+2026-09-28 23:00:20,545 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0277994/?ref_=sr_i_493: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0277994/fullcredits/
+2026-09-28 23:00:32,319 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019579/?ref_=sr_i_525: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019579/fullcredits/
+2026-09-28 23:00:32,780 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0300943/?ref_=sr_i_494: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0300943/fullcredits/
+2026-09-28 23:00:45,092 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018966/?ref_=sr_i_495: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018966/fullcredits/
+2026-09-28 23:00:47,504 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019519/?ref_=sr_i_524: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019519/fullcredits/
+2026-09-28 23:01:16,882 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018619/?ref_=sr_i_496: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018619/fullcredits/
+2026-09-28 23:02:48,528 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0280121/?ref_=sr_i_211: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0280121/fullcredits/
+2026-09-28 23:03:09,255 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0325412/?ref_=sr_i_725: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0325412/fullcredits/
+2026-09-28 23:03:13,245 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018754/?ref_=sr_i_258: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018754/fullcredits/
+2026-09-28 23:03:21,460 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt12265438/?ref_=sr_i_724: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt12265438/fullcredits/
+2026-09-28 23:03:28,439 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018830/?ref_=sr_i_259: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018830/fullcredits/
+2026-09-28 23:03:33,717 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0150997/?ref_=sr_i_702: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0150997/fullcredits/
+2026-09-28 23:03:43,604 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019057/?ref_=sr_i_282: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019057/fullcredits/
+2026-09-28 23:04:43,465 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0018798/?ref_=sr_i_526: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0018798/fullcredits/
+2026-09-28 23:04:46,541 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019065/?ref_=sr_i_488: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019065/fullcredits/
+2026-09-28 23:04:55,623 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019579/?ref_=sr_i_525: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019579/fullcredits/
+2026-09-28 23:05:01,720 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019164/?ref_=sr_i_489: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019164/fullcredits/
+2026-09-28 23:05:07,794 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt0019519/?ref_=sr_i_524: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0019519/fullcredits/
+2026-09-28 23:05:16,835 - error_logger_1928 - ERROR - Error processing URL https://www.imdb.com/title/tt1441416/?ref_=sr_i_490: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt1441416/fullcredits/
