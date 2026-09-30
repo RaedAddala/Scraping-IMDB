@@ -42,7 +42,15 @@ NETWORK_ERROR_THRESHOLD = 3
 NETWORK_BACKOFF_SECONDS = 10
 BLOCKED_RESOURCE_URLS = [
     "*.jpg*", "*.jpeg*", "*.png*", "*.webp*", "*.gif*", "*.avif*",
-    "*.woff*", "*.woff2*", "*.ttf*", "*.otf*", "*.mp4*", "*.webm*",
+    "*.svg*", "*.ico*", "*.bmp*",
+    "*.woff*", "*.woff2*", "*.ttf*", "*.otf*", "*.eot*",
+    "*.css*",
+    "*.mp4*", "*.webm*", "*.mov*", "*.avi*", "*.m3u8*", "*.ts*",
+    "*.mp3*", "*.m4a*", "*.wav*", "*.ogg*",
+    "*doubleclick.net/*", "*googletagmanager.com/*",
+    "*google-analytics.com/*", "*amazon-adsystem.com/*",
+    "*scorecardresearch.com/*",
+    "*m.media-amazon.com/images/*",
 ]
 
 PARENTAL_GUIDE_CATEGORIES = {

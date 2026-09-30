@@ -31,8 +31,21 @@ def create_edge_driver():
     options.add_experimental_option("prefs", {
         "profile.managed_default_content_settings.images": 2,
         "profile.default_content_setting_values.notifications": 2,
+        "net.network_prediction_options": 2,
     })
-    for argument in ("--log-level=3", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-extensions", "--disable-infobars"):
+    for argument in (
+        "--log-level=3",
+        "--disable-gpu",
+        "--disable-extensions",
+        "--disable-infobars",
+        "--disable-background-networking",
+        "--disable-component-update",
+        "--disable-domain-reliability",
+        "--disable-sync",
+        "--disable-translate",
+        "--metrics-recording-only",
+        "--mute-audio",
+    ):
         options.add_argument(argument)
     driver_path = SCRIPT_DIR / "edgedriver.exe"
     try:

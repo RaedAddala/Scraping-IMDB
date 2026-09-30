@@ -192,6 +192,13 @@ def _expected_title_id(url):
     return match.group(1) if match else None
 
 
+def _stop_page_loading(driver):
+    try:
+        driver.execute_script("window.stop()")
+    except WebDriverException:
+        pass
+
+
 def _is_expected_imdb_page(soup, url, stage):
     page_title = clean_text(soup.title) or ""
     if "privacy error" in page_title.lower() or "preventing microsoft edge" in soup.get_text(" ", strip=True).lower():
@@ -225,6 +232,7 @@ def _page_soup(driver, url, timings=None, stage=None):
             )
         except TimeoutException:
             pass
+        _stop_page_loading(driver)
         soup = BeautifulSoup(driver.page_source, "lxml")
         content_ready = _is_expected_imdb_page(soup, url, stage)
         if timings is not None and stage:
@@ -256,6 +264,7 @@ def _page_content_data(driver, url, timings=None, stage=None):
             )
         except TimeoutException:
             pass
+        _stop_page_loading(driver)
         raw = driver.execute_script(
             "return document.querySelector('script#__NEXT_DATA__')?.textContent || null"
         )
