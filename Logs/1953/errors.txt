@@ -1,0 +1,1 @@
+2026-09-30 16:10:51,648 - error_logger_1953 - ERROR - Error processing URL https://www.imdb.com/title/tt0045704/?ref_=sr_i_303: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0045704/fullcredits/
