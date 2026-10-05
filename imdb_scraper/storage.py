@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config import ADVANCED_STAGES, SCRIPT_DIR
+from .config import SCRIPT_DIR
 
 
 def year_paths(year):
@@ -42,37 +42,97 @@ def setup_logging(year):
         logger.propagate = False
         path = os.path.abspath(logs_dir / filename)
         if not any(isinstance(h, logging.FileHandler) and getattr(h, "baseFilename", None) == path for h in logger.handlers):
-            handler = logging.FileHandler(path)
+            handler = logging.FileHandler(path, encoding="utf-8")
             handler.setLevel(level)
             handler.setFormatter(formatter)
             logger.addHandler(handler)
     return error_logger, results_logger
 
 
-def write_csv_safely(df, path):
+def is_missing(value):
+    if value is None:
+        return True
+    try:
+        return bool(pd.isna(value))
+    except (TypeError, ValueError):
+        return False  # lists and other containers
+
+
+def _json_cell(value):
+    if isinstance(value, str) or is_missing(value):
+        return None if is_missing(value) else value
+    if isinstance(value, (list, tuple, dict)) and not value:
+        return None
+    return json.dumps(value, ensure_ascii=False)
+
+
+def _bool_cell(value):
+    if is_missing(value):
+        return None
+    return str(value).strip().lower() in {"true", "1"}
+
+
+def format_frame(df, schema):
+    """Return df with exactly the schema's columns, in order, cast to the schema's types."""
+    out = pd.DataFrame(index=df.index)
+    for column, kind in schema.items():
+        series = df[column] if column in df else pd.Series(None, index=df.index, dtype=object)
+        if kind == "int":
+            out[column] = pd.to_numeric(series, errors="coerce").round().astype("Int64")
+        elif kind == "float":
+            out[column] = pd.to_numeric(series, errors="coerce").astype("Float64")
+        elif kind == "bool":
+            out[column] = series.map(_bool_cell).astype("boolean")
+        elif kind == "json":
+            out[column] = series.map(_json_cell).astype(object)
+        else:
+            out[column] = series.map(lambda value: None if is_missing(value) else str(value)).astype(object)
+    return out.reset_index(drop=True)
+
+
+def write_csv_safely(df, path, schema=None):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    if schema is not None:
+        df = format_frame(df, schema)
     temp_path = path.with_name(f"{path.name}.tmp")
-    df.to_csv(temp_path, index=False)
+    df.to_csv(temp_path, index=False, encoding="utf-8")
     temp_path.replace(path)
+
+
+# Only an empty cell is missing, and everything is read as text so values round-trip exactly
+# (no 1995 -> 1995.0). Callers cast with format_frame / pd.to_numeric where they need numbers.
+_CSV_OPTIONS = {"keep_default_na": False, "na_values": [""], "dtype": str}
 
 
 def read_csv_fast(path):
     try:
-        return pd.read_csv(path, engine="pyarrow")
+        return pd.read_csv(path, engine="pyarrow", **_CSV_OPTIONS)
     except Exception:
-        return pd.read_csv(path)
+        return pd.read_csv(path, **_CSV_OPTIONS)
 
 
-def read_csv_or_empty(path, columns):
+def read_csv_or_empty(path, schema):
     path = Path(path)
     if not path.exists():
-        return pd.DataFrame(columns=columns)
+        return pd.DataFrame(columns=list(schema))
     df = read_csv_fast(path)
-    for column in columns:
+    for column in schema:
         if column not in df.columns:
             df[column] = None
-    return df
+    if "imdb_id" in df.columns:
+        df = df.dropna(subset=["imdb_id"]).drop_duplicates(subset=["imdb_id"], keep="last")
+    return df.reset_index(drop=True)
+
+
+def parse_json_cell(value):
+    """Parse a JSON column cell; missing or malformed text gives None."""
+    if is_missing(value):
+        return None
+    try:
+        return json.loads(value) if isinstance(value, str) else value
+    except json.JSONDecodeError:
+        return None
 
 
 def now_iso():

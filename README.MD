@@ -1,257 +1,88 @@
 # IMDb Movie Data Scraper
 
-Scrape IMDb feature-film data by release year, save basic and detailed CSV files, and merge them into one analysis-ready dataset per year.
+Scrape IMDb feature-film data by release year into typed, analysis-ready CSV files: one listing file, one details file, one status file and one merged file per year.
 
-The scraper focuses on top-grossing feature films for each selected year. It collects listing data, enriches each movie with detailed metadata, and stores the results in a consistent `Data/<year>` and `Logs/<year>` structure.
+The scraper takes the top-grossing feature films for each year (IMDb search, sorted by US box office), then enriches every title from IMDb's embedded structured page data (no fragile HTML scraping) across four stages: title page, parental guide, full credits and release info.
 
-## Dataset
+## Requirements and setup
 
-Historical outputs and related notebooks are available on Kaggle:
-
-- [IMDb movies from 1960 to 2023](https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023)
-- [Top 500-600 movies of each year from 1960 to 2024](https://www.kaggle.com/datasets/raedaddala/top-500-600-movies-of-each-year-from-1960-to-2024)
-
-Local dataset notebooks, when present, can be used for extraction guidance, cleaning, and normalization:
-
-- `Dataset/guide-to-extracting-data-from-this-dataset.ipynb`
-- `Dataset/cleaning-and-normalizing-data.ipynb`
-- `Dataset/cleaned_data_from_1920_to_2025.csv`
-
-## Features
-
-- Collects feature films by release year, sorted by US box office gross on IMDb.
-- Loads up to 1000 movies per year by default, with a configurable limit.
-- Extracts basic listing fields such as title, year, duration, MPA rating, IMDb rating, votes, Metascore, description, and IMDb link.
-- Extracts detailed fields such as writers, directors, stars and characters, financials, release data, countries, filming locations, production companies, awards, reviews, similar movies, JSON-LD metadata, parental-guide severities, full credits, AKA titles, genres, and languages.
-- Adds derived analysis fields including numeric financial values, profit, ROI, award totals, runtime, release calendar fields, collection counts, and a rating consistency flag.
-- Creates separate basic, advanced, and merged CSV files for every processed year.
-- Tracks advanced-scrape status for every movie link and supports retrying failed links later.
-- Writes per-year logs for errors, processing results, and detailed advanced-scrape attempts.
-- Uses two independent Edge workers by default while keeping all status and result writes in the parent thread.
-- Blocks image, font, and video downloads and parses IMDb's embedded structured page data for text-only enrichment.
-
-## Code layout
-
-`scrapping.py` remains the command-line entry point and compatibility layer. The implementation is separated by responsibility under `imdb_scraper/`:
-
-- `config.py`: schemas, timeouts, worker settings, and extraction-stage definitions.
-- `browser.py`: Edge creation, resource blocking, and browser readiness checks.
-- `storage.py`: paths, logging, safe CSV operations, and timing summaries.
-- `extractors.py`: IMDb listing, title, parental-guide, credits, and release parsing.
-- `advanced.py`: worker coordination, checkpoints, retries, and advanced-data status.
-- `analysis.py`: merging, normalization, and derived analytical columns.
-- `pipeline.py`: per-year processing and failed-link retry workflows.
-- `cli.py`: command-line argument handling.
-
-The package can also be run directly with `uv run python -m imdb_scraper`.
-
-## Requirements
-
-- Python 3.10+
-- [uv](https://docs.astral.sh/uv/)
-- Microsoft Edge
-- `edgedriver.exe` in the project root
-- Stable internet connection
-
-The Edge driver version should match your installed Microsoft Edge version.
-
-## Setup
-
-Install dependencies with uv:
+- Python 3.13+, [uv](https://docs.astral.sh/uv/), Microsoft Edge and a matching `edgedriver.exe` in the project root.
 
 ```powershell
 uv sync
 ```
 
-This installs the dependencies declared in `pyproject.toml`, including Selenium, BeautifulSoup, pandas, and lxml.
-
 ## Usage
 
-Run the scraper for the default range, 1942 through 2026:
-
 ```powershell
-uv run python .\scrapping.py
-```
-
-Run it for a specific year range:
-
-```powershell
-uv run python .\scrapping.py --start-year 1920 --end-year 1920
-```
-
-Limit how many movies are loaded per year:
-
-```powershell
-uv run python .\scrapping.py --start-year 2024 --end-year 2025 --max-movies 100
-```
-
-The default movie limit is 1000 per year.
-
-Use one advanced-extraction worker when memory or network capacity is limited:
-
-```powershell
+uv run python .\scrapping.py --start-year 1920 --end-year 2007      # everything, resumable
+uv run python .\scrapping.py --start-year 2024 --end-year 2024 --max-movies 100
 uv run python .\scrapping.py --start-year 2024 --end-year 2024 --workers 1
 ```
 
-Advanced extraction uses two workers by default. Each worker owns a separate Edge session; the parent thread is the only writer for shared CSV, status, and attempt-log files.
+| Option | Meaning |
+|---|---|
+| `--max-movies N` | Movies per year (default 1000). |
+| `--workers 1\|2` | Independent Edge sessions (default 2). |
+| `--refresh-stages title,parental,credits,release` | Re-scrape only those stages, reusing the saved listing. |
+| `--refresh-advanced` | Re-scrape every stage. |
+| `--refresh-missing` | Re-scrape stages that have no populated field. |
+| `--retry-failed` | Retry only titles marked failed in the status file. |
+| `--listing-only` | Refresh only the search listing and rebuild the merged file. |
+| `--preview-release-info` | Keep only the release/AKA entries embedded in the page (faster). By default every entry is expanded. |
 
-Refresh only the historically incomplete credit and release-info stages while reusing the existing basic listing:
+Runs are resumable: finished titles are skipped, failed stages are retried once automatically, and a failed stage never erases values from stages that succeeded. Wait for a running scrape to finish before starting another on the same year.
 
-```powershell
-uv run python .\scrapping.py --start-year 1941 --end-year 1942 --refresh-stages credits,release
-```
+## Output files
 
-Other refresh modes are `--refresh-advanced` for every advanced stage and `--refresh-missing` for stages with no populated fields. Refreshed rows carry a `scrape_version` value so parser generations can be distinguished.
+For each year: `Data/<year>/imdb_movies_<year>.csv` (listing), `advanced_movies_details_<year>.csv` (details), `advanced_scrape_status_<year>.csv` (per-title and per-stage state), `merged_movies_data_<year>.csv` (listing + details + derived columns), plus `Logs/<year>/errors.txt`, `results.txt` and `advanced_scrape_attempts_<year>.jsonl`.
 
-Collect every paginated release-date and AKA entry instead of the initial embedded subset:
+## Data conventions
 
-```powershell
-uv run python .\scrapping.py --start-year 1984 --end-year 1984 --refresh-stages release --complete-release-info
-```
+- **Key:** `imdb_id` (`tt0114709`) in every file. The year/listing position is never part of identity.
+- **Names:** `snake_case`; amounts are paired with their currency (`budget_amount`, `budget_currency`).
+- **Types:** `int`, `float`, `bool` (`True`/`False`), text, and `json` columns holding a JSON array or object. Integers have no `.0`. Missing is an empty cell; an empty list is also an empty cell (the status file says whether the stage succeeded).
+- **Read it with pandas:** `pd.read_csv(path, keep_default_na=False, na_values=[""])` and `json.loads` on the json columns, so values such as `none` are never mistaken for missing.
+- **Encoding:** UTF-8.
 
-Complete release information is intentionally opt-in because IMDb requires additional expansion requests.
+## Column dictionary
 
-Retry failed advanced-detail scrapes for a year without re-running the basic listing scrape:
+**Listing** (`imdb_id`, `search_year`, `listing_rank`, `listing_title`): the discovery order for the searched year.
 
-```powershell
-uv run python .\scrapping.py --retry-failed --start-year 1920 --end-year 1920
-```
+**Title page**: `title`, `original_title`, `title_type`, `release_year`, `is_adult`, `production_status`, `plot`, `poster_url`, `certificate`, `runtime_seconds`; `release_date` (ISO, may be `YYYY` or `YYYY-MM`), `release_date_precision` (`year`/`month`/`day`) and `release_date_country` (IMDb's displayed release, which is a regional release, not necessarily the first); `imdb_rating`, `imdb_votes`, `metascore`, `top_rated_rank`, `rating_histogram` (votes for 1..10), `user_reviews_count`, `critic_reviews_count`; `budget_*`, `gross_us_canada_*`, `gross_worldwide_*`, `opening_weekend_us_canada_*` (amount + currency, no conversion) and `opening_weekend_end_date`; `award_wins`, `award_nominations` (nominations that did not win; 0 when IMDb lists none), `prestigious_award_name/wins/nominations`; json lists `genres`, `interests` (themes and franchises, never mixed into genres), `keywords` (the first few) with `keywords_total`, `countries_of_origin`, `languages`, `production_companies`, `filming_locations` with `filming_locations_total`, `similar_movie_ids`, `similar_movie_titles`; `similar_movies_status` (`found`/`empty`).
 
-## Outputs
+**Parental guide**: `sex_nudity_severity`, `violence_gore_severity`, `profanity_severity`, `alcohol_drugs_smoking_severity`, `frightening_intense_scenes_severity` (`none`/`mild`/`moderate`/`severe`, lowercase) and `certificates_by_country` (json `[{country, rating, notes}]`).
 
-For each processed year, the scraper creates:
+**Credits** (full-credits page): for `directors`, `writers`, `cast`, `producers`, `composers`, `cinematographers`, `editors`, `casting_directors`, `production_designers`, `costume_designers` there is a json list of names and a parallel `<group>_ids` list of IMDb person IDs. Also `cast_characters` (list of role lists parallel to `cast`), `cast_total`, and `credits_incomplete` (groups the page lists only partly).
 
-- `Data/<year>/imdb_movies_<year>.csv`
-- `Data/<year>/advanced_movies_details_<year>.csv`
-- `Data/<year>/advanced_scrape_status_<year>.csv`
-- `Data/<year>/merged_movies_data_<year>.csv`
-- `Logs/<year>/errors.txt`
-- `Logs/<year>/results.txt`
-- `Logs/<year>/advanced_scrape_attempts_<year>.jsonl`
+**Release info**: `release_dates` (json `[{country, date, note}]`), `akas` (json `[{country, title, note}]`, the original-language title has no country), `release_dates_total`, `akas_total`, and `release_info_complete` (`complete`, `preview` or `empty`, checked against the source totals).
 
-## CSV Structure
+**Housekeeping**: `scraped_at` (UTC time of the latest stage run).
 
-### `imdb_movies_<year>.csv`
+**Derived (merged file only)**: `runtime_minutes`, `first_release_date` (earliest full date in `release_dates`), `release_decade`, `release_month` and `release_weekday` (only when the date precision allows), `gross_minus_budget` / `gross_to_budget_ratio` / `gross_comparison_currency` (worldwide gross vs budget, only when both are in the same currency; not profit), `genre_count`, `country_count`, `language_count`, `cast_count` (empty, not 0, when unknown).
 
-Basic listing data:
+## How data quality is protected
 
-```text
-Title, Year, Duration, MPA, Rating, Votes, meta_score, description, Movie Link
-```
+- Every stage reads IMDb's structured page data and checks it belongs to the requested title; invalid or partial pages fail the stage instead of saving empties.
+- Extractor errors propagate; a failed stage records its error, keeps previous values, and is retried.
+- Values are validated (rating 1-10, non-negative votes and amounts, amounts always have a currency).
+- Credit groups are matched by IMDb's stable category IDs, so singular/plural naming differences ("Editor"/"Editors") cannot drop data.
+- A partial or failed listing never replaces a more complete saved one.
 
-Field notes:
+Not collected: the full keyword list (only the first few and the total), departments beyond the main credit groups, and per-country certificate dates.
 
-- `Title`: Movie title.
-- `Year`: Release year shown in the IMDb listing.
-- `Duration`: Runtime.
-- `MPA`: Motion Picture Association rating, when available.
-- `Rating`: IMDb user rating.
-- `Votes`: Number of IMDb user votes.
-- `meta_score`: Metascore, when available.
-- `description`: Short movie synopsis.
-- `Movie Link`: IMDb movie URL.
+## Code layout
 
-### `advanced_movies_details_<year>.csv`
+`scrapping.py` is the entry point; the implementation is under `imdb_scraper/`: `config.py` (typed schemas and credit-group IDs), `browser.py`, `storage.py` (paths, typed CSV read/write, logging), `extractors.py`, `advanced.py` (workers, checkpoints, retries, stage status), `analysis.py` (merge and derived columns), `pipeline.py`, `cli.py`, `parsing.py`.
 
-Detailed movie metadata:
-
-```text
-link, scrape_version, writers, directors, stars, characters, budget, opening_weekend_Gross, grossWorldWWide, gross_US_Canada, release_date, countries_origin, filming_locations, production_company, awards_content, awards_wins_nominations_total, critic_reviews_count, user_reviews_count, genres, Languages, similar_movies, similar_movies_links, json_ld_rating, json_ld_vote_count, json_ld_content_rating, json_ld_keywords, json_ld_poster_url, json_ld_directors, json_ld_writers, json_ld_actors, json_ld_runtime_minutes, parental-guide fields, full-credit fields, release_dates_by_country, aka_titles
-```
-
-Field notes:
-
-- `link`: IMDb movie URL.
-- `scrape_version`: Parser generation used for the latest advanced refresh.
-- `writers`: Listed writers.
-- `directors`: Listed directors.
-- `stars`: Main cast members.
-- `budget`: Production budget, when available.
-- `opening_weekend_Gross`: Opening weekend revenue.
-- `grossWorldWWide`: Worldwide box office revenue.
-- `gross_US_Canada`: US and Canada box office revenue.
-- `release_date`: Listed release date.
-- `countries_origin`: Countries of origin.
-- `filming_locations`: Listed filming locations.
-- `production_company`: Production companies.
-- `awards_content`: Awards summary or detailed awards text.
-- `genres`: Movie genres.
-- `Languages`: Listed languages.
-- Additional fields capture review counts, similar-title relationships, structured JSON-LD values, parental-guide categories, full-credit departments, country-specific release dates, and AKA titles.
-- Enrichment performs three additional IMDb subpage requests per title. Multimedia resources are blocked, and required text is parsed from embedded structured data when available.
-- Failed advanced-detail pages are tracked in `advanced_scrape_status_<year>.csv`; normal runs retry failures once automatically from the failed stage while preserving earlier stage results, and `--retry-failed` retries remaining failed links later.
-
-### `advanced_scrape_status_<year>.csv`
-
-Advanced scrape checkpoint and retry state:
-
-```text
-link, title, status, attempt_count, last_error, last_attempted_at, completed_at, scrape_version
-```
-
-The status file keeps completed and failed links together so interrupted or partially failed years can be retried without starting advanced extraction from scratch.
-
-### `merged_movies_data_<year>.csv`
-
-Combined dataset produced by joining the basic and advanced files on the IMDb movie link.
-
-The merged output also contains numeric financial fields, `profit`, `roi`, award totals, `runtime_minutes`, release calendar fields, cast/genre/country counts, and `rating_mismatch`. `profit` and `roi` are left empty when the budget and worldwide gross appear to use different currency symbols.
-
-```text
-Title, Year, Duration, MPA, Rating, Votes, meta_score, description, Movie Link, link, writers, directors, stars, characters, budget, opening_weekend_Gross, grossWorldWWide, gross_US_Canada, release_date, countries_origin, filming_locations, production_company, awards_content, awards_wins_nominations_total, critic_reviews_count, user_reviews_count, genres, Languages, similar_movies, similar_movies_links, JSON-LD fields, parental-guide fields, full-credit fields, release_dates_by_country, aka_titles, derived analysis fields
-```
-
-## Logging
-
-Each year gets its own log directory:
-
-- `Logs/<year>/errors.txt`: extraction and merge errors.
-- `Logs/<year>/results.txt`: progress, row counts, timing, and completion details.
-- `Logs/<year>/advanced_scrape_attempts_<year>.jsonl`: one JSON event per advanced-detail scrape attempt.
-
-## Applications
-
-The generated data can be used for:
-
-- Movie-industry trend analysis over time.
-- Box office, ratings, or awards modeling.
-- Recommendation-system experiments.
-- Data cleaning, normalization, and visualization notebooks.
-
-## Troubleshooting
-
-### WebDriver Errors
-
-- Make sure `edgedriver.exe` is in the project root.
-- Make sure the Edge WebDriver version matches your installed Microsoft Edge version.
-- If you use another browser, update `create_edge_driver()` in `imdb_scraper/browser.py`.
-
-### Empty or Incomplete Data
-
-IMDb page markup changes over time. If fields suddenly become empty, inspect the current IMDb HTML and update the Selenium or BeautifulSoup selectors in `imdb_scraper/extractors.py`.
-
-Some older movies may not have complete financial, awards, language, or filming-location data.
-
-### Rate Limiting or Slow Runs
-
-- Reduce `--max-movies` while testing.
-- Process smaller year ranges.
-- Use `--retry-failed` to retry only failed advanced-detail pages after a blocked or partial run.
-- Increase waits between years or requests if IMDb starts blocking or failing loads.
-
-## Contributing
-
-Contributions are welcome. Useful improvements include selector updates, better retry handling, browser configuration options, tests, data cleaning notebooks, and performance improvements.
-
-Suggested workflow:
+## Tests
 
 ```powershell
-git checkout -b feature-name
-git commit -m "Add feature"
+uv run python -m unittest discover tests
 ```
 
-Then open a pull request with a clear description of the change.
+Offline tests only (no browser or network).
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE` for details.
+See [LICENSE](LICENSE).

@@ -1,1 +1,0 @@
-2026-09-27 17:56:44,609 - error_logger_1927 - ERROR - Error processing URL https://www.imdb.com/title/tt0018024/?ref_=sr_i_383: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0018024/releaseinfo/

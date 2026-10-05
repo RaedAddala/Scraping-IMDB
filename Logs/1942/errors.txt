@@ -1,1 +1,0 @@
-2026-09-28 00:53:53,337 - error_logger_1942 - ERROR - Error processing URL https://www.imdb.com/title/tt0266718/?ref_=sr_i_999: StageExtractionError: release_info failed: PageContentError: IMDb returned an invalid or incomplete release_info page for https://www.imdb.com/title/tt0266718/releaseinfo/

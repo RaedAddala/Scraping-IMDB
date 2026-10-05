@@ -1,1 +1,0 @@
-2026-09-30 23:18:08,376 - error_logger_1958 - ERROR - Error processing URL https://www.imdb.com/title/tt0052804/?ref_=sr_i_554: StageExtractionError: title_page failed: PageContentError: IMDb returned an invalid or incomplete title_page page for https://www.imdb.com/title/tt0052804/?ref_=sr_i_554

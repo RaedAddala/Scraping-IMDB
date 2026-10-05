@@ -1,1 +1,0 @@
-2026-09-27 03:27:27,827 - error_logger_1935 - ERROR - Error processing URL https://www.imdb.com/title/tt0026273/?ref_=sr_i_21: StageExtractionError: full_credits failed: PageContentError: IMDb returned an invalid or incomplete full_credits page for https://www.imdb.com/title/tt0026273/fullcredits/
