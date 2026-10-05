@@ -11,7 +11,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from imdb_scraper import advanced, analysis, extractors, storage  # noqa: E402
+from imdb_scraper import advanced, analysis, extractors, metadata, pipeline, quality, storage  # noqa: E402
 from imdb_scraper.browser import PageContentError  # noqa: E402
 from imdb_scraper.config import ADVANCED_COLUMNS, ADVANCED_SCHEMA, ADVANCED_STAGES, CREDIT_GROUPS, MERGED_SCHEMA  # noqa: E402
 from imdb_scraper.parsing import split_listing_rank, title_id, title_url  # noqa: E402
@@ -138,6 +138,7 @@ class OtherStageTests(unittest.TestCase):
             row = extractors.extract_parental_guide(None, ID)
         self.assertEqual((row["sex_nudity_severity"], row["profanity_severity"], row["violence_gore_severity"]), ("none", "severe", None))
         self.assertEqual(row["certificates_by_country"], [{"country": "Argentina", "rating": "13", "notes": "original rating"}])
+        self.assertIsNone(row["certificates_total"])
 
     def test_parser_error_fails_stage(self):
         with mock.patch.object(extractors, "_page_content_data", return_value={"contentRatingData": {"categorySummaries": 5}}):
@@ -222,6 +223,182 @@ class AnalysisTests(unittest.TestCase):
         self.assertTrue(pd.isna(out["genre_count"].iloc[1]))  # unknown, not zero
         formatted = storage.format_frame(out, MERGED_SCHEMA)
         self.assertEqual(str(formatted["release_decade"].dtype), "Int64")
+
+
+class SavedDataTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        patcher = mock.patch.object(storage, "SCRIPT_DIR", Path(self.tmp.name))
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.addCleanup(self.tmp.cleanup)
+
+    def test_only_the_merged_csv_is_in_data_and_state_is_in_logs(self):
+        paths = storage.year_paths(1995)
+        self.assertEqual(paths["merged"].parent.parent.name, "Data")
+        for key in ("status", "attempts"):
+            self.assertEqual(paths[key].parent.parent.name, "Logs")
+        self.assertNotIn("basic", paths)
+
+    def test_save_and_load_merged_round_trip(self):
+        listing = pd.DataFrame({"imdb_id": ["tt1", "tt2"], "search_year": [1995, 1995], "listing_rank": [1, 2], "listing_title": ["A", "B"]})
+        details = pd.DataFrame([{"imdb_id": "tt1", "title": "A", "imdb_votes": 1202011, "genres": ["Drama"], "budget_amount": 10, "budget_currency": "USD",
+                                 "gross_worldwide_amount": 30, "gross_worldwide_currency": "USD"}])
+        analysis.save_merged(1995, listing, details, LOG, LOG)
+        text = storage.year_paths(1995)["merged"].read_text(encoding="utf-8")
+        self.assertIn("1202011", text)
+        self.assertNotIn("1202011.0", text)
+        loaded_listing, loaded_details = analysis.load_merged(1995)
+        self.assertEqual(loaded_listing["imdb_id"].tolist(), ["tt1", "tt2"])
+        self.assertEqual(loaded_details.set_index("imdb_id").loc["tt1", "title"], "A")
+        self.assertTrue(pd.isna(loaded_details.set_index("imdb_id").loc["tt2", "title"]))
+        self.assertEqual(analysis.load_merged(2001)[0], None)
+
+    def test_listing_never_shrinks_from_partial_or_limited_scrapes(self):
+        existing = pd.DataFrame({"imdb_id": [f"tt{i}" for i in range(10)]})
+        small = pd.DataFrame({"imdb_id": ["tt1", "tt2"]})
+        small.attrs["complete"] = True
+        self.assertIs(pipeline._choose_listing(small, existing, 2, LOG, LOG), existing)  # limit reached
+        self.assertIs(pipeline._choose_listing(small, existing, 1000, LOG, LOG), small)  # genuinely smaller
+        small.attrs["complete"] = False
+        self.assertIs(pipeline._choose_listing(small, existing, 1000, LOG, LOG), existing)  # incomplete
+
+
+    def test_timestamps_and_numbers_are_not_rewritten_on_read(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "a.csv"
+            path.write_text("imdb_id,scraped_at,ratio,code" + chr(10) + "tt1,2026-10-05T19:35:20+00:00,2.10,007" + chr(10), encoding="utf-8")
+            row = storage.read_csv_fast(path).iloc[0]
+        self.assertEqual((row["scraped_at"], row["ratio"], row["code"]), ("2026-10-05T19:35:20+00:00", "2.10", "007"))
+
+    def test_derived_counts_do_not_depend_on_whether_lists_come_from_memory_or_csv(self):
+        in_memory = pd.DataFrame({"title": ["A"], "genres": [[]], "languages": [["English"]], "countries_of_origin": [[]]})
+        from_csv = pd.DataFrame({"title": ["A"], "genres": [None], "languages": ['["English"]'], "countries_of_origin": [None]})
+        schema = {"title": "str", "genres": "json", "languages": "json", "countries_of_origin": "json"}
+        results = [analysis.compute_derived_columns(storage.format_frame(df, schema), LOG, LOG) for df in (in_memory, from_csv)]
+        for out in results:
+            self.assertEqual((out["genre_count"].iloc[0], out["language_count"].iloc[0], out["country_count"].iloc[0]), (0, 1, 0))
+
+
+class QualityTests(unittest.TestCase):
+    def good_row(self):
+        row = {column: None for column in MERGED_SCHEMA}
+        row.update(imdb_id=ID, title="T", imdb_rating="8.3", imdb_votes="100", metascore="50", budget_amount="5", budget_currency="USD",
+                   rating_histogram=json.dumps([10] * 10), cast=json.dumps(["A"]), cast_ids=json.dumps(["nm0000001"]),
+                   cast_characters=json.dumps([["X"]]), cast_total="1", similar_movie_ids=json.dumps(["tt0120363"]), similar_movie_titles=json.dumps(["B"]),
+                   release_date="1995-11-22")
+        return row
+
+    def test_clean_row_has_no_issues(self):
+        self.assertEqual(quality.row_issues(self.good_row()), [])
+
+    def test_each_rule_catches_its_violation(self):
+        cases = {
+            "imdb_id_format": {"imdb_id": "123"},
+            "rating_out_of_range": {"imdb_rating": "11"},
+            "money_without_currency": {"budget_currency": None},
+            "credit_ids_misaligned": {"cast_ids": json.dumps(["nm0000001", "nm0000002"])},
+            "cast_inconsistent": {"cast_total": "0"},
+            "similar_movies_inconsistent": {"similar_movie_titles": json.dumps([])},
+            "histogram_vs_votes": {"imdb_votes": "5000"},
+            "invalid_date": {"release_date": "1995-13-40"},
+            "invalid_json": {"genres": "not json"},
+        }
+        for rule, change in cases.items():
+            with self.subTest(rule=rule):
+                self.assertIn(rule, quality.row_issues({**self.good_row(), **change}))
+
+    def test_check_quality_skips_unscraped_rows(self):
+        frame = pd.DataFrame([self.good_row(), {**self.good_row(), "imdb_id": "tt0000002", "title": None, "imdb_rating": "99"}])
+        self.assertEqual(quality.check_quality(frame), {})
+
+
+class RobustnessTests(unittest.TestCase):
+    def test_year_lock_is_exclusive(self):
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(storage, "SCRIPT_DIR", Path(tmp)):
+            with storage.year_lock(1995):
+                with self.assertRaises(RuntimeError):
+                    with storage.year_lock(1995):
+                        pass
+                with storage.year_lock(1996):  # other years are independent
+                    pass
+            with storage.year_lock(1995):  # released afterwards
+                pass
+
+    def test_month_names_do_not_depend_on_locale(self):
+        self.assertEqual(extractors._iso_date("March 5, 1930"), "1930-03-05")
+        self.assertEqual(extractors._iso_date("September 1930"), "1930-09")
+        self.assertEqual(extractors._iso_date("Spring 1930"), "Spring 1930")
+        self.assertEqual(extractors._iso_date("Foo 5, 1930"), "Foo 5, 1930")
+
+    def test_write_fails_clearly_when_file_is_locked(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "a.csv"
+            with mock.patch.object(Path, "replace", side_effect=PermissionError), mock.patch.object(storage.time, "sleep"):
+                with self.assertRaises(PermissionError) as ctx:
+                    storage.write_csv_safely(pd.DataFrame({"a": [1]}), path)
+        self.assertIn("close it", str(ctx.exception))
+
+
+class StopAndResumeTests(unittest.TestCase):
+    def records(self, n):
+        return [{"imdb_id": f"tt{i:07d}", "title": f"T{i}"} for i in range(1, n + 1)]
+
+    def test_stops_early_after_consecutive_failures_and_leaves_rest_retryable(self):
+        status_records, run_state = {}, {}
+        with tempfile.TemporaryDirectory() as tmp,                 mock.patch.object(advanced, "MAX_CONSECUTIVE_FAILURES", 3), mock.patch.object(advanced, "NETWORK_BACKOFF_SECONDS", 0), mock.patch.object(advanced, "create_edge_driver", return_value=mock.Mock()),                 mock.patch.object(advanced, "_extract_advanced_stages", side_effect=PageContentError("blocked")):
+            rows, failures = advanced._attempt_advanced_links(
+                self.records(12), status_records, Path(tmp) / "a.jsonl", LOG, "initial", workers=1, run_state=run_state)
+        self.assertIn("in a row failed", run_state["stopped_early"])
+        self.assertEqual(len(failures), 3)  # only titles actually attempted are failures
+        untouched = [s for s in status_records.values() if s["status"] == "pending"]
+        self.assertEqual(len(untouched), 9)  # the rest stay pending, with no attempt counted
+        self.assertTrue(all(s["attempt_count"] == 0 for s in untouched))
+
+    def test_interrupt_saves_progress_so_far(self):
+        status_records, saved = {}, []
+        row = {column: None for column in ADVANCED_COLUMNS}
+        row["imdb_id"] = "tt0000001"
+        calls = {"n": 0}
+
+        def log(path, event):
+            calls["n"] += 1
+            if calls["n"] == 2:
+                raise KeyboardInterrupt
+
+        with tempfile.TemporaryDirectory() as tmp,                 mock.patch.object(advanced, "create_edge_driver", return_value=mock.Mock()),                 mock.patch.object(advanced, "_extract_advanced_stages", return_value=row),                 mock.patch.object(advanced, "append_attempt_log", side_effect=log):
+            with self.assertRaises(KeyboardInterrupt):
+                advanced._attempt_advanced_links(self.records(5), status_records, Path(tmp) / "a.jsonl", LOG, "initial",
+                                                 workers=1, checkpoint=lambda rows: saved.append(len(rows)))
+        self.assertEqual(saved[-1], 2)  # the two titles finished before Ctrl+C
+
+
+class LoggingTests(unittest.TestCase):
+    def test_errors_are_one_short_line(self):
+        long = "Message: element not interactable" + chr(10) + "  (Session info: msedge=1)" + chr(10) + "Stacktrace:" + chr(10) + chr(10).join(f"frame {n}" for n in range(50))
+        text = storage.describe_error(RuntimeError(long))
+        self.assertEqual(text, "RuntimeError: element not interactable")
+        self.assertLessEqual(len(storage.describe_error(ValueError("x" * 1000))), 175)
+
+    def test_attempt_events_have_stage_seconds_only(self):
+        self.assertEqual(advanced._stage_seconds({"title_page_seconds": 3.2, "title_page_content_ready": True, "release_info_expansion_seconds": 8.0}), {"title_page": 3.2})
+
+
+class MetadataTests(unittest.TestCase):
+    def test_every_column_is_documented_and_typed(self):
+        fields = metadata.schema_fields()
+        self.assertEqual([f["name"] for f in fields], list(MERGED_SCHEMA))
+        self.assertTrue(all(f["description"] and f["type"] in {"string", "integer", "number", "boolean"} for f in fields))
+
+    def test_metadata_file_lists_year_resources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            data = Path(tmp)
+            (data / "1995").mkdir()
+            (data / "1995" / "merged_movies_data_1995.csv").write_text("imdb_id" + chr(10), encoding="utf-8")
+            path, count = metadata.write_dataset_metadata(data)
+            written = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(count, 1)
+        self.assertEqual(written["resources"][0]["path"], "1995/merged_movies_data_1995.csv")
 
 
 class StatusTests(unittest.TestCase):

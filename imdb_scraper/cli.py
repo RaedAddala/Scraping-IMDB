@@ -2,6 +2,7 @@ import argparse
 import time
 
 from .config import ADVANCED_WORKERS, YEAR_PAUSE_SECONDS
+from .metadata import write_dataset_metadata
 from .pipeline import process_year, retry_failed_year
 
 
@@ -35,7 +36,12 @@ def main():
     refresh_group.add_argument("--refresh-stages", type=_parse_refresh_stages, help="Comma-separated stages to refresh: title, parental, credits, release.")
     parser.add_argument("--listing-only", action="store_true", help="Refresh only the search listing (basic CSV) and rebuild the merged file; no advanced scraping.")
     parser.add_argument("--retry-failed", action="store_true", help="Retry only links marked failed in the advanced scrape status file.")
+    parser.add_argument("--write-metadata", action="store_true", help="Only (re)write Data/dataset-metadata.json (Kaggle schema) and exit.")
     args = parser.parse_args()
+    if args.write_metadata:
+        path, count = write_dataset_metadata()
+        print(f"Wrote {path} ({count} year files)")
+        return
     if args.listing_only and (args.retry_failed or args.refresh_advanced or args.refresh_missing or args.refresh_stages):
         parser.error("--listing-only cannot be combined with retry or advanced refresh options")
     if args.retry_failed and (args.refresh_advanced or args.refresh_missing or args.refresh_stages):
@@ -53,3 +59,5 @@ def main():
             )
         if year < args.end_year:
             time.sleep(YEAR_PAUSE_SECONDS)
+    path, count = write_dataset_metadata()
+    print(f"Updated {path} ({count} year files)")

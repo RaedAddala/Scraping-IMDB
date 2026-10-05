@@ -3,12 +3,11 @@ name = "imdb-scraper"
 version = "0.1.0"
 description = "Scrape IMDb movie data by release year using Selenium and BeautifulSoup."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "beautifulsoup4>=4.15.0",
     "lxml>=6.1.0",
     "pandas>=3.0.0",
-    "pyarrow>=21.0.0",
     "selenium>=4.48.0",
 ]
 

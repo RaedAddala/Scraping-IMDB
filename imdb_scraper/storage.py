@@ -1,6 +1,8 @@
 import json
 import logging
 import os
+import time
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -15,12 +17,30 @@ def year_paths(year):
     return {
         "data_dir": data_dir,
         "logs_dir": logs_dir,
-        "basic": data_dir / f"imdb_movies_{year}.csv",
-        "advanced": data_dir / f"advanced_movies_details_{year}.csv",
-        "merged": data_dir / f"merged_movies_data_{year}.csv",
-        "status": data_dir / f"advanced_scrape_status_{year}.csv",
-        "attempts": logs_dir / f"advanced_scrape_attempts_{year}.jsonl",
+        "merged": data_dir / f"merged_movies_data_{year}.csv",  # the only file in Data/; also the resume checkpoint
+        "status": logs_dir / f"scrape_status_{year}.csv",
+        "attempts": logs_dir / f"scrape_attempts_{year}.jsonl",
     }
+
+
+@contextmanager
+def year_lock(year):
+    """Exclusive per-year lock so two runs can never write the same year's files at once."""
+    _, logs_dir = setup_directories(year)
+    handle = open(logs_dir / ".lock", "a+")
+    try:
+        try:
+            if os.name == "nt":
+                import msvcrt
+                msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            raise RuntimeError(f"another run is already working on year {year}") from None
+        yield
+    finally:
+        handle.close()  # closing releases the lock
 
 
 def setup_directories(year):
@@ -32,7 +52,7 @@ def setup_directories(year):
 
 
 def setup_logging(year):
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s", "%Y-%m-%d %H:%M:%S")
     error_logger = logging.getLogger(f"error_logger_{year}")
     results_logger = logging.getLogger(f"results_logger_{year}")
     error_logger.setLevel(logging.ERROR)
@@ -97,19 +117,24 @@ def write_csv_safely(df, path, schema=None):
         df = format_frame(df, schema)
     temp_path = path.with_name(f"{path.name}.tmp")
     df.to_csv(temp_path, index=False, encoding="utf-8")
-    temp_path.replace(path)
+    for attempt in range(6):
+        try:
+            temp_path.replace(path)
+            return
+        except PermissionError:
+            if attempt == 5:
+                raise PermissionError(f"Cannot write {path.name}: the file is open in another program (close it, e.g. Excel)")
+            time.sleep(2)  # an editor or antivirus scan may hold the file briefly
 
 
-# Only an empty cell is missing, and everything is read as text so values round-trip exactly
-# (no 1995 -> 1995.0). Callers cast with format_frame / pd.to_numeric where they need numbers.
+# Only an empty cell is missing, and everything is read as text so values round-trip exactly (no
+# 1995 -> 1995.0, no timestamp re-formatting). The default C parser is used on purpose: the pyarrow
+# engine infers types first and would rewrite values such as dates before casting them to text.
 _CSV_OPTIONS = {"keep_default_na": False, "na_values": [""], "dtype": str}
 
 
 def read_csv_fast(path):
-    try:
-        return pd.read_csv(path, engine="pyarrow", **_CSV_OPTIONS)
-    except Exception:
-        return pd.read_csv(path, **_CSV_OPTIONS)
+    return pd.read_csv(path, **_CSV_OPTIONS)
 
 
 def read_csv_or_empty(path, schema):
@@ -146,30 +171,31 @@ def append_attempt_log(path, event):
         handle.write(json.dumps(event, ensure_ascii=False) + "\n")
 
 
-def log_advanced_timing_summary(path, results_logger):
+def describe_error(error, limit=160):
+    """One short line for an exception or message: 'ErrorType: first line', no browser stack traces."""
+    if isinstance(error, BaseException):
+        text = str(error)
+        name = None if type(error).__name__ == "StageExtractionError" else type(error).__name__  # message already says it
+    else:
+        text, name = str(error), None
+    text = text.split("Stacktrace:")[0].replace("Message:", "")
+    line = next((line.strip() for line in text.splitlines() if line.strip()), "")
+    if len(line) > limit:
+        line = line[: limit - 1] + "…"
+    return f"{name}: {line}" if name and line else (name or line)
+
+
+def log_timing_summary(path, results_logger):
+    """One line: average seconds per stage over the logged attempts."""
     try:
         with Path(path).open(encoding="utf-8") as handle:
             events = [json.loads(line) for line in handle if line.strip()]
-        timed_events = [event for event in events if isinstance(event.get("total_seconds"), (int, float))]
-        if not timed_events:
-            return
-        stages = ("title_page", "parental_guide", "full_credits", "release_info")
-        summary = {}
-        for stage in stages:
-            durations = [event.get("timings", {}).get(f"{stage}_seconds") for event in timed_events]
-            durations = [duration for duration in durations if isinstance(duration, (int, float))]
-            ready_values = [event.get("timings", {}).get(f"{stage}_content_ready") for event in timed_events]
-            navigation_timeouts = [event.get("timings", {}).get(f"{stage}_navigation_timed_out") for event in timed_events]
-            summary[stage] = {
-                "average_seconds": round(sum(durations) / len(durations), 2) if durations else None,
-                "content_not_ready": sum(value is False for value in ready_values),
-                "navigation_timed_out": sum(value is True for value in navigation_timeouts),
-            }
-        results_logger.info(
-            "Advanced timing summary for %s attempts: average total %.2fs; stages=%s",
-            len(timed_events),
-            sum(event["total_seconds"] for event in timed_events) / len(timed_events),
-            json.dumps(summary, sort_keys=True),
-        )
-    except (OSError, json.JSONDecodeError) as exc:
-        results_logger.warning("Could not summarize advanced timings: %s", exc)
+    except (OSError, json.JSONDecodeError):
+        return
+    seconds = {}
+    for event in events:
+        for stage, value in (event.get("seconds") or {}).items():
+            seconds.setdefault(stage, []).append(value)
+    if seconds:
+        average = ", ".join(f"{stage} {sum(v) / len(v):.1f}s" for stage, v in seconds.items())
+        results_logger.info("Average time per stage over %s attempts: %s", len(events), average)

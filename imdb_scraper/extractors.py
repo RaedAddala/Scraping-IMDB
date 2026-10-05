@@ -1,8 +1,6 @@
 import json
 import re
 import time
-from datetime import datetime
-
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
@@ -30,12 +28,12 @@ from .config import (
     STAGE_FIELDS,
 )
 from .parsing import split_listing_rank, title_id, title_url
-from .storage import now_iso
+from .storage import describe_error, now_iso
 
 
 class StageExtractionError(RuntimeError):
     def __init__(self, stage, partial_row, remaining_stages, cause):
-        super().__init__(f"{stage} failed: {type(cause).__name__}: {cause}")
+        super().__init__(f"{stage}: {describe_error(cause)}")
         self.stage = stage
         self.partial_row = partial_row
         self.remaining_stages = list(remaining_stages)
@@ -85,7 +83,7 @@ def extract_links(year, error_logger, results_logger, max_movies=600):
             except Exception as exc:
                 failures += 1
                 complete = failures < 3
-                error_logger.error("Load more attempt %s failed after %s items: %s", failures, loaded_data, exc)
+                error_logger.error("Listing %s: load-more attempt %s failed after %s titles: %s", year, failures, loaded_data, describe_error(exc))
                 time.sleep(LOAD_MORE_RETRY_PAUSE_SECONDS)
         soup = BeautifulSoup(driver.page_source, "lxml")
         container = soup.select_one("ul.ipc-metadata-list")
@@ -108,11 +106,11 @@ def extract_links(year, error_logger, results_logger, max_movies=600):
                 })
             except Exception as exc:
                 complete = False
-                error_logger.error("Error extracting listing item: %s", exc)
-        results_logger.info("Loaded %s items; extracted %s movies in %.2f seconds", loaded_data, len(films_data), time.time() - start)
+                error_logger.error("Listing %s: item skipped: %s", year, describe_error(exc))
+        results_logger.info("Listing: %s titles in %.0fs%s", len(films_data), time.time() - start, "" if complete else " (INCOMPLETE)")
     except Exception as exc:
         complete = False
-        error_logger.error("Error during link extraction: %s", exc)
+        error_logger.error("Listing %s failed: %s", year, describe_error(exc))
     finally:
         if driver is not None:
             driver.quit()
@@ -172,7 +170,7 @@ def _page_props(driver, url, timings=None, stage=None):
             timings[f"{stage}_content_ready"] = ready
             timings[f"{stage}_navigation_timed_out"] = navigation_timed_out
         if not ready:
-            raise PageContentError(f"IMDb returned an invalid or incomplete {stage} page for {url}")
+            raise PageContentError(f"invalid or incomplete {stage} page")
         return props
     finally:
         if timings is not None and stage:
@@ -321,7 +319,7 @@ def extract_parental_guide(driver, imdb_id, timings=None):
     """Severity per category (lowercase: none/mild/moderate/severe) and the certificates of every country.
     Parser errors propagate: a failed parse must fail the stage, not look like an empty section."""
     result = {key: None for key in PARENTAL_GUIDE_CATEGORIES}
-    result["certificates_by_country"] = None
+    result["certificates_by_country"] = result["certificates_total"] = None
     content = _page_content_data(driver, title_url(imdb_id) + "parentalguide/", timings=timings, stage="parental_guide")
     rating_data = content.get("contentRatingData")
     if not isinstance(rating_data, dict):
@@ -340,6 +338,8 @@ def extract_parental_guide(driver, imdb_id, timings=None):
                 notes = rating.get("extraInformation") or []
                 certificates.append({"country": entry["country"], "rating": rating["rating"], "notes": "; ".join(notes) or None})
     result["certificates_by_country"] = certificates or None
+    total = content.get("totalCertificates")  # IMDb lists only the first ~50 ratings of titles with many certificates
+    result["certificates_total"] = total if isinstance(total, int) else None
     return result
 
 
@@ -381,13 +381,24 @@ def extract_full_credits(driver, imdb_id, timings=None):
 MAX_RELEASE_EXPANSIONS = 60
 
 
+_MONTHS = {name: number for number, name in enumerate(
+    ("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"), start=1)}
+_DATE_TEXT = re.compile(r"(?:(?P<month>[A-Za-z]+)\s+)?(?:(?P<day>\d{1,2}),\s*)?(?P<year>\d{4})")
+
+
 def _iso_date(text):
-    """'November 22, 1995' -> '1995-11-22', 'May 1995' -> '1995-05', '1995' -> '1995'; unparsed text is returned as is."""
-    for fmt, output in (("%B %d, %Y", "%Y-%m-%d"), ("%B %Y", "%Y-%m"), ("%Y", "%Y")):
-        try:
-            return datetime.strptime(text.strip(), fmt).strftime(output)
-        except ValueError:
-            continue
+    """'November 22, 1995' -> '1995-11-22', 'May 1995' -> '1995-05', '1995' -> '1995'; unparsed text is returned as is.
+    Month names are matched here, not with strptime, so the result does not depend on the machine's locale."""
+    match = _DATE_TEXT.fullmatch(text.strip())
+    if match:
+        month = _MONTHS.get((match["month"] or "").lower())
+        year = int(match["year"])
+        if not match["month"]:
+            return f"{year:04d}"
+        if month and match["day"]:
+            return f"{year:04d}-{month:02d}-{int(match['day']):02d}"
+        if month and not match["day"]:
+            return f"{year:04d}-{month:02d}"
     return text.strip()
 
 

@@ -29,13 +29,23 @@ uv run python .\scrapping.py --start-year 2024 --end-year 2024 --workers 1
 | `--refresh-missing` | Re-scrape stages that have no populated field. |
 | `--retry-failed` | Retry only titles marked failed in the status file. |
 | `--listing-only` | Refresh only the search listing and rebuild the merged file. |
+| `--write-metadata` | Only rewrite `Data/dataset-metadata.json` and exit. |
 | `--preview-release-info` | Keep only the release/AKA entries embedded in the page (faster). By default every entry is expanded. |
 
-Runs are resumable: finished titles are skipped, failed stages are retried once automatically, and a failed stage never erases values from stages that succeeded. Wait for a running scrape to finish before starting another on the same year.
+Runs are resumable: finished titles are skipped, failed stages are retried once automatically, and a failed stage never erases values from stages that succeeded. A per-year lock stops two runs from writing the same year. Ctrl+C saves the titles finished so far. If 25 titles in a row fail (IMDb may be blocking), the year stops early, the remaining titles stay pending and the next run resumes them. If the merged CSV is open in Excel when a save happens, the scraper retries for about 10 seconds and then fails with a clear message, so keep the files closed while it runs.
 
 ## Output files
 
-For each year: `Data/<year>/imdb_movies_<year>.csv` (listing), `advanced_movies_details_<year>.csv` (details), `advanced_scrape_status_<year>.csv` (per-title and per-stage state), `merged_movies_data_<year>.csv` (listing + details + derived columns), plus `Logs/<year>/errors.txt`, `results.txt` and `advanced_scrape_attempts_<year>.jsonl`.
+**`Data/`** holds only the dataset: `Data/<year>/merged_movies_data_<year>.csv` (listing + details + derived columns, one row per title) and `Data/dataset-metadata.json` (typed, documented schema for Kaggle, rewritten after every run or with `--write-metadata`). The merged CSV is also the resume checkpoint; no other data files exist.
+
+**`Logs/<year>/`** holds everything about the scraping itself:
+
+| File | Content |
+|---|---|
+| `errors.txt` | One short line per failed attempt (`tt0114709 [initial #1] full_credits: PageContentError: ...`), no stack traces. |
+| `results.txt` | A few summary lines per run: listing size, stage timings, sparse fields, a data-quality check, titles scraped/failed. |
+| `scrape_status_<year>.csv` | Per-title and per-stage status (`completed`/`failed`/`pending`, attempts, last error). |
+| `scrape_attempts_<year>.jsonl` | One compact event per attempt (stages, seconds per stage, error). |
 
 ## Data conventions
 
@@ -49,9 +59,9 @@ For each year: `Data/<year>/imdb_movies_<year>.csv` (listing), `advanced_movies_
 
 **Listing** (`imdb_id`, `search_year`, `listing_rank`, `listing_title`): the discovery order for the searched year.
 
-**Title page**: `title`, `original_title`, `title_type`, `release_year`, `is_adult`, `production_status`, `plot`, `poster_url`, `certificate`, `runtime_seconds`; `release_date` (ISO, may be `YYYY` or `YYYY-MM`), `release_date_precision` (`year`/`month`/`day`) and `release_date_country` (IMDb's displayed release, which is a regional release, not necessarily the first); `imdb_rating`, `imdb_votes`, `metascore`, `top_rated_rank`, `rating_histogram` (votes for 1..10), `user_reviews_count`, `critic_reviews_count`; `budget_*`, `gross_us_canada_*`, `gross_worldwide_*`, `opening_weekend_us_canada_*` (amount + currency, no conversion) and `opening_weekend_end_date`; `award_wins`, `award_nominations` (nominations that did not win; 0 when IMDb lists none), `prestigious_award_name/wins/nominations`; json lists `genres`, `interests` (themes and franchises, never mixed into genres), `keywords` (the first few) with `keywords_total`, `countries_of_origin`, `languages`, `production_companies`, `filming_locations` with `filming_locations_total`, `similar_movie_ids`, `similar_movie_titles`; `similar_movies_status` (`found`/`empty`).
+**Title page**: `title`, `original_title`, `title_type`, `release_year`, `is_adult`, `production_status`, `plot`, `poster_url`, `certificate`, `runtime_seconds`; `release_date` (ISO, may be `YYYY` or `YYYY-MM`), `release_date_precision` (`year`/`month`/`day`) and `release_date_country` (IMDb's displayed release, which is a regional release, not necessarily the first); `imdb_rating`, `imdb_votes`, `metascore`, `top_rated_rank` (the site shows only ranks up to 250, the data can hold lower ones), `rating_histogram` (votes for 1..10), `user_reviews_count`, `critic_reviews_count`; `budget_*`, `gross_us_canada_*`, `gross_worldwide_*`, `opening_weekend_us_canada_*` (amount + currency, no conversion) and `opening_weekend_end_date`; `award_wins`, `award_nominations` (nominations that did not win; 0 when IMDb lists none), `prestigious_award_name/wins/nominations`; json lists `genres`, `interests` (themes and franchises, never mixed into genres), `keywords` (the first few) with `keywords_total`, `countries_of_origin`, `languages`, `production_companies`, `filming_locations` with `filming_locations_total`, `similar_movie_ids`, `similar_movie_titles`; `similar_movies_status` (`found`/`empty`).
 
-**Parental guide**: `sex_nudity_severity`, `violence_gore_severity`, `profanity_severity`, `alcohol_drugs_smoking_severity`, `frightening_intense_scenes_severity` (`none`/`mild`/`moderate`/`severe`, lowercase) and `certificates_by_country` (json `[{country, rating, notes}]`).
+**Parental guide**: `sex_nudity_severity`, `violence_gore_severity`, `profanity_severity`, `alcohol_drugs_smoking_severity`, `frightening_intense_scenes_severity` (`none`/`mild`/`moderate`/`severe`, lowercase) and `certificates_by_country` (json `[{country, rating, notes}]`, IMDb lists only the first ~50 ratings) and `certificates_total` (countries with a certificate).
 
 **Credits** (full-credits page): for `directors`, `writers`, `cast`, `producers`, `composers`, `cinematographers`, `editors`, `casting_directors`, `production_designers`, `costume_designers` there is a json list of names and a parallel `<group>_ids` list of IMDb person IDs. Also `cast_characters` (list of role lists parallel to `cast`), `cast_total`, and `credits_incomplete` (groups the page lists only partly).
 
@@ -63,6 +73,8 @@ For each year: `Data/<year>/imdb_movies_<year>.csv` (listing), `advanced_movies_
 
 ## How data quality is protected
 
+- After every run `results.txt` gets a quality line from `quality.py` (ID formats, rating ranges, money/currency pairs, parallel-list alignment, histogram vs votes, release-info completeness, valid dates, JSON validity). Offending IDs are listed.
+
 - Every stage reads IMDb's structured page data and checks it belongs to the requested title; invalid or partial pages fail the stage instead of saving empties.
 - Extractor errors propagate; a failed stage records its error, keeps previous values, and is retried.
 - Values are validated (rating 1-10, non-negative votes and amounts, amounts always have a currency).
@@ -73,7 +85,24 @@ Not collected: the full keyword list (only the first few and the total), departm
 
 ## Code layout
 
-`scrapping.py` is the entry point; the implementation is under `imdb_scraper/`: `config.py` (typed schemas and credit-group IDs), `browser.py`, `storage.py` (paths, typed CSV read/write, logging), `extractors.py`, `advanced.py` (workers, checkpoints, retries, stage status), `analysis.py` (merge and derived columns), `pipeline.py`, `cli.py`, `parsing.py`.
+`scrapping.py` is the entry point; the implementation is under `imdb_scraper/`: `config.py` (typed schemas and credit-group IDs), `metadata.py` (Kaggle schema and column descriptions), `browser.py`, `storage.py` (paths, typed CSV read/write, logging), `extractors.py`, `advanced.py` (workers, checkpoints, retries, stage status), `analysis.py` (merge and derived columns), `pipeline.py`, `cli.py`, `parsing.py`.
+
+## Publishing to Kaggle
+
+1. Run the scraper, then `uv run python .\scrapping.py --write-metadata` (also done automatically after every run).
+2. In `Data/dataset-metadata.json` set `id` to `<your-kaggle-username>/<dataset-slug>` and review title, description and license (IMDb's terms of use apply to the data).
+3. `kaggle datasets create -p Data` (or `version` for updates). The metadata carries the type of every column; `json` columns are strings holding JSON.
+
+Load a year with the right dtypes:
+
+```python
+import json, pandas as pd
+df = pd.read_csv("1995/merged_movies_data_1995.csv", keep_default_na=False, na_values=[""],
+                 dtype={"imdb_id": "string"}).convert_dtypes()
+df["genres"] = df["genres"].map(lambda v: json.loads(v) if isinstance(v, str) else [])
+```
+
+`imdb_id` is unique within a year file; a title can in rare cases appear in two neighbouring years.
 
 ## Tests
 
@@ -82,6 +111,8 @@ uv run python -m unittest discover tests
 ```
 
 Offline tests only (no browser or network).
+
+`tests/live_verify_columns.py` re-checks every column of a merged CSV against what IMDb's rendered pages show (DOM, JSON-LD, format and cross-column rules) and prints PASS/FAIL per column. It opens Edge and needs network access.
 
 ## License
 

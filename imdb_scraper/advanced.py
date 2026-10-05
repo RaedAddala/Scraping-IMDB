@@ -13,9 +13,9 @@ from .config import (
     ADVANCED_STAGES,
     ADVANCED_WORKERS,
     CHECKPOINT_INTERVAL,
+    MAX_CONSECUTIVE_FAILURES,
     NETWORK_BACKOFF_SECONDS,
     NETWORK_ERROR_THRESHOLD,
-    ADVANCED_SCHEMA,
     STATUS_COLUMNS,
     STATUS_SCHEMA,
     STAGE_FIELDS,
@@ -25,10 +25,13 @@ from .extractors import (
     StageExtractionError,
     _extract_advanced_stages,
 )
+from .analysis import load_merged, save_merged
+from .quality import log_quality
 from .storage import (
+    describe_error,
     is_missing,
     append_attempt_log,
-    log_advanced_timing_summary,
+    log_timing_summary,
     now_iso,
     read_csv_or_empty,
     write_csv_safely,
@@ -144,17 +147,29 @@ def _reconcile_with_history(status_records, attempts_path, results_logger=None):
 
 
 def log_field_completeness(df, results_logger):
+    """One line naming the fields that are mostly empty (a quick data-quality signal)."""
     if df.empty:
         return
-    counts = {
-        column: int(df[column].map(_has_data).sum()) if column in df else 0
-        for column in ADVANCED_COLUMNS if column != "imdb_id"
+    sparse = {}
+    for column in ADVANCED_COLUMNS:
+        if column in {"imdb_id", "credits_incomplete", "top_rated_rank"} or column not in df:  # empty by design
+            continue
+        filled = df[column].map(_has_data).mean()
+        if filled < 0.5:
+            sparse[column] = round(filled * 100)
+    if sparse:
+        worst = sorted(sparse.items(), key=lambda item: item[1])[:12]
+        results_logger.info("Fields under 50%% filled (%s titles): %s", len(df), ", ".join(f"{k} {v}%" for k, v in worst))
+    else:
+        results_logger.info("All fields at least 50%% filled (%s titles)", len(df))
+
+
+def _stage_seconds(timings):
+    """{'title_page': 3.2, ...} from the extractors' timing keys."""
+    return {
+        key[: -len("_seconds")]: value for key, value in timings.items()
+        if key.endswith("_seconds") and key[: -len("_seconds")] in ADVANCED_STAGES
     }
-    results_logger.info(
-        "Advanced field completeness for %s rows: %s",
-        len(df),
-        json.dumps({column: round(count / len(df) * 100, 1) for column, count in counts.items()}, sort_keys=True),
-    )
 
 
 def _close_driver(driver):
@@ -204,7 +219,7 @@ def _advanced_worker(worker_id, work_items, work_lock, result_queue, cancel_even
                 })
                 consecutive_network_errors = 0
             except Exception as exc:
-                message = f"{type(exc).__name__}: {exc}"
+                message = describe_error(exc)
                 failed_record = dict(record)
                 failed_record["_attempted_stages"] = list(record.get("_stages") or ADVANCED_STAGES)
                 partial_row = None
@@ -228,7 +243,7 @@ def _advanced_worker(worker_id, work_items, work_lock, result_queue, cancel_even
                         consecutive_network_errors = 0
                         continue
                     except Exception as retry_exc:
-                        message = f"{type(retry_exc).__name__}: {retry_exc}"
+                        message = describe_error(retry_exc)
                         if isinstance(retry_exc, StageExtractionError):
                             partial_row = retry_exc.partial_row
                             failed_record["_existing_row"] = partial_row
@@ -249,14 +264,14 @@ def _advanced_worker(worker_id, work_items, work_lock, result_queue, cancel_even
                     driver = create_edge_driver()
                     consecutive_network_errors = 0
     except Exception as exc:
-        result_queue.put({"worker_done": True, "worker_id": worker_id, "worker_error": f"{type(exc).__name__}: {exc}"})
+        result_queue.put({"worker_done": True, "worker_id": worker_id, "worker_error": describe_error(exc)})
         return
     finally:
         _close_driver(driver)
     result_queue.put({"worker_done": True, "worker_id": worker_id, "worker_error": None})
 
 
-def _attempt_advanced_links(link_records, status_records, attempt_log_path, error_logger, phase, workers=ADVANCED_WORKERS, checkpoint=None):
+def _attempt_advanced_links(link_records, status_records, attempt_log_path, error_logger, phase, workers=ADVANCED_WORKERS, checkpoint=None, run_state=None):
     if not link_records:
         return [], []
     scheduled = []
@@ -294,6 +309,8 @@ def _attempt_advanced_links(link_records, status_records, attempt_log_path, erro
     completed_rows, failures, processed_orders = [], [], set()
     completed_count = 0
     finished_workers = 0
+    consecutive_failures = 0
+    interrupted = False
     try:
         while completed_count < len(scheduled) and finished_workers < len(threads):
             try:
@@ -313,10 +330,9 @@ def _attempt_advanced_links(link_records, status_records, attempt_log_path, erro
             link = record["imdb_id"]
             status = status_records[link]
             event = {
-                "timestamp": now_iso(), "phase": phase, "imdb_id": link,
-                "title": status.get("title"), "attempt_count": record["_attempt_count"],
-                "total_seconds": outcome["total_seconds"], "timings": outcome["timings"],
-                "worker_id": outcome["worker_id"], "stages": record.get("_stages") or list(ADVANCED_STAGES),
+                "timestamp": now_iso(), "phase": phase, "imdb_id": link, "attempt": record["_attempt_count"],
+                "stages": record.get("_stages") or list(ADVANCED_STAGES),
+                "seconds": _stage_seconds(outcome["timings"]),
             }
             attempted = list(record.get("_attempted_stages") or record.get("_stages") or ADVANCED_STAGES)
             if outcome["error"] is None:
@@ -349,27 +365,41 @@ def _attempt_advanced_links(link_records, status_records, attempt_log_path, erro
                 }
                 failures.append((record["_order"], retry_record))
                 event.update(status="failed", error=message)
-                error_logger.error("Error processing URL %s: %s", link, message)
+                error_logger.error("%s [%s #%s] %s", link, phase, record["_attempt_count"], message)
             append_attempt_log(attempt_log_path, event)
+            consecutive_failures = consecutive_failures + 1 if outcome["error"] is not None else 0
             if checkpoint and completed_count % CHECKPOINT_INTERVAL == 0:
                 checkpoint([row for _, row in sorted(completed_rows)])
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                if run_state is not None:
+                    run_state["stopped_early"] = f"{consecutive_failures} titles in a row failed"
+                break
+    except BaseException:
+        interrupted = True  # e.g. Ctrl+C: keep what was scraped so far
+        raise
     finally:
         cancel_event.set()
         for thread in threads:
             thread.join()
+        if interrupted and checkpoint:
+            checkpoint([row for _, row in sorted(completed_rows)])
+    deliberately_stopped = bool(run_state and run_state.get("stopped_early"))
     for record in scheduled:
         if record["_order"] in processed_orders:
+            continue
+        if deliberately_stopped:
+            # Never attempted because the run stopped early: leave the title as it was, not as a failure.
+            status_records[record["imdb_id"]]["attempt_count"] -= 1
             continue
         message = "Worker stopped before reporting this record"
         status = status_records[record["imdb_id"]]
         status.update(status="failed", last_error=message, completed_at=None)
         retry_record = {key: value for key, value in record.items() if key not in {"_order", "_attempt_count"}}
         failures.append((record["_order"], retry_record))
+        error_logger.error("%s [%s #%s] %s", record["imdb_id"], phase, record["_attempt_count"], message)
         append_attempt_log(attempt_log_path, {
-            "timestamp": now_iso(), "phase": phase, "imdb_id": record["imdb_id"],
-            "title": status.get("title"), "status": "failed", "attempt_count": record["_attempt_count"],
-            "error": message, "total_seconds": 0.0, "timings": {}, "worker_id": None,
-            "stages": record.get("_stages") or list(ADVANCED_STAGES),
+            "timestamp": now_iso(), "phase": phase, "imdb_id": record["imdb_id"], "attempt": record["_attempt_count"],
+            "stages": record.get("_stages") or list(ADVANCED_STAGES), "status": "failed", "error": message,
         })
     return (
         [row for _, row in sorted(completed_rows)],
@@ -378,18 +408,21 @@ def _attempt_advanced_links(link_records, status_records, attempt_log_path, erro
 
 
 def extract_advanced_data(
-    year, links_df, error_logger, results_logger, retry_failed_only=False,
+    year, listing_df, error_logger, results_logger, retry_failed_only=False,
     workers=ADVANCED_WORKERS, refresh_advanced=False, refresh_stages=None,
-    refresh_missing=False, complete_release_info=True,
+    refresh_missing=False, complete_release_info=True, max_movies=None,
 ):
+    """Scrape the details of the listing's titles and save the merged file (the resume checkpoint) as it goes.
+    max_movies only limits how many titles are scraped; the merged file always covers the whole listing."""
     start = time.time()
     paths = year_paths(year)
-    link_records = _records_from_df(links_df)
+    link_records = _records_from_df(listing_df)
     if not link_records:
-        error_logger.error("Advanced extraction requires a 'Movie Link' or 'link' column with at least one URL")
-        return read_csv_or_empty(paths["advanced"], ADVANCED_SCHEMA)
+        error_logger.error("No titles to scrape for %s", year)
+        return load_merged(year)[1]
+    scrape_records = link_records if max_movies is None or max_movies < 0 else link_records[:max_movies]
 
-    existing_advanced = read_csv_or_empty(paths["advanced"], ADVANCED_SCHEMA)
+    _, existing_advanced = load_merged(year)
     existing_by_link = {
         str(row["imdb_id"]): row
         for row in existing_advanced.to_dict("records") if _has_data(row.get("imdb_id"))
@@ -404,7 +437,7 @@ def extract_advanced_data(
         })
         if record.get("title") and not status.get("title"):
             status["title"] = record["title"]
-        # Existing advanced data only stands in for a missing status when every stage has values;
+        # Saved details only stand in for a missing status when every stage has values;
         # a partial row is never promoted to completed.
         existing_row = existing_by_link.get(record["imdb_id"])
         if (
@@ -415,7 +448,7 @@ def extract_advanced_data(
 
     candidates = []
     requested_stages = tuple(refresh_stages or ADVANCED_STAGES)
-    for source_record in link_records:
+    for source_record in scrape_records:
         record = dict(source_record)
         existing_row = existing_by_link.get(record["imdb_id"])
         status_value = status_records.get(record["imdb_id"], {}).get("status")
@@ -439,33 +472,39 @@ def extract_advanced_data(
         candidates.append(record)
 
     rows, failures = [], []
+    run_state = {}
 
-    def checkpoint(phase_rows):
-        checkpoint_rows = rows + phase_rows
+    def save(new_rows):
         _write_status(paths["status"], status_records)
-        write_csv_safely(_combine_advanced(existing_advanced, checkpoint_rows), paths["advanced"], ADVANCED_SCHEMA)
+        details = _combine_advanced(existing_advanced, new_rows)
+        merged = save_merged(year, listing_df, details, error_logger, results_logger)
+        return details, merged
 
     if candidates:
         first_rows, failures = _attempt_advanced_links(
             candidates, status_records, paths["attempts"], error_logger,
-            "retry" if retry_failed_only else "initial", workers=workers, checkpoint=checkpoint,
+            "retry" if retry_failed_only else "initial", workers=workers,
+            checkpoint=lambda phase_rows: save(rows + phase_rows)[0], run_state=run_state,
         )
         rows.extend(first_rows)
-        if failures and not retry_failed_only:
-            results_logger.info("Retrying %s failed advanced links for %s once", len(failures), year)
+        if failures and not retry_failed_only and not run_state:
+            results_logger.info("Retrying %s failed titles once", len(failures))
             retry_rows, failures = _attempt_advanced_links(
                 failures, status_records, paths["attempts"], error_logger,
-                "auto_retry", workers=workers, checkpoint=checkpoint,
+                "auto_retry", workers=workers, checkpoint=lambda phase_rows: save(rows + phase_rows)[0],
             )
             rows.extend(retry_rows)
 
-    advanced = _combine_advanced(existing_advanced, rows)
-    _write_status(paths["status"], status_records)
-    write_csv_safely(advanced, paths["advanced"], ADVANCED_SCHEMA)
-    log_advanced_timing_summary(paths["attempts"], results_logger)
-    log_field_completeness(advanced, results_logger)
+    details, merged = save(rows)
+    log_quality(merged, results_logger)
+    log_timing_summary(paths["attempts"], results_logger)
+    log_field_completeness(details, results_logger)
     results_logger.info(
-        "Advanced extraction completed for %s: %s new rows, %s total rows, %s unresolved failures, %.2f seconds",
-        year, len(rows), len(advanced), len(failures), time.time() - start,
+        "Details: %s titles scraped, %s still failed, %.0fs",
+        len(candidates), len(failures), time.time() - start,
     )
-    return advanced
+    if run_state:
+        message = f"stopped early: {run_state['stopped_early']} (IMDb may be blocking requests); resume later or use --retry-failed"
+        error_logger.error("Year %s %s", year, message)
+        raise RuntimeError(message)
+    return details

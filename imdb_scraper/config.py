@@ -41,7 +41,7 @@ PARENTAL_GUIDE_CATEGORIES = {
     "alcohol_drugs_smoking_severity": "Alcohol, Drugs & Smoking",
     "frightening_intense_scenes_severity": "Frightening & Intense Scenes",
 }
-PARENTAL_SCHEMA = {**{key: "str" for key in PARENTAL_GUIDE_CATEGORIES}, "certificates_by_country": "json"}
+PARENTAL_SCHEMA = {**{key: "str" for key in PARENTAL_GUIDE_CATEGORIES}, "certificates_by_country": "json", "certificates_total": "int"}
 
 # Credit groups on the full-credits page. IMDb names the same category in the singular or the plural
 # depending on the title ("Editor"/"Editors"), so groups are matched by their stable category id first.
@@ -54,8 +54,8 @@ CREDIT_GROUPS = {
     "cinematographers": {"id": "e2bf7217-c947-461b-aa58-47e27da1c78e", "names": ("cinematographer", "cinematographers")},
     "editors": {"id": "63b1f9c6-9d3b-4be6-88fc-6321c9fa5ae2", "names": ("editor", "editors")},
     "casting_directors": {"id": "67b6990c-f7de-4882-916b-dad87ec4406a", "names": ("casting", "casting director", "casting directors")},
-    "production_designers": {"id": "ce558628-5755-438c-92d7-757518864a00", "names": ("production designer", "production designers")},
-    "costume_designers": {"id": "a2d21716-45de-40e2-9f7d-9de01fc34a71", "names": ("costume designer", "costume designers")},
+    "production_designers": {"id": "ce558628-5755-438c-92d7-757518864a00", "names": ("production designer", "production designers", "production design")},
+    "costume_designers": {"id": "a2d21716-45de-40e2-9f7d-9de01fc34a71", "names": ("costume designer", "costume designers", "costume design")},
 }
 CREDITS_SCHEMA = {}
 for _group in CREDIT_GROUPS:
@@ -111,6 +111,7 @@ CHECKPOINT_INTERVAL = 50
 WORKER_RESULT_TIMEOUT_SECONDS = 90
 NETWORK_ERROR_THRESHOLD = 3
 NETWORK_BACKOFF_SECONDS = 10
+MAX_CONSECUTIVE_FAILURES = 25  # stop a year early when this many titles in a row fail (IMDb may be blocking)
 BLOCKED_RESOURCE_URLS = [
     "*.jpg*", "*.jpeg*", "*.png*", "*.webp*", "*.gif*", "*.avif*",
     "*.svg*", "*.ico*", "*.bmp*",
