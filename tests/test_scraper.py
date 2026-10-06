@@ -64,6 +64,23 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual(split_listing_rank("2001: A Space Odyssey"), (None, "2001: A Space Odyssey"))
 
 
+    def test_release_month_and_weekday_use_the_earliest_release_not_a_later_regional_one(self):
+        df = pd.DataFrame({
+            "release_year": ["1920", "1920", "1920"],
+            "release_date": ["1979-11-08", "1920-05-04", "1921-02-10"],  # regional dates: re-release / same year / next year
+            "release_dates": ['[{"date": "1920-02-02"}]', None, None],
+            "title": ["A", "B", "C"],
+        })
+        out = analysis.compute_derived_columns(df, LOG, LOG)
+        self.assertEqual(out["release_month"].tolist()[:2], [2, 5])
+        self.assertEqual(out["release_weekday"].tolist()[:2], ["Monday", "Tuesday"])
+        self.assertTrue(pd.isna(out["release_month"].iloc[2]) and pd.isna(out["release_weekday"].iloc[2]))  # 1921 date is not in 1920
+
+    def test_language_none_placeholder_is_not_counted(self):
+        self.assertEqual(analysis._language_len('["None"]'), 0)
+        self.assertEqual(analysis._language_len('["None", "English"]'), 1)
+        self.assertTrue(pd.isna(analysis._language_len(None)))
+
 class StorageTests(unittest.TestCase):
     def test_types_round_trip_exactly(self):
         schema = {"imdb_id": "str", "votes": "int", "rating": "float", "adult": "bool", "genres": "json", "severity": "str"}
@@ -340,6 +357,70 @@ class RobustnessTests(unittest.TestCase):
         self.assertIn("close it", str(ctx.exception))
 
 
+class ReleasePaginationTests(unittest.TestCase):
+    def node(self, country, date, attributes=()):
+        return {"country": {"text": country}, "displayableProperty": {"value": {"plainText": date}}, "attributes": [{"text": t} for t in attributes]}
+
+    def test_release_rows_match_the_page_shape(self):
+        item = extractors._release_node_to_item("releases", self.node("Italy", "September 6, 2009", ["3-D version", "re-release"]))
+        self.assertEqual(extractors._release_entries([item], "release"), [{"country": "Italy", "date": "2009-09-06", "note": "3-D version, re-release"}])
+
+    def test_aka_rows_list_language_before_qualifiers(self):
+        node = {"country": {"text": "Japan"}, "language": {"text": "English"},
+                "displayableProperty": {"value": {"plainText": "Spirited Away"}, "qualifiersInMarkdownList": [{"plainText": "Alternative Title"}]}}
+        item = extractors._release_node_to_item("akas", node)
+        self.assertEqual(extractors._release_entries([item], "aka"), [{"country": "Japan", "title": "Spirited Away", "note": "English, Alternative Title"}])
+
+    def test_pages_are_followed_until_the_total_is_reached(self):
+        pages = [
+            {"data": {"title": {"releaseDates": {"edges": [{"node": self.node("A", "1995")}] * 50, "pageInfo": {"endCursor": "c2", "hasNextPage": True}}}}},
+            {"data": {"title": {"releaseDates": {"edges": [{"node": self.node("B", "1996")}] * 8, "pageInfo": {"endCursor": "c3", "hasNextPage": False}}}}},
+        ]
+        driver = mock.Mock()
+        driver.execute_async_script.side_effect = pages
+        rows = extractors._fetch_remaining_rows(driver, ID, "releases", 5, 63, "c1")
+        self.assertEqual(len(rows), 58)
+        self.assertIn("after%22%3A%22c2", driver.execute_async_script.call_args_list[1].args[1])  # second call used the cursor from the first
+
+    def test_unexpected_answer_raises(self):
+        driver = mock.Mock()
+        driver.execute_async_script.return_value = {"errors": [{"message": "PersistedQueryNotFound"}]}
+        with self.assertRaises(PageContentError):
+            extractors._fetch_remaining_rows(driver, ID, "releases", 5, 63, "c1")
+
+    def test_falls_back_to_page_expansion_when_graphql_fails(self):
+        content = {"categories": [
+            {"id": "releases", "section": {"total": 2, "endCursor": "c", "items": [{"rowTitle": "A", "listContent": [{"text": "1995", "subText": ""}]}]}},
+            {"id": "akas", "section": {"total": 0, "items": []}},
+        ]}
+        expanded = {"releases": [{"rowTitle": "A", "listContent": [{"text": "1995", "subText": ""}]}, {"rowTitle": "B", "listContent": [{"text": "1996", "subText": ""}]}]}
+        timings = {}
+        with mock.patch.object(extractors, "_page_content_data", return_value=content),                 mock.patch.object(extractors, "_fetch_remaining_rows", side_effect=PageContentError("changed")),                 mock.patch.object(extractors, "_expand_release_info", return_value=expanded):
+            row = extractors.extract_release_info(None, ID, timings=timings, complete=True)
+        self.assertEqual([e["country"] for e in row["release_dates"]], ["A", "B"])
+        self.assertTrue(timings["release_info_fallback"])
+        self.assertEqual(row["release_info_complete"], "complete")
+
+
+class ScriptlessLoadTests(unittest.TestCase):
+    def test_refused_scriptless_load_retries_once_with_scripts_then_returns(self):
+        modes = []
+        loads = iter([({}, False, False), ({"contentData": {"x": 1}}, True, False)])
+        with mock.patch.object(extractors, "set_script_mode", side_effect=lambda d, allowed: modes.append(allowed)),                 mock.patch.object(extractors, "_load_props", side_effect=lambda *a: next(loads)):
+            props = extractors._page_props(None, "https://www.imdb.com/title/tt0114709/", stage="parental_guide")
+        self.assertEqual(modes, [False, True])
+        self.assertEqual(props["contentData"], {"x": 1})
+
+    def test_still_refused_after_the_retry_fails_the_stage(self):
+        with mock.patch.object(extractors, "set_script_mode"), mock.patch.object(extractors, "_load_props", return_value=({}, False, False)):
+            with self.assertRaises(PageContentError):
+                extractors._page_props(None, "https://www.imdb.com/title/tt0114709/", stage="parental_guide")
+
+    def test_worker_count_is_capped_at_the_configured_maximum(self):
+        from imdb_scraper.config import ADVANCED_WORKERS, MAX_WORKERS
+        self.assertLessEqual(ADVANCED_WORKERS, MAX_WORKERS)
+
+
 class StopAndResumeTests(unittest.TestCase):
     def records(self, n):
         return [{"imdb_id": f"tt{i:07d}", "title": f"T{i}"} for i in range(1, n + 1)]
@@ -385,20 +466,62 @@ class LoggingTests(unittest.TestCase):
 
 
 class MetadataTests(unittest.TestCase):
-    def test_every_column_is_documented_and_typed(self):
-        fields = metadata.schema_fields()
-        self.assertEqual([f["name"] for f in fields], list(MERGED_SCHEMA))
-        self.assertTrue(all(f["description"] and f["type"] in {"string", "integer", "number", "boolean"} for f in fields))
+    def write_year(self, data, year, header=None):
+        (data / str(year)).mkdir(exist_ok=True)
+        path = data / str(year) / f"merged_movies_data_{year}.csv"
+        path.write_text(",".join(header or list(MERGED_SCHEMA)) + chr(10), encoding="utf-8")
+        return path
 
-    def test_metadata_file_lists_year_resources(self):
+    def test_every_column_is_documented_with_a_supported_type(self):
+        fields = metadata.schema_fields()
+        self.assertEqual([f["name"] for f in fields], list(MERGED_SCHEMA))  # same order as the CSV
+        self.assertTrue(all(f["description"].strip() and f["type"] in metadata.KAGGLE_TYPES for f in fields))
+        self.assertEqual(set(metadata.COLUMN_METADATA), set(MERGED_SCHEMA))  # nothing missing, nothing invented
+
+    def test_types_follow_meaning_and_fit_the_csv_kind(self):
+        types = {f["name"]: f["type"] for f in metadata.schema_fields()}
+        self.assertEqual((types["imdb_id"], types["poster_url"], types["scraped_at"], types["is_adult"]), ("id", "url", "datetime", "boolean"))
+        self.assertEqual((types["imdb_rating"], types["imdb_votes"], types["genres"]), ("decimal", "integer", "string"))
+
+    def test_metadata_is_deterministic_and_lists_one_resource_per_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             data = Path(tmp)
-            (data / "1995").mkdir()
-            (data / "1995" / "merged_movies_data_1995.csv").write_text("imdb_id" + chr(10), encoding="utf-8")
+            self.write_year(data, 1995)
+            self.write_year(data, 1920)
             path, count = metadata.write_dataset_metadata(data)
-            written = json.loads(path.read_text(encoding="utf-8"))
-        self.assertEqual(count, 1)
-        self.assertEqual(written["resources"][0]["path"], "1995/merged_movies_data_1995.csv")
+            first = path.read_text(encoding="utf-8")
+            metadata.write_dataset_metadata(data)
+            self.assertEqual(first, path.read_text(encoding="utf-8"))
+        written = json.loads(first)
+        self.assertEqual(count, 2)
+        self.assertEqual([r["path"] for r in written["resources"]], ["1920/merged_movies_data_1920.csv", "1995/merged_movies_data_1995.csv"])
+        self.assertTrue(all("title" not in field for r in written["resources"] for field in r["schema"]["fields"]))  # description, not legacy title
+
+    def test_validation_catches_each_kind_of_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            data = Path(tmp)
+            self.write_year(data, 1995)
+            good = metadata.build_metadata(data)
+            metadata.validate_metadata(good, data)
+            cases = {
+                "different order": lambda m: m["resources"][0]["schema"]["fields"].reverse(),
+                "missing column": lambda m: m["resources"][0]["schema"]["fields"].pop(),
+                "extra column": lambda m: m["resources"][0]["schema"]["fields"].append({"name": "ghost", "description": "x", "type": "string"}),
+                "empty description": lambda m: m["resources"][0]["schema"]["fields"][0].update(description=" "),
+                "unsupported type": lambda m: m["resources"][0]["schema"]["fields"][0].update(type="text"),
+                "type vs kind": lambda m: m["resources"][0]["schema"]["fields"][1].update(type="boolean"),
+                "missing file": lambda m: m["resources"][0].update(path="1999/merged_movies_data_1999.csv"),
+                "undocumented file": lambda m: m["resources"].clear(),
+            }
+            for name, break_it in cases.items():
+                with self.subTest(name):
+                    broken = json.loads(json.dumps(good))
+                    break_it(broken)
+                    with self.assertRaises(ValueError):
+                        metadata.validate_metadata(broken, data)
+            self.write_year(data, 2001, header=["imdb_id", "other"])  # a CSV that does not follow the schema
+            with self.assertRaises(ValueError):
+                metadata.write_dataset_metadata(data)
 
 
 class StatusTests(unittest.TestCase):

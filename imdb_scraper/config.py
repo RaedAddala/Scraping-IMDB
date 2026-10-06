@@ -106,7 +106,8 @@ LOAD_MORE_BUTTON_TIMEOUT_SECONDS = 6
 LOAD_MORE_RESULT_TIMEOUT_SECONDS = 10
 LOAD_MORE_RETRY_PAUSE_SECONDS = 1.0
 YEAR_PAUSE_SECONDS = 2.0
-ADVANCED_WORKERS = 2
+ADVANCED_WORKERS = 4
+MAX_WORKERS = 4
 CHECKPOINT_INTERVAL = 50
 WORKER_RESULT_TIMEOUT_SECONDS = 90
 NETWORK_ERROR_THRESHOLD = 3
@@ -123,4 +124,10 @@ BLOCKED_RESOURCE_URLS = [
     "*google-analytics.com/*", "*amazon-adsystem.com/*",
     "*scorecardresearch.com/*",
     "*m.media-amazon.com/images/*",
+    # analytics / tracking hosts: never needed, and each page view would otherwise ping them several times
+    "*metrics.imdb.com*", "*unagi.amazon.com*", "*tq-tungsten.com*", "*fls-na.amazon.com*",
 ]
+# Pages are read from the server-rendered __NEXT_DATA__ JSON, so scripts are not needed to read them. Blocking them
+# also stops the page's own background calls (~70 GraphQL/anti-bot requests per title). Only the release-info page
+# runs scripts, and only as a fallback if IMDb's paginated GraphQL answers stop matching what is expected.
+SCRIPTLESS_EXTRA_URLS = ["*.js*", "*cloudfront.net*", "*awswaf*"]

@@ -12,6 +12,7 @@ from .config import (
     ADVANCED_COLUMNS,
     ADVANCED_STAGES,
     ADVANCED_WORKERS,
+    MAX_WORKERS,
     CHECKPOINT_INTERVAL,
     MAX_CONSECUTIVE_FAILURES,
     NETWORK_BACKOFF_SECONDS,
@@ -291,7 +292,7 @@ def _attempt_advanced_links(link_records, status_records, attempt_log_path, erro
         record["_attempt_count"] = status["attempt_count"]
         scheduled.append(record)
 
-    worker_count = max(1, min(int(workers), 2, len(scheduled)))
+    worker_count = max(1, min(int(workers), MAX_WORKERS, len(scheduled)))
     work_items = deque(scheduled)
     work_lock = Lock()
     result_queue = Queue()

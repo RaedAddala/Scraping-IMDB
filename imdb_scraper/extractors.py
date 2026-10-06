@@ -1,6 +1,7 @@
 import json
 import re
 import time
+from urllib.parse import quote
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
@@ -13,6 +14,7 @@ from .browser import (
     _wait_for_page_ready,
     clean_text,
     create_edge_driver,
+    set_script_mode,
 )
 from .config import (
     ADVANCED_COLUMNS,
@@ -136,39 +138,52 @@ def _stop_page_loading(driver):
         pass
 
 
-def _page_props(driver, url, timings=None, stage=None):
-    """Navigate and return the page's __NEXT_DATA__ pageProps, verified to belong to the requested title."""
-    started_at = time.perf_counter()
+def _load_props(driver, url, stage):
+    """Navigate and return (pageProps, ready, navigation_timed_out)."""
     navigation_timed_out = False
     try:
-        try:
-            driver.get(url)
-        except TimeoutException:
-            navigation_timed_out = True
-            _stop_page_loading(driver)
-        try:
-            WebDriverWait(driver, REQUIRED_CONTENT_TIMEOUT_SECONDS).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "script#__NEXT_DATA__"))
-            )
-        except TimeoutException:
-            pass
+        driver.get(url)
+    except TimeoutException:
+        navigation_timed_out = True
         _stop_page_loading(driver)
-        raw = driver.execute_script("return document.querySelector('script#__NEXT_DATA__')?.textContent || null")
-        try:
-            props = (json.loads(raw) if raw else {}).get("props", {}).get("pageProps")
-        except json.JSONDecodeError:
-            props = None
-        props = props if isinstance(props, dict) else {}
-        expected_id = title_id(url)
-        actual_id = props.get("tconst") or _get(props, "contentData", "entityMetadata", "id") or _get(props, "contentData", "data", "title", "id")
-        if stage == "title_page":
-            has_content = isinstance(props.get("aboveTheFoldData"), dict) and isinstance(props.get("mainColumnData"), dict)
-        else:
-            has_content = isinstance(props.get("contentData"), dict)
-        ready = bool(has_content and actual_id == expected_id and "privacy error" not in (driver.title or "").lower())
+    try:
+        WebDriverWait(driver, REQUIRED_CONTENT_TIMEOUT_SECONDS).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "script#__NEXT_DATA__"))
+        )
+    except TimeoutException:
+        pass
+    _stop_page_loading(driver)
+    raw = driver.execute_script("return document.querySelector('script#__NEXT_DATA__')?.textContent || null")
+    try:
+        props = (json.loads(raw) if raw else {}).get("props", {}).get("pageProps")
+    except json.JSONDecodeError:
+        props = None
+    props = props if isinstance(props, dict) else {}
+    actual_id = props.get("tconst") or _get(props, "contentData", "entityMetadata", "id") or _get(props, "contentData", "data", "title", "id")
+    if stage == "title_page":
+        has_content = isinstance(props.get("aboveTheFoldData"), dict) and isinstance(props.get("mainColumnData"), dict)
+    else:
+        has_content = isinstance(props.get("contentData"), dict)
+    ready = bool(has_content and actual_id == title_id(url) and "privacy error" not in (driver.title or "").lower())
+    return props, ready, navigation_timed_out
+
+
+def _page_props(driver, url, timings=None, stage=None, scripts=False):
+    """The page's __NEXT_DATA__ pageProps, verified to belong to the requested title.
+
+    scripts=False reads the page without running its scripts (far fewer requests). The anti-bot token the site
+    hands out through its scripts expires, so when a script-less load is refused the page is loaded once with
+    scripts, which also renews the token for the following script-less loads."""
+    started_at = time.perf_counter()
+    try:
+        set_script_mode(driver, scripts)
+        props, ready, timed_out = _load_props(driver, url, stage)
+        if not ready and not scripts:
+            set_script_mode(driver, True)
+            props, ready, timed_out = _load_props(driver, url, stage)
         if timings is not None and stage:
             timings[f"{stage}_content_ready"] = ready
-            timings[f"{stage}_navigation_timed_out"] = navigation_timed_out
+            timings[f"{stage}_navigation_timed_out"] = timed_out
         if not ready:
             raise PageContentError(f"invalid or incomplete {stage} page")
         return props
@@ -177,8 +192,8 @@ def _page_props(driver, url, timings=None, stage=None):
             timings[f"{stage}_seconds"] = round(time.perf_counter() - started_at, 3)
 
 
-def _page_content_data(driver, url, timings=None, stage=None):
-    return _page_props(driver, url, timings=timings, stage=stage)["contentData"]
+def _page_content_data(driver, url, timings=None, stage=None, scripts=False):
+    return _page_props(driver, url, timings=timings, stage=stage, scripts=scripts)["contentData"]
 
 
 def _section_items(category):
@@ -477,10 +492,73 @@ def _expand_release_info(driver):
     return expanded
 
 
+# IMDb's own paginated GraphQL queries behind the release-info page's "N more" buttons. Asking for the remaining rows
+# directly takes a few requests per title instead of loading the page's scripts, and is checked row for row against
+# the page's own expansion. If IMDb changes a query (its hash), the scripted page expansion below is used instead.
+_GRAPHQL_URL = "https://caching.graphql.imdb.com/"
+_GRAPHQL_PAGES = {
+    "releases": ("TitleReleaseDatesPaginated", "0e4e6468b8bc55114f80551e7a062301c78999ee538789a936902e4ab5239ccd", "releaseDates"),
+    "akas": ("TitleAkasPaginated", "48d4f7bfa73230fb550147bd4704d8050080e65fe2ad576da6276cac2330e446", "akas"),
+}
+_GRAPHQL_FETCH_JS = (
+    "const done = arguments[arguments.length - 1];"
+    "fetch(arguments[0], {credentials: 'include'}).then(r => r.json()).then(done).catch(e => done({error: String(e)}));"
+)
+GRAPHQL_PAGE_SIZE = 50
+MAX_GRAPHQL_PAGES = 40
+
+
+def _graphql_url(operation, sha256, imdb_id, after):
+    variables = {"const": imdb_id, "first": GRAPHQL_PAGE_SIZE, "locale": "en-US", "originalTitleText": False}
+    if after:
+        variables["after"] = after
+    extensions = {"persistedQuery": {"sha256Hash": sha256, "version": 1}}
+    return (
+        f"{_GRAPHQL_URL}?operationName={operation}"
+        f"&variables={quote(json.dumps(variables, separators=(',', ':')))}"
+        f"&extensions={quote(json.dumps(extensions, separators=(',', ':')))}"
+    )
+
+
+def _release_node_to_item(section_id, node):
+    """A GraphQL row in the same shape as the page-data rows (rowTitle + listContent[{text, subText}])."""
+    country = _get(node, "country", "text")
+    text = _get(node, "displayableProperty", "value", "plainText")
+    if section_id == "releases":
+        notes = [attribute["text"] for attribute in node.get("attributes") or [] if attribute.get("text")]
+    else:
+        language = _get(node, "language", "text")
+        notes = [language] if language else []  # the page lists the language before the qualifiers
+        notes += [qualifier["plainText"] for qualifier in _get(node, "displayableProperty", "qualifiersInMarkdownList") or [] if qualifier.get("plainText")]
+    return {"rowTitle": country, "listContent": [{"text": text, "subText": f"({', '.join(notes)})" if notes else ""}]}
+
+
+def _fetch_remaining_rows(driver, imdb_id, section_id, shown, total, cursor):
+    """The rows after the ones the page shows, via IMDb's paginated GraphQL query. Raises when the answer is not
+    exactly what is expected, so a changed query can never silently yield a short or wrong list."""
+    operation, sha256, key = _GRAPHQL_PAGES[section_id]
+    rows = []
+    for _ in range(MAX_GRAPHQL_PAGES):
+        if not cursor or shown + len(rows) >= total:
+            break
+        answer = driver.execute_async_script(_GRAPHQL_FETCH_JS, _graphql_url(operation, sha256, imdb_id, cursor))
+        block = _get(answer, "data", "title", key)
+        if not isinstance(block, dict) or not isinstance(block.get("edges"), list) or not block["edges"]:
+            raise PageContentError(f"unexpected {operation} answer")
+        rows.extend(_release_node_to_item(section_id, edge.get("node") or {}) for edge in block["edges"])
+        info = block.get("pageInfo") or {}
+        cursor = info.get("endCursor") if info.get("hasNextPage") else None
+    return rows
+
+
+def _release_category(content, category_id):
+    return next((c for c in content.get("categories", []) if isinstance(c, dict) and str(c.get("id", "")).casefold() == category_id), None)
+
+
 def extract_release_info(driver, imdb_id, timings=None, complete=True):
     """Release dates and AKA titles as lists of objects. Source totals are recorded so a preview is never
     mistaken for a complete list: release_info_complete is 'complete', 'preview' or 'empty'."""
-    content = _page_content_data(driver, title_url(imdb_id) + "releaseinfo/", timings=timings, stage="release_info")
+    content = _page_content_data(driver, title_url(imdb_id) + "releaseinfo/", timings=timings, stage="release_info", scripts=False)
     categories = {
         str(category.get("id", "")).casefold(): category
         for category in content.get("categories", []) if isinstance(category, dict)
@@ -489,9 +567,19 @@ def extract_release_info(driver, imdb_id, timings=None, complete=True):
     aka_items, aka_total = _section_items(categories.get("akas"))
     if complete:
         expansion_started = time.perf_counter()
-        expanded = _expand_release_info(driver)
-        release_items = expanded.get("releases", release_items)
-        aka_items = expanded.get("akas", aka_items)
+        try:
+            for section_id, items, total in (("releases", release_items, release_total), ("akas", aka_items, aka_total)):
+                cursor = ((categories.get(section_id) or {}).get("section") or {}).get("endCursor")
+                if isinstance(total, int) and total > len(items):
+                    items.extend(_fetch_remaining_rows(driver, imdb_id, section_id, len(items), total, cursor))
+        except (PageContentError, WebDriverException):
+            # fall back to expanding the lists in the page itself, which needs the page's scripts
+            if timings is not None:
+                timings["release_info_fallback"] = True
+            content = _page_content_data(driver, title_url(imdb_id) + "releaseinfo/", timings=timings, stage="release_info", scripts=True)
+            expanded = _expand_release_info(driver)
+            release_items = expanded.get("releases", _section_items(_release_category(content, "releases"))[0])
+            aka_items = expanded.get("akas", _section_items(_release_category(content, "akas"))[0])
         if timings is not None:
             expansion_seconds = round(time.perf_counter() - expansion_started, 3)
             timings["release_info_expansion_seconds"] = expansion_seconds

@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from .config import (
     BLOCKED_RESOURCE_URLS,
+    SCRIPTLESS_EXTRA_URLS,
     PAGE_LOAD_TIMEOUT_SECONDS,
     SCRIPT_DIR,
     SCRIPT_TIMEOUT_SECONDS,
@@ -21,8 +22,11 @@ def clean_text(element):
     return element.get_text(" ", strip=True) if element else None
 
 
-def create_edge_driver():
+def create_edge_driver(log_network=False):
     options = webdriver.EdgeOptions()
+    if log_network:  # diagnostics only: lets a script count requests and bytes
+        options.set_capability("ms:loggingPrefs", {"performance": "ALL"})
+        options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
     options.page_load_strategy = "eager"
     options.add_argument("--lang=en-US")
     options.add_argument("--disable-blink-features=AutomationControlled")
@@ -64,6 +68,15 @@ def create_edge_driver():
     except WebDriverException:
         driver.set_window_size(1920, 1080)
     return driver
+
+
+def set_script_mode(driver, scripts_allowed):
+    """Allow or block the page's scripts (and the background requests they make) for the next navigations."""
+    urls = BLOCKED_RESOURCE_URLS if scripts_allowed else BLOCKED_RESOURCE_URLS + SCRIPTLESS_EXTRA_URLS
+    try:
+        driver.execute_cdp_cmd("Network.setBlockedURLs", {"urls": urls})
+    except WebDriverException:
+        pass
 
 
 def _wait_for_page_ready(driver, timeout=PAGE_LOAD_TIMEOUT_SECONDS):

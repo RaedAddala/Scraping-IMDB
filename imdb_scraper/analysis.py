@@ -36,6 +36,12 @@ def _list_len(value):
     return len(parsed) if isinstance(parsed, list) else pd.NA
 
 
+def _language_len(value):
+    """Number of languages; IMDb's 'None' placeholder (no spoken language listed) is not a language."""
+    parsed = parse_json_cell(value)
+    return len([language for language in parsed if language != "None"]) if isinstance(parsed, list) else pd.NA
+
+
 def _first_release_date(value):
     """Earliest full (day-precision) date among a title's release dates; None when there is none."""
     dates = [item.get("date") for item in parse_json_cell(value) or [] if isinstance(item, dict)]
@@ -51,12 +57,16 @@ def compute_derived_columns(df, error_logger, results_logger):
 
         df["runtime_minutes"] = (number("runtime_seconds") / 60).round(1)
 
-        precision = text("release_date_precision")
-        dates = pd.to_datetime(text("release_date").where(precision == "day"), format="%Y-%m-%d", errors="coerce")
-        months = pd.to_numeric(text("release_date").str.slice(5, 7), errors="coerce").where(precision.isin(["month", "day"]))
         df["first_release_date"] = df["release_dates"].map(_first_release_date) if "release_dates" in df else None
+        # Month and weekday describe the release in release_year: the earliest full release date when it falls in that
+        # year, else IMDb's displayed (regional) release_date when it does. A later local release (a re-release years
+        # after the film came out) is never used, so those cells stay empty instead of describing the wrong year.
+        release_date, first = text("release_date"), df["first_release_date"]
+        in_year = lambda dates: pd.to_numeric(dates.str.slice(0, 4), errors="coerce") == number("release_year")
+        basis = first.where(in_year(first)).where(lambda s: s.notna(), release_date.where(in_year(release_date)))
+        dates = pd.to_datetime(basis.where(basis.str.len() == 10), format="%Y-%m-%d", errors="coerce")
         df["release_decade"] = number("release_year") // 10 * 10
-        df["release_month"] = months
+        df["release_month"] = pd.to_numeric(basis.str.slice(5, 7), errors="coerce")
         df["release_weekday"] = dates.dt.day_name()
 
         # Gross minus budget only when both amounts are in the same stated currency; no conversion is attempted.
@@ -70,7 +80,7 @@ def compute_derived_columns(df, error_logger, results_logger):
         # Title-page lists: a blank list on a scraped title means IMDb lists none (0); no title page yet means unknown.
         title_scraped = text("title").notna()
         for source, target in (("genres", "genre_count"), ("countries_of_origin", "country_count"), ("languages", "language_count")):
-            counts = df[source].map(_list_len) if source in df else pd.Series(pd.NA, index=df.index)
+            counts = df[source].map(_language_len if source == "languages" else _list_len) if source in df else pd.Series(pd.NA, index=df.index)
             df[target] = counts.where(counts.notna(), pd.Series(0, index=df.index).where(title_scraped, pd.NA))
         df["cast_count"] = df["cast"].map(_list_len) if "cast" in df else pd.NA
     except Exception as exc:

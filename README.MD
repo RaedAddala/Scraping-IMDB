@@ -23,16 +23,21 @@ uv run python .\scrapping.py --start-year 2024 --end-year 2024 --workers 1
 | Option | Meaning |
 |---|---|
 | `--max-movies N` | Movies per year (default 1000). |
-| `--workers 1\|2` | Independent Edge sessions (default 2). |
+| `--workers 1-4` | Independent Edge sessions (default 4). |
 | `--refresh-stages title,parental,credits,release` | Re-scrape only those stages, reusing the saved listing. |
 | `--refresh-advanced` | Re-scrape every stage. |
 | `--refresh-missing` | Re-scrape stages that have no populated field. |
 | `--retry-failed` | Retry only titles marked failed in the status file. |
 | `--listing-only` | Refresh only the search listing and rebuild the merged file. |
-| `--write-metadata` | Only rewrite `Data/dataset-metadata.json` and exit. |
-| `--preview-release-info` | Keep only the release/AKA entries embedded in the page (faster). By default every entry is expanded. |
+| `--write-metadata` | Only rewrite `Data/dataset-metadata.json` (and validate it against the CSVs) and exit. |
+| `--rebuild-derived` | Recompute the derived columns of the saved CSVs in the year range, without scraping. Use it after a change to the derived-column logic. |
+| `--preview-release-info` | Keep only the first release/AKA rows embedded in the page (saves 2-6 requests per title). By default every row is fetched. |
 
 Runs are resumable: finished titles are skipped, failed stages are retried once automatically, and a failed stage never erases values from stages that succeeded. A per-year lock stops two runs from writing the same year. Ctrl+C saves the titles finished so far. If 25 titles in a row fail (IMDb may be blocking), the year stops early, the remaining titles stay pending and the next run resumes them. If the merged CSV is open in Excel when a save happens, the scraper retries for about 10 seconds and then fails with a clear message, so keep the files closed while it runs.
+
+## Request footprint
+
+A title costs about 7 requests (versus 200+ when pages were loaded like a normal browser visit): one HTML document each for the title, parental-guide and full-credits pages, plus a few paginated GraphQL calls for the remaining release dates and alternative titles. Everything is read from the server-rendered `__NEXT_DATA__` JSON, so page scripts are blocked (and with them the ~70 background GraphQL, anti-bot and analytics calls they would make); images, fonts, styles, media and tracking hosts are blocked too. That is what makes four workers lighter on IMDb than two used to be. IMDb's anti-bot token comes from a script-run page load: the first load of a browser session, or any load that is refused, runs with scripts once to renew it. The paginated queries are verified row for row against the page's own expansion; if IMDb changes them, the scraper falls back to expanding the lists in the page, which works but is slower and heavier.
 
 ## Output files
 
@@ -89,6 +94,8 @@ Not collected: the full keyword list (only the first few and the total), departm
 
 ## Publishing to Kaggle
 
+Kaggle imports this repository from GitHub, so `Data/dataset-metadata.json` is generated and committed together with the CSVs; no Kaggle CLI or API is used. The CSV files are plain CSVs (header row, no comments). The metadata follows Kaggle's resource format (`resources[].path`, `description`, `schema.fields[].name/description/type`) with fields in exactly the CSV column order. The column list comes from the schema that writes the CSVs, the types and descriptions are defined once in `imdb_scraper/metadata.py` and reused for every year's file, and `--write-metadata` (also run after every scrape) validates it against the real CSV headers: same columns in the same order, non-empty descriptions, supported types, and every file documented.
+
 1. Run the scraper, then `uv run python .\scrapping.py --write-metadata` (also done automatically after every run).
 2. In `Data/dataset-metadata.json` set `id` to `<your-kaggle-username>/<dataset-slug>` and review title, description and license (IMDb's terms of use apply to the data).
 3. `kaggle datasets create -p Data` (or `version` for updates). The metadata carries the type of every column; `json` columns are strings holding JSON.
@@ -103,6 +110,8 @@ df["genres"] = df["genres"].map(lambda v: json.loads(v) if isinstance(v, str) el
 ```
 
 `imdb_id` is unique within a year file; a title can in rare cases appear in two neighbouring years.
+
+Good to know when analysing: each file holds up to 1,000 titles in IMDb's US box-office order, and titles without a recorded gross follow in no meaningful order, so early years contain many obscure titles with few fields (in 1920-1925 about two thirds have no rating). IMDb lists the language "None" for many silent films; it is kept as IMDb gives it and is not counted in `language_count`.
 
 ## Tests
 

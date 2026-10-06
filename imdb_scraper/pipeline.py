@@ -4,7 +4,7 @@ from .advanced import extract_advanced_data
 from .analysis import load_merged, save_merged
 from .config import ADVANCED_WORKERS
 from .extractors import extract_links
-from .storage import setup_logging, year_lock
+from .storage import setup_logging, year_lock, year_paths
 
 
 def _choose_listing(new, existing, max_movies, error_logger, results_logger):
@@ -77,3 +77,15 @@ def retry_failed_year(year, workers=ADVANCED_WORKERS, complete_release_info=True
     except Exception as exc:
         error_logger.error("Year %s retry aborted: %s", year, exc)
         print(f"Year {year}: failed ({exc}); see Logs/{year}/errors.txt")
+
+
+def rebuild_year(year):
+    """Re-derive and rewrite the merged CSV from its own columns (no network), e.g. after a derived-column change."""
+    if not year_paths(year)["merged"].exists():
+        return False
+    error_logger, results_logger = setup_logging(year)
+    with year_lock(year):
+        listing, details = load_merged(year)
+        save_merged(year, listing, details, error_logger, results_logger)
+    print(f"Year {year}: rebuilt")
+    return True
