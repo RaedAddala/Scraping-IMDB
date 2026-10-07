@@ -69,7 +69,7 @@ _COLUMNS = {  # column -> (Kaggle type, description)
     "production_companies": ("string", "JSON array of production companies listed on the title page."),
     "filming_locations": ("string", "JSON array of the first filming locations shown on the title page (see filming_locations_total)."),
     "filming_locations_total": ("integer", "Number of filming locations IMDb holds for the title."),
-    "similar_movie_ids": ("string", "JSON array of IMDb title IDs of the 'More like this' titles, in IMDb's order."),
+    "similar_movie_ids": ("string", "JSON array of IMDb title IDs of the 'More like this' titles as served to an anonymous visitor, in IMDb's order; the recommendations shown in a browser after the page loads can differ."),
     "similar_movie_titles": ("string", "JSON array of titles parallel to similar_movie_ids."),
     "similar_movies_status": ("string", "found, or empty when the title page has no 'More like this' titles."),
     "certificates_by_country": ("string", "JSON array of {country, rating, notes} certificates from the parental guide. IMDb exposes only the first ~50 ratings (see certificates_total)."),
@@ -140,7 +140,7 @@ def build_metadata(data_dir=None):
         for path in sorted(data_dir.glob("*/merged_movies_data_*.csv"))
     ]
     return {
-        "id": "your-kaggle-username/imdb-movies-by-year",
+        "id": "raedaddala/imdb-movies-from-1960-to-2023",
         "title": "IMDb Movies by Year",
         "subtitle": "IMDb feature films per release year with ratings, money, awards, credits and release data",
         "description": (

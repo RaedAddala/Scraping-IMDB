@@ -21,7 +21,7 @@ uv run python .\scrapping.py --start-year 2024 --end-year 2024 --workers 1
 ```
 
 | Option | Meaning |
-|---|---|
+| --- | --- |
 | `--max-movies N` | Movies per year (default 1000). |
 | `--workers 1-4` | Independent Edge sessions (default 4). |
 | `--refresh-stages title,parental,credits,release` | Re-scrape only those stages, reusing the saved listing. |
@@ -30,6 +30,7 @@ uv run python .\scrapping.py --start-year 2024 --end-year 2024 --workers 1
 | `--retry-failed` | Retry only titles marked failed in the status file. |
 | `--listing-only` | Refresh only the search listing and rebuild the merged file. |
 | `--write-metadata` | Only rewrite `Data/dataset-metadata.json` (and validate it against the CSVs) and exit. |
+| `--fix-quality-issues` | Re-scrape only the titles (and only the stages) the data-quality check flags in the year range. Nothing else is touched. |
 | `--rebuild-derived` | Recompute the derived columns of the saved CSVs in the year range, without scraping. Use it after a change to the derived-column logic. |
 | `--preview-release-info` | Keep only the first release/AKA rows embedded in the page (saves 2-6 requests per title). By default every row is fetched. |
 
@@ -37,7 +38,7 @@ Runs are resumable: finished titles are skipped, failed stages are retried once 
 
 ## Request footprint
 
-A title costs about 7 requests (versus 200+ when pages were loaded like a normal browser visit): one HTML document each for the title, parental-guide and full-credits pages, plus a few paginated GraphQL calls for the remaining release dates and alternative titles. Everything is read from the server-rendered `__NEXT_DATA__` JSON, so page scripts are blocked (and with them the ~70 background GraphQL, anti-bot and analytics calls they would make); images, fonts, styles, media and tracking hosts are blocked too. That is what makes four workers lighter on IMDb than two used to be. IMDb's anti-bot token comes from a script-run page load: the first load of a browser session, or any load that is refused, runs with scripts once to renew it. The paginated queries are verified row for row against the page's own expansion; if IMDb changes them, the scraper falls back to expanding the lists in the page, which works but is slower and heavier.
+A title costs about 7 requests (versus 200+ when pages were loaded like a normal browser visit): one HTML document each for the title, parental-guide and full-credits pages, plus a few paginated GraphQL calls for the remaining release dates and alternative titles, and for the rest of any credit group the page lists only partly (the page shows 10 people, IMDb's data holds all of them). Everything is read from the server-rendered `__NEXT_DATA__` JSON, so page scripts are blocked (and with them the ~70 background GraphQL, anti-bot and analytics calls they would make); images, fonts, styles, media and tracking hosts are blocked too. That is what makes four workers lighter on IMDb than two used to be. IMDb's anti-bot token comes from a script-run page load: the first load of a browser session, or any load that is refused, runs with scripts once to renew it. The paginated queries are verified row for row against the page's own expansion; if IMDb changes them, the scraper falls back to expanding the lists in the page, which works but is slower and heavier.
 
 ## Output files
 
@@ -46,7 +47,7 @@ A title costs about 7 requests (versus 200+ when pages were loaded like a normal
 **`Logs/<year>/`** holds everything about the scraping itself:
 
 | File | Content |
-|---|---|
+| --- | --- |
 | `errors.txt` | One short line per failed attempt (`tt0114709 [initial #1] full_credits: PageContentError: ...`), no stack traces. |
 | `results.txt` | A few summary lines per run: listing size, stage timings, sparse fields, a data-quality check, titles scraped/failed. |
 | `scrape_status_<year>.csv` | Per-title and per-stage status (`completed`/`failed`/`pending`, attempts, last error). |
@@ -97,7 +98,7 @@ Not collected: the full keyword list (only the first few and the total), departm
 Kaggle imports this repository from GitHub, so `Data/dataset-metadata.json` is generated and committed together with the CSVs; no Kaggle CLI or API is used. The CSV files are plain CSVs (header row, no comments). The metadata follows Kaggle's resource format (`resources[].path`, `description`, `schema.fields[].name/description/type`) with fields in exactly the CSV column order. The column list comes from the schema that writes the CSVs, the types and descriptions are defined once in `imdb_scraper/metadata.py` and reused for every year's file, and `--write-metadata` (also run after every scrape) validates it against the real CSV headers: same columns in the same order, non-empty descriptions, supported types, and every file documented.
 
 1. Run the scraper, then `uv run python .\scrapping.py --write-metadata` (also done automatically after every run).
-2. In `Data/dataset-metadata.json` set `id` to `<your-kaggle-username>/<dataset-slug>` and review title, description and license (IMDb's terms of use apply to the data).
+2. The metadata `id` is `raedaddala/imdb-movies-from-1960-to-2023` (the Kaggle dataset this repository feeds). Review title, description and license (IMDb's terms of use apply to the data).
 3. `kaggle datasets create -p Data` (or `version` for updates). The metadata carries the type of every column; `json` columns are strings holding JSON.
 
 Load a year with the right dtypes:

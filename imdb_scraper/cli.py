@@ -3,7 +3,7 @@ import time
 
 from .config import ADVANCED_WORKERS, MAX_WORKERS, YEAR_PAUSE_SECONDS
 from .metadata import write_dataset_metadata
-from .pipeline import process_year, rebuild_year, retry_failed_year
+from .pipeline import process_year, rebuild_year, repair_year, retry_failed_year
 
 
 def _parse_refresh_stages(value):
@@ -36,6 +36,7 @@ def main():
     refresh_group.add_argument("--refresh-stages", type=_parse_refresh_stages, help="Comma-separated stages to refresh: title, parental, credits, release.")
     parser.add_argument("--listing-only", action="store_true", help="Refresh only the search listing (basic CSV) and rebuild the merged file; no advanced scraping.")
     parser.add_argument("--retry-failed", action="store_true", help="Retry only links marked failed in the advanced scrape status file.")
+    parser.add_argument("--fix-quality-issues", action="store_true", help="Re-scrape only the titles (and stages) that the data-quality check flags, in the year range.")
     parser.add_argument("--rebuild-derived", action="store_true", help="Recompute the derived columns of the saved CSVs in the year range (no scraping) and refresh the metadata.")
     parser.add_argument("--write-metadata", action="store_true", help="Only (re)write Data/dataset-metadata.json (Kaggle schema) and exit.")
     args = parser.parse_args()
@@ -46,6 +47,12 @@ def main():
     if args.rebuild_derived:
         for year in range(args.start_year, args.end_year + 1):
             rebuild_year(year)
+        path, count = write_dataset_metadata()
+        print(f"Updated {path} ({count} year files)")
+        return
+    if args.fix_quality_issues:
+        for year in range(args.start_year, args.end_year + 1):
+            repair_year(year, args.workers, not args.preview_release_info)
         path, count = write_dataset_metadata()
         print(f"Updated {path} ({count} year files)")
         return

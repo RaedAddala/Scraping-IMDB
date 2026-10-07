@@ -402,6 +402,86 @@ class ReleasePaginationTests(unittest.TestCase):
         self.assertEqual(row["release_info_complete"], "complete")
 
 
+class ReleaseCompletenessTests(unittest.TestCase):
+    def test_rows_without_a_country_are_kept(self):
+        items = [{"rowTitle": "", "listContent": [{"text": "Some Title", "subText": "(working title)"}]},
+                 {"rowTitle": "France", "listContent": [{"text": "Un titre", "subText": ""}]}]
+        self.assertEqual(extractors._release_entries(items, "aka"), [
+            {"country": None, "title": "Some Title", "note": "working title"}, {"country": "France", "title": "Un titre", "note": None}])
+
+    def content(self, rows, total):
+        return {"categories": [{"id": "releases", "section": {"total": 0, "items": []}},
+                               {"id": "akas", "section": {"total": total, "endCursor": "c", "items": rows}}]}
+
+    def test_a_list_shorter_than_its_total_is_a_preview_not_complete(self):
+        rows = [{"rowTitle": "France", "listContent": [{"text": "Un titre", "subText": ""}]}]
+        with mock.patch.object(extractors, "_page_content_data", return_value=self.content(rows, 3)),                 mock.patch.object(extractors, "_fetch_remaining_rows", return_value=[]),                 mock.patch.object(extractors, "_expand_release_info", return_value={}):
+            timings = {}
+            row = extractors.extract_release_info(None, ID, timings=timings, complete=True)
+        self.assertEqual(row["release_info_complete"], "preview")
+        self.assertTrue(timings["release_info_fallback"])  # short after GraphQL: the page's own expansion was tried too
+
+    def test_rows_dropped_for_having_no_text_no_longer_count_towards_complete(self):
+        rows = [{"rowTitle": "France", "listContent": []}, {"rowTitle": "Italy", "listContent": [{"text": "Il titolo", "subText": ""}]}]
+        with mock.patch.object(extractors, "_page_content_data", return_value=self.content(rows, 2)),                 mock.patch.object(extractors, "_fetch_remaining_rows", return_value=[]),                 mock.patch.object(extractors, "_expand_release_info", return_value={}):
+            row = extractors.extract_release_info(None, ID, complete=True)
+        self.assertEqual(row["release_info_complete"], "preview")  # 1 entry saved for 2 reported rows
+
+
+class RepairTests(unittest.TestCase):
+    def test_titles_to_repair_maps_rules_to_stages(self):
+        good = {column: None for column in MERGED_SCHEMA}
+        good.update(imdb_id=ID, title="T", release_info_complete="complete", release_dates_total="3",
+                    release_dates=json.dumps([{"country": "A", "date": "1995", "note": None}]))
+        fine = {**good, "imdb_id": "tt0000002", "release_dates_total": "1"}
+        self.assertEqual(quality.titles_to_repair(pd.DataFrame([good, fine])), {ID: ["release_info"]})
+
+    def test_only_listed_titles_and_stages_are_scraped(self):
+        listing = pd.DataFrame({"imdb_id": [ID, "tt0000002"], "search_year": [1995, 1995], "listing_rank": [1, 2], "listing_title": ["A", "B"]})
+        seen = []
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(storage, "SCRIPT_DIR", Path(tmp)),                 mock.patch.object(advanced, "_attempt_advanced_links", side_effect=lambda recs, *a, **k: (seen.extend(recs), ([], []))[1]):
+            advanced.extract_advanced_data(1995, listing, LOG, LOG, stages_by_id={ID: ["release_info"]})
+        self.assertEqual([(r["imdb_id"], r["_stages"]) for r in seen], [(ID, ["release_info"])])
+
+
+class CreditPaginationTests(unittest.TestCase):
+    def person(self, n):
+        return {"node": {"name": {"id": f"nm{n:07d}", "nameText": {"text": f"Person {n}"}}}}
+
+    def category(self, total, shown):
+        return {"id": "amzn1.imdb.concept.name_credit_category." + CREDIT_GROUPS["cinematographers"]["id"], "name": "Cinematographers",
+                "section": {"total": total, "endCursor": "c1", "items": [{"id": f"nm{n:07d}", "rowTitle": f"Person {n}", "characters": []} for n in range(1, shown + 1)]}}
+
+    def test_remaining_people_are_appended_in_order(self):
+        driver = mock.Mock()
+        driver.execute_async_script.return_value = {"data": {"title": {"creditsV2": {"edges": [self.person(n) for n in range(11, 20)], "pageInfo": {"hasNextPage": False}}}}}
+        with mock.patch.object(extractors, "_page_content_data", return_value={"categories": [self.category(19, 10)]}):
+            row = extractors.extract_full_credits(driver, ID)
+        self.assertEqual(len(row["cinematographers"]), 19)
+        self.assertEqual(row["cinematographers"][10], "Person 11")
+        self.assertEqual(len(row["cinematographers_ids"]), 19)
+        self.assertIsNone(row["credits_incomplete"])
+        self.assertIn("category%22%3A%22amzn1", driver.execute_async_script.call_args.args[1])
+
+    def test_failed_pagination_keeps_what_the_page_lists_and_flags_the_group(self):
+        driver = mock.Mock()
+        driver.execute_async_script.return_value = {"errors": [{"message": "PersistedQueryNotFound"}]}
+        with mock.patch.object(extractors, "_page_content_data", return_value={"categories": [self.category(19, 10)]}):
+            row = extractors.extract_full_credits(driver, ID)
+        self.assertEqual(len(row["cinematographers"]), 10)
+        self.assertEqual(row["credits_incomplete"], ["cinematographers"])
+
+
+class QualityRepairRuleTests(unittest.TestCase):
+    def test_incomplete_credits_and_previews_are_flagged_and_repairable(self):
+        row = {column: None for column in MERGED_SCHEMA}
+        row.update(imdb_id=ID, title="T", credits_incomplete=json.dumps(["composers"]), release_info_complete="preview")
+        issues = quality.row_issues(row)
+        self.assertIn("credit_group_incomplete", issues)
+        self.assertIn("release_info_incomplete", issues)
+        self.assertEqual(quality.titles_to_repair(pd.DataFrame([row])), {ID: ["full_credits", "release_info"]})
+
+
 class ScriptlessLoadTests(unittest.TestCase):
     def test_refused_scriptless_load_retries_once_with_scripts_then_returns(self):
         modes = []

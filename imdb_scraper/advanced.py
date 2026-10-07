@@ -411,7 +411,7 @@ def _attempt_advanced_links(link_records, status_records, attempt_log_path, erro
 def extract_advanced_data(
     year, listing_df, error_logger, results_logger, retry_failed_only=False,
     workers=ADVANCED_WORKERS, refresh_advanced=False, refresh_stages=None,
-    refresh_missing=False, complete_release_info=True, max_movies=None,
+    refresh_missing=False, complete_release_info=True, max_movies=None, stages_by_id=None,
 ):
     """Scrape the details of the listing's titles and save the merged file (the resume checkpoint) as it goes.
     max_movies only limits how many titles are scraped; the merged file always covers the whole listing."""
@@ -454,7 +454,9 @@ def extract_advanced_data(
         existing_row = existing_by_link.get(record["imdb_id"])
         status_value = status_records.get(record["imdb_id"], {}).get("status")
         stages = None
-        if retry_failed_only:
+        if stages_by_id is not None:
+            stages = tuple(stages_by_id.get(record["imdb_id"], ()))
+        elif retry_failed_only:
             stages = ADVANCED_STAGES if status_value == "failed" else None
         elif refresh_advanced:
             stages = ADVANCED_STAGES

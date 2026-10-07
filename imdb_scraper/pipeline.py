@@ -2,9 +2,10 @@ import time
 
 from .advanced import extract_advanced_data
 from .analysis import load_merged, save_merged
-from .config import ADVANCED_WORKERS
+from .config import ADVANCED_WORKERS, MERGED_SCHEMA
 from .extractors import extract_links
-from .storage import setup_logging, year_lock, year_paths
+from .quality import titles_to_repair
+from .storage import read_csv_or_empty, setup_logging, year_lock, year_paths
 
 
 def _choose_listing(new, existing, max_movies, error_logger, results_logger):
@@ -89,3 +90,27 @@ def rebuild_year(year):
         save_merged(year, listing, details, error_logger, results_logger)
     print(f"Year {year}: rebuilt")
     return True
+
+
+def repair_year(year, workers=ADVANCED_WORKERS, complete_release_info=True):
+    """Re-scrape, stage by stage, only the titles that break a data-quality rule (no other title is touched)."""
+    path = year_paths(year)["merged"]
+    if not path.exists():
+        return
+    error_logger, results_logger = setup_logging(year)
+    try:
+        with year_lock(year):
+            listing, _ = load_merged(year)
+            repairs = titles_to_repair(read_csv_or_empty(path, MERGED_SCHEMA))
+            if not repairs:
+                print(f"Year {year}: nothing to repair")
+                return
+            results_logger.info("Repairing %s titles flagged by the quality check", len(repairs))
+            extract_advanced_data(
+                year, listing, error_logger, results_logger, workers=workers,
+                complete_release_info=complete_release_info, stages_by_id=repairs,
+            )
+        print(f"Year {year}: repaired {len(repairs)} titles")
+    except Exception as exc:
+        error_logger.error("Year %s repair aborted: %s", year, exc)
+        print(f"Year {year}: failed ({exc}); see Logs/{year}/errors.txt")

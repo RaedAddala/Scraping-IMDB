@@ -370,6 +370,30 @@ def _credit_group(categories, group):
     return None
 
 
+def _fetch_remaining_people(driver, imdb_id, category_id, shown, total, cursor):
+    """People after the first rows of a credit group that the page lists only partly (IMDb's paginated credits query).
+    Raises when the answer is not what is expected, so a changed query never yields a wrong list."""
+    operation, sha256 = _CREDITS_PAGE
+    rows = []
+    for _ in range(MAX_GRAPHQL_PAGES):
+        if not cursor or shown + len(rows) >= total:
+            break
+        variables = {"after": cursor, "category": category_id, "const": imdb_id, "first": 250, "locale": "DEFAULT",
+                     "originalTitleText": False, "tconst": imdb_id}
+        answer = driver.execute_async_script(_GRAPHQL_FETCH_JS, _graphql_url(operation, sha256, variables))
+        block = _get(answer, "data", "title", "creditsV2")
+        if not isinstance(block, dict) or not isinstance(block.get("edges"), list) or not block["edges"]:
+            raise PageContentError(f"unexpected {operation} answer")
+        for edge in block["edges"]:
+            name = _get(edge, "node", "name")
+            if not _get(name, "id") or not _get(name, "nameText", "text"):
+                raise PageContentError(f"unexpected {operation} row")
+            rows.append({"id": name["id"], "rowTitle": name["nameText"]["text"], "characters": []})
+        info = block.get("pageInfo") or {}
+        cursor = info.get("endCursor") if info.get("hasNextPage") else None
+    return rows
+
+
 def extract_full_credits(driver, imdb_id, timings=None):
     result = {}
     for group in CREDIT_GROUPS:
@@ -379,7 +403,14 @@ def extract_full_credits(driver, imdb_id, timings=None):
     categories = [category for category in content.get("categories", []) if isinstance(category, dict)]
     incomplete = []
     for group in CREDIT_GROUPS:
-        items, total = _section_items(_credit_group(categories, group))
+        category = _credit_group(categories, group)
+        items, total = _section_items(category)
+        cursor = ((category or {}).get("section") or {}).get("endCursor")
+        if group != "cast" and isinstance(total, int) and total > len(items) and cursor:
+            try:
+                items = items + _fetch_remaining_people(driver, imdb_id, category["id"], len(items), total, cursor)
+            except (PageContentError, WebDriverException):
+                pass  # keep the rows the page lists; the group is flagged in credits_incomplete below
         people = list({item["id"]: item for item in items if item.get("id") and item.get("rowTitle")}.values())
         result[group] = [item["rowTitle"] for item in people] or None
         result[f"{group}_ids"] = [item["id"] for item in people] or None
@@ -426,8 +457,8 @@ def _release_entries(items, kind):
     entries = []
     for item in items:
         for value in item.get("listContent") or []:
-            country = item.get("rowTitle")
-            if not country or not isinstance(value, dict) or not value.get("text"):
+            country = (item.get("rowTitle") or "").strip() or None  # a row can have no country; its date/title is still data
+            if not isinstance(value, dict) or not (value.get("text") or "").strip():
                 continue
             note = _note(value.get("subText"))
             if country == "(original title)":  # not a country: the title in its original language
@@ -487,7 +518,7 @@ def _expand_release_info(driver):
         rows = driver.execute_script(_SECTION_JS % section_id) or []
         expanded[section_id] = [
             {"rowTitle": row["country"].strip(), "listContent": [{"text": v["text"], "subText": v["sub"]} for v in row["values"] if v["text"].strip()]}
-            for row in rows if row["country"].strip()
+            for row in rows if row["values"]
         ]
     return expanded
 
@@ -508,10 +539,10 @@ GRAPHQL_PAGE_SIZE = 50
 MAX_GRAPHQL_PAGES = 40
 
 
-def _graphql_url(operation, sha256, imdb_id, after):
-    variables = {"const": imdb_id, "first": GRAPHQL_PAGE_SIZE, "locale": "en-US", "originalTitleText": False}
-    if after:
-        variables["after"] = after
+_CREDITS_PAGE = ("TitleCreditPaginationV2WithLocale", "206f46cb5838734c4e1481f473330a60812313f07f36eaf9c8119a98c4cd309c")
+
+
+def _graphql_url(operation, sha256, variables):
     extensions = {"persistedQuery": {"sha256Hash": sha256, "version": 1}}
     return (
         f"{_GRAPHQL_URL}?operationName={operation}"
@@ -541,7 +572,8 @@ def _fetch_remaining_rows(driver, imdb_id, section_id, shown, total, cursor):
     for _ in range(MAX_GRAPHQL_PAGES):
         if not cursor or shown + len(rows) >= total:
             break
-        answer = driver.execute_async_script(_GRAPHQL_FETCH_JS, _graphql_url(operation, sha256, imdb_id, cursor))
+        variables = {"const": imdb_id, "first": GRAPHQL_PAGE_SIZE, "locale": "en-US", "originalTitleText": False, "after": cursor}
+        answer = driver.execute_async_script(_GRAPHQL_FETCH_JS, _graphql_url(operation, sha256, variables))
         block = _get(answer, "data", "title", key)
         if not isinstance(block, dict) or not isinstance(block.get("edges"), list) or not block["edges"]:
             raise PageContentError(f"unexpected {operation} answer")
@@ -556,8 +588,9 @@ def _release_category(content, category_id):
 
 
 def extract_release_info(driver, imdb_id, timings=None, complete=True):
-    """Release dates and AKA titles as lists of objects. Source totals are recorded so a preview is never
-    mistaken for a complete list: release_info_complete is 'complete', 'preview' or 'empty'."""
+    """Release dates and AKA titles as lists of objects. Source totals are recorded and compared with the entries
+    actually saved, so a preview or a short list is never reported as complete: release_info_complete is
+    'complete', 'preview' or 'empty'."""
     content = _page_content_data(driver, title_url(imdb_id) + "releaseinfo/", timings=timings, stage="release_info", scripts=False)
     categories = {
         str(category.get("id", "")).casefold(): category
@@ -565,14 +598,27 @@ def extract_release_info(driver, imdb_id, timings=None, complete=True):
     }
     release_items, release_total = _section_items(categories.get("releases"))
     aka_items, aka_total = _section_items(categories.get("akas"))
+
+    def saved_entries():
+        return _release_entries(release_items, "release"), _release_entries(aka_items, "aka")
+
+    def is_short(releases, akas):
+        # Totals count source rows; the original title is an extra row in akas, so a full list is never below the total.
+        return any(isinstance(total, int) and len(found) < total for found, total in ((releases, release_total), (akas, aka_total)) if total)
+
+    releases, akas = saved_entries()
     if complete:
         expansion_started = time.perf_counter()
+        graphql_failed = False
         try:
             for section_id, items, total in (("releases", release_items, release_total), ("akas", aka_items, aka_total)):
                 cursor = ((categories.get(section_id) or {}).get("section") or {}).get("endCursor")
                 if isinstance(total, int) and total > len(items):
                     items.extend(_fetch_remaining_rows(driver, imdb_id, section_id, len(items), total, cursor))
         except (PageContentError, WebDriverException):
+            graphql_failed = True
+        releases, akas = saved_entries()
+        if graphql_failed or is_short(releases, akas):
             # fall back to expanding the lists in the page itself, which needs the page's scripts
             if timings is not None:
                 timings["release_info_fallback"] = True
@@ -580,20 +626,20 @@ def extract_release_info(driver, imdb_id, timings=None, complete=True):
             expanded = _expand_release_info(driver)
             release_items = expanded.get("releases", _section_items(_release_category(content, "releases"))[0])
             aka_items = expanded.get("akas", _section_items(_release_category(content, "akas"))[0])
+            releases, akas = saved_entries()
         if timings is not None:
             expansion_seconds = round(time.perf_counter() - expansion_started, 3)
             timings["release_info_expansion_seconds"] = expansion_seconds
             timings["release_info_seconds"] = round(timings.get("release_info_seconds", 0) + expansion_seconds, 3)
-    # Totals count source rows (one per country), the same unit as the item lists.
-    if not release_items and not aka_items and not release_total and not aka_total:
+    if not releases and not akas and not release_total and not aka_total:
         status = "empty"
-    elif all(isinstance(total, int) and len(items) >= total for items, total in ((release_items, release_total), (aka_items, aka_total)) if total):
-        status = "complete"
-    else:
+    elif is_short(releases, akas):
         status = "preview"
+    else:
+        status = "complete"
     return {
-        "release_dates": _release_entries(release_items, "release") or None, "release_dates_total": release_total,
-        "akas": _release_entries(aka_items, "aka") or None, "akas_total": aka_total, "release_info_complete": status,
+        "release_dates": releases or None, "release_dates_total": release_total,
+        "akas": akas or None, "akas_total": aka_total, "release_info_complete": status,
     }
 
 

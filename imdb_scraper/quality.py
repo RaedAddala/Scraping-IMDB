@@ -66,6 +66,10 @@ def row_issues(row):
     histogram = _list(row.get("rating_histogram"))
     if histogram and (len(histogram) != 10 or (pd.notna(votes) and abs(sum(histogram) - votes) > 0.02 * votes + 5)):
         issues.append("histogram_vs_votes")
+    if _list(row.get("credits_incomplete")):
+        issues.append("credit_group_incomplete")  # the page listed fewer people than IMDb reports for a group
+    if row.get("release_info_complete") == "preview":
+        issues.append("release_info_incomplete")
     if row.get("release_info_complete") == "complete":
         if len(_list(row.get("release_dates"))) < (_num(row.get("release_dates_total")) or 0) or len(_list(row.get("akas"))) < (_num(row.get("akas_total")) or 0):
             issues.append("release_info_marked_complete_but_short")
@@ -74,6 +78,25 @@ def row_issues(row):
             issues.append("invalid_date")
             break
     return issues
+
+
+# The scrape stage that produces the fields each rule looks at; re-running it is how an offending title is repaired.
+STAGE_FOR_RULE = {
+    "imdb_id_format": "title_page", "invalid_json": "title_page", "rating_out_of_range": "title_page",
+    "money_without_currency": "title_page", "similar_movies_inconsistent": "title_page", "histogram_vs_votes": "title_page",
+    "invalid_date": "release_info", "release_info_marked_complete_but_short": "release_info",
+    "credit_ids_misaligned": "full_credits", "cast_inconsistent": "full_credits", "credit_group_incomplete": "full_credits",
+    "release_info_incomplete": "release_info",
+}
+
+
+def titles_to_repair(merged):
+    """{imdb_id: [stages to re-scrape]} for the titles that break a rule."""
+    stages = {}
+    for rule, ids in check_quality(merged).items():
+        for imdb_id in ids:
+            stages.setdefault(imdb_id, set()).add(STAGE_FOR_RULE[rule])
+    return {imdb_id: sorted(found) for imdb_id, found in stages.items()}
 
 
 def check_quality(merged):
