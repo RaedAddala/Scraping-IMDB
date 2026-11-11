@@ -30,6 +30,7 @@ uv run python .\scrapping.py --start-year 2024 --end-year 2024 --workers 1
 | `--retry-failed` | Retry only titles marked failed in the status file. |
 | `--listing-only` | Refresh only the search listing and rebuild the merged file. |
 | `--write-metadata` | Only rewrite `Data/dataset-metadata.json` (and validate it against the CSVs) and exit. |
+| `--kaggle-dir DIR` | Only build the flat Kaggle upload folder in `DIR` and exit (see Publishing to Kaggle). |
 | `--fix-quality-issues` | Re-scrape only the titles (and only the stages) the data-quality check flags in the year range. Nothing else is touched. |
 | `--rebuild-derived` | Recompute the derived columns of the saved CSVs in the year range, without scraping. Use it after a change to the derived-column logic. |
 | `--preview-release-info` | Keep only the first release/AKA rows embedded in the page (saves 2-6 requests per title). By default every row is fetched. |
@@ -42,7 +43,7 @@ A title costs about 7 requests (versus 200+ when pages were loaded like a normal
 
 ## Output files
 
-**`Data/`** holds only the dataset: `Data/<year>/merged_movies_data_<year>.csv` (listing + details + derived columns, one row per title) and `Data/dataset-metadata.json` (typed, documented schema for Kaggle, rewritten after every run or with `--write-metadata`). The merged CSV is also the resume checkpoint; no other data files exist.
+**`Data/`** holds only the dataset: `Data/README.md` (the dataset card, also used as the Kaggle description), `Data/<year>/merged_movies_data_<year>.csv` (listing + details + derived columns, one row per title) and `Data/dataset-metadata.json` (typed, documented schema for Kaggle, rewritten after every run or with `--write-metadata`). The merged CSV is also the resume checkpoint; no other data files exist.
 
 **`Logs/<year>/`** holds everything about the scraping itself:
 
@@ -95,11 +96,13 @@ Not collected: the full keyword list (only the first few and the total), departm
 
 ## Publishing to Kaggle
 
-Kaggle imports this repository from GitHub, so `Data/dataset-metadata.json` is generated and committed together with the CSVs; no Kaggle CLI or API is used. The CSV files are plain CSVs (header row, no comments). The metadata follows Kaggle's resource format (`resources[].path`, `description`, `schema.fields[].name/description/type`) with fields in exactly the CSV column order. The column list comes from the schema that writes the CSVs, the types and descriptions are defined once in `imdb_scraper/metadata.py` and reused for every year's file, and `--write-metadata` (also run after every scrape) validates it against the real CSV headers: same columns in the same order, non-empty descriptions, supported types, and every file documented.
+The dataset is uploaded with the official Kaggle CLI, which reads `dataset-metadata.json` (title, description, license, column docs). The CSV files are plain CSVs (header row, no comments). The metadata follows Kaggle's resource format (`resources[].path`, `description`, `schema.fields[].name/description/type`) with fields in exactly the CSV column order. The column list comes from the schema that writes the CSVs, the types and descriptions are defined once in `imdb_scraper/metadata.py` and reused for every year's file, and `--write-metadata` (also run after every scrape) validates it against the real CSV headers: same columns in the same order, non-empty descriptions, supported types, and every file documented.
 
-1. Run the scraper, then `uv run python .\scrapping.py --write-metadata` (also done automatically after every run).
-2. The metadata `id` is `raedaddala/imdb-movies-from-1960-to-2023` (the Kaggle dataset this repository feeds). Review title, description and license (IMDb's terms of use apply to the data).
-3. `kaggle datasets create -p Data` (or `version` for updates). The metadata carries the type of every column; `json` columns are strings holding JSON.
+1. Run the scraper, then `uv run python .\scrapping.py --write-metadata` (also done automatically after every run). The dataset description is `Data/README.md`, copied verbatim; the title and subtitle are checked against Kaggle's length limits.
+2. The metadata `id` is `raedaddala/imdb-movies-by-year-1920-2026` (chosen here; Kaggle creates the dataset under that URL). Review title, description and license (IMDb's terms of use apply to the data).
+3. `uv run python .\scrapping.py --kaggle-dir kaggle_upload` builds a flat upload folder: the CLI skips sub-folders, so every year CSV goes to the top level (hard links, no extra disk space) with `README.md` and a `dataset-metadata.json` whose paths match. The folder is git-ignored.
+4. Authenticate (`uv tool install kaggle`, then an API token from kaggle.com/settings/api in `KAGGLE_API_TOKEN` or `~/.kaggle/access_token`) and run `kaggle datasets create -p kaggle_upload` (private by default; add `--public` to publish). For later updates: rebuild the folder, then `kaggle datasets version -p kaggle_upload -m "<notes>"`. The metadata carries the type of every column; `json` columns are strings holding JSON.
+5. `create` does not apply the file and column descriptions, so apply them afterwards with `kaggle datasets metadata raedaddala/imdb-movies-by-year-1920-2026 -p kaggle_upload --update`. That command sets the visibility from `isPrivate` in the metadata and treats a missing value as public; Kaggle cannot make a public dataset private again. Column descriptions are dropped by Kaggle on every route (github.com/Kaggle/kaggle-cli/issues/1207), so the upload folder also carries `data_dictionary.csv`, generated from the same definitions. Re-run the `--update` after each `version`, since file descriptions do not survive the upload.
 
 Load a year with the right dtypes:
 

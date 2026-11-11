@@ -5,3 +5,4 @@ __pycache__/
 *.pyd
 
 Logs/
+kaggle_upload/

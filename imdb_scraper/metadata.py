@@ -6,6 +6,9 @@ The Kaggle type and the description of every column are defined once, here, and 
 """
 import csv
 import json
+import os
+import shutil
+from pathlib import Path
 
 from .config import CREDIT_GROUPS, MERGED_SCHEMA, PARENTAL_GUIDE_CATEGORIES, SCRIPT_DIR
 
@@ -139,20 +142,15 @@ def build_metadata(data_dir=None):
         }
         for path in sorted(data_dir.glob("*/merged_movies_data_*.csv"))
     ]
+    # Kaggle shows the description as the dataset's "About" page; Data/README.md is the single source of it.
+    readme = data_dir / "README.md"
     return {
-        "id": "raedaddala/imdb-movies-from-1960-to-2023",
-        "title": "IMDb Movies by Year",
-        "subtitle": "IMDb feature films per release year with ratings, money, awards, credits and release data",
-        "description": (
-            "One CSV per release year (`<year>/merged_movies_data_<year>.csv`), keyed by `imdb_id`. Each file holds up to 1,000 "
-            "feature films from IMDb's search for that year, sorted by US box office; titles without a recorded gross follow in no "
-            "meaningful order, so early years contain many obscure titles with few fields. Columns with `JSON` in their description "
-            "hold JSON arrays/objects. Missing values are empty cells; read with "
-            "`pd.read_csv(path, keep_default_na=False, na_values=[''])` so values such as `none` stay text. "
-            "Data comes from IMDb's public pages; check IMDb's terms of use before redistributing."
-        ),
+        "id": "raedaddala/imdb-movies-by-year-1920-2026",
+        "title": "IMDb Movies by Year (1920-2026)",
+        "subtitle": "Top 1,000 IMDb films per year with ratings, box office, awards and credits",
+        "description": readme.read_text(encoding="utf-8") if readme.is_file() else "",
         "licenses": [{"name": "other"}],
-        "keywords": ["movies", "film", "imdb", "box office", "cinema"],
+        "keywords": ["movies and tv shows", "arts and entertainment"],  # must be existing Kaggle tags; others are dropped
         "resources": resources,
     }
 
@@ -161,6 +159,12 @@ def validate_metadata(metadata, data_dir=None):
     """Raise ValueError listing every way the metadata and the CSV files disagree."""
     data_dir = data_dir or SCRIPT_DIR / "Data"
     problems = []
+    if not 6 <= len(metadata.get("title", "")) <= 50:
+        problems.append("title must be 6-50 characters (Kaggle limit)")
+    if not 20 <= len(metadata.get("subtitle", "")) <= 80:
+        problems.append("subtitle must be 20-80 characters (Kaggle limit)")
+    if not metadata.get("description", "").strip():
+        problems.append("empty description (Data/README.md is missing or empty)")
     documented = set()
     for resource in metadata.get("resources", []):
         path = resource.get("path", "")
@@ -210,3 +214,39 @@ def write_dataset_metadata(data_dir=None):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return path, len(metadata["resources"])
+
+
+def build_kaggle_folder(out_dir, data_dir=None):
+    """Lay the dataset out flat in out_dir for `kaggle datasets create -p out_dir`.
+
+    The Kaggle CLI skips sub-folders by default, and how it unpacks zipped ones is undocumented, so every year's CSV
+    goes to the top level (the year is already in the file name) and the metadata paths are rewritten to match.
+    CSVs are hard-linked when out_dir is on the same drive, so the folder costs no extra disk space.
+    """
+    data_dir = Path(data_dir or SCRIPT_DIR / "Data")
+    out_dir = Path(out_dir)
+    if out_dir.resolve() == data_dir.resolve() or data_dir.resolve() in out_dir.resolve().parents:
+        raise ValueError("the Kaggle folder must be outside the data folder")
+    metadata = build_metadata(data_dir)
+    validate_metadata(metadata, data_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for stale in out_dir.glob("merged_movies_data_*.csv"):
+        stale.unlink()
+    for resource in metadata["resources"]:
+        source = data_dir / resource["path"]
+        target = out_dir / source.name
+        try:
+            os.link(source, target)
+        except OSError:
+            shutil.copy2(source, target)
+        resource["path"] = source.name
+    shutil.copy2(data_dir / "README.md", out_dir / "README.md")
+    # Kaggle drops column descriptions sent through its API (github.com/Kaggle/kaggle-cli/issues/1207),
+    # so they also ship as a plain file.
+    with (out_dir / "data_dictionary.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["column", "type", "description"])
+        writer.writerows([field["name"], field["type"], field["description"]] for field in schema_fields())
+    validate_metadata(metadata, out_dir)
+    (out_dir / "dataset-metadata.json").write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return out_dir, len(metadata["resources"])

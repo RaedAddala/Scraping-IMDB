@@ -2,7 +2,7 @@ import argparse
 import time
 
 from .config import ADVANCED_WORKERS, MAX_WORKERS, YEAR_PAUSE_SECONDS
-from .metadata import write_dataset_metadata
+from .metadata import build_kaggle_folder, write_dataset_metadata
 from .pipeline import process_year, rebuild_year, repair_year, retry_failed_year
 
 
@@ -39,7 +39,12 @@ def main():
     parser.add_argument("--fix-quality-issues", action="store_true", help="Re-scrape only the titles (and stages) that the data-quality check flags, in the year range.")
     parser.add_argument("--rebuild-derived", action="store_true", help="Recompute the derived columns of the saved CSVs in the year range (no scraping) and refresh the metadata.")
     parser.add_argument("--write-metadata", action="store_true", help="Only (re)write Data/dataset-metadata.json (Kaggle schema) and exit.")
+    parser.add_argument("--kaggle-dir", metavar="DIR", help="Only build a flat Kaggle upload folder (every year CSV, README.md and dataset-metadata.json at the top level) in DIR and exit.")
     args = parser.parse_args()
+    if args.kaggle_dir:
+        path, count = build_kaggle_folder(args.kaggle_dir)
+        print(f"Built {path} ({count} year files); upload with: kaggle datasets create -p {path}")
+        return
     if args.write_metadata:
         path, count = write_dataset_metadata()
         print(f"Wrote {path} ({count} year files)")

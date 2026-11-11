@@ -1,4 +1,5 @@
 """Offline tests (no browser, no network). Run: python -m unittest discover tests"""
+import csv
 import json
 import logging
 import sys
@@ -550,6 +551,7 @@ class MetadataTests(unittest.TestCase):
         (data / str(year)).mkdir(exist_ok=True)
         path = data / str(year) / f"merged_movies_data_{year}.csv"
         path.write_text(",".join(header or list(MERGED_SCHEMA)) + chr(10), encoding="utf-8")
+        (data / "README.md").write_text("# IMDb Movies by Year\n", encoding="utf-8")
         return path
 
     def test_every_column_is_documented_with_a_supported_type(self):
@@ -574,8 +576,28 @@ class MetadataTests(unittest.TestCase):
             self.assertEqual(first, path.read_text(encoding="utf-8"))
         written = json.loads(first)
         self.assertEqual(count, 2)
+        self.assertEqual(written["description"], "# IMDb Movies by Year\n")  # the About page is Data/README.md
         self.assertEqual([r["path"] for r in written["resources"]], ["1920/merged_movies_data_1920.csv", "1995/merged_movies_data_1995.csv"])
         self.assertTrue(all("title" not in field for r in written["resources"] for field in r["schema"]["fields"]))  # description, not legacy title
+
+    def test_kaggle_folder_is_flat_and_matches_its_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            data, out = Path(tmp) / "Data", Path(tmp) / "kaggle"
+            data.mkdir()
+            self.write_year(data, 1995)
+            self.write_year(data, 1920)
+            (out).mkdir()
+            (out / "merged_movies_data_1800.csv").write_text("stale", encoding="utf-8")  # left over from an older build
+            _, count = metadata.build_kaggle_folder(out, data)
+            written = json.loads((out / "dataset-metadata.json").read_text(encoding="utf-8"))
+            self.assertEqual(count, 2)
+            self.assertEqual(sorted(p.name for p in out.iterdir()), ["README.md", "data_dictionary.csv", "dataset-metadata.json", "merged_movies_data_1920.csv", "merged_movies_data_1995.csv"])
+            with (out / "data_dictionary.csv").open(encoding="utf-8", newline="") as handle:
+                self.assertEqual([row["column"] for row in csv.DictReader(handle)], list(MERGED_SCHEMA))
+            self.assertEqual([r["path"] for r in written["resources"]], ["merged_movies_data_1920.csv", "merged_movies_data_1995.csv"])
+            self.assertEqual((out / "merged_movies_data_1995.csv").read_text(encoding="utf-8"), (data / "1995" / "merged_movies_data_1995.csv").read_text(encoding="utf-8"))
+            with self.assertRaises(ValueError):
+                metadata.build_kaggle_folder(data / "kaggle", data)  # never inside the data folder
 
     def test_validation_catches_each_kind_of_mismatch(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -592,6 +614,9 @@ class MetadataTests(unittest.TestCase):
                 "type vs kind": lambda m: m["resources"][0]["schema"]["fields"][1].update(type="boolean"),
                 "missing file": lambda m: m["resources"][0].update(path="1999/merged_movies_data_1999.csv"),
                 "undocumented file": lambda m: m["resources"].clear(),
+                "no readme": lambda m: m.update(description=""),
+                "title too long": lambda m: m.update(title="x" * 51),
+                "subtitle too long": lambda m: m.update(subtitle="x" * 81),
             }
             for name, break_it in cases.items():
                 with self.subTest(name):
