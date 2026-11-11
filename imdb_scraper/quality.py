@@ -58,7 +58,7 @@ def row_issues(row):
             issues.append("credit_ids_misaligned")
             break
     cast = _list(row.get("cast"))
-    if len(_list(row.get("cast_characters"))) != len(cast) or (pd.notna(_num(row.get("cast_total"))) and _num(row["cast_total"]) < len(cast)):
+    if len(_list(row.get("cast_characters"))) != len(cast) or (pd.notna(_num(row.get("cast_total"))) and _num(row["cast_total"]) != len(cast)):
         issues.append("cast_inconsistent")
     similar = _list(row.get("similar_movie_ids"))
     if len(similar) != len(_list(row.get("similar_movie_titles"))) or not all(_TT.fullmatch(str(x)) for x in similar) or row["imdb_id"] in similar:

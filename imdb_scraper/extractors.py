@@ -370,11 +370,13 @@ def _credit_group(categories, group):
     return None
 
 
-def _fetch_remaining_people(driver, imdb_id, category_id, shown, total, cursor):
+def _fetch_remaining_people(driver, imdb_id, category_id, shown, total, cursor, seen_ids=None):
     """People after the first rows of a credit group that the page lists only partly (IMDb's paginated credits query).
     Raises when the answer is not what is expected, so a changed query never yields a wrong list."""
     operation, sha256 = _CREDITS_PAGE
     rows = []
+    if seen_ids is not None:
+        seen_ids = set(seen_ids)
     for _ in range(MAX_GRAPHQL_PAGES):
         if not cursor or shown + len(rows) >= total:
             break
@@ -388,9 +390,15 @@ def _fetch_remaining_people(driver, imdb_id, category_id, shown, total, cursor):
             name = _get(edge, "node", "name")
             if not _get(name, "id") or not _get(name, "nameText", "text"):
                 raise PageContentError(f"unexpected {operation} row")
-            rows.append({"id": name["id"], "rowTitle": name["nameText"]["text"], "characters": []})
+            if seen_ids is None or name["id"] not in seen_ids:
+                rows.append({"id": name["id"], "rowTitle": name["nameText"]["text"], "characters": []})
+                if seen_ids is not None:
+                    seen_ids.add(name["id"])
         info = block.get("pageInfo") or {}
-        cursor = info.get("endCursor") if info.get("hasNextPage") else None
+        next_cursor = info.get("endCursor") if info.get("hasNextPage") else None
+        if next_cursor == cursor:
+            break
+        cursor = next_cursor
     return rows
 
 
@@ -406,15 +414,21 @@ def extract_full_credits(driver, imdb_id, timings=None):
         category = _credit_group(categories, group)
         items, total = _section_items(category)
         cursor = ((category or {}).get("section") or {}).get("endCursor")
-        if group != "cast" and isinstance(total, int) and total > len(items) and cursor:
+        seen_ids = {item["id"] for item in items if item.get("id")}
+        shown = len(seen_ids) if group == "cast" else len(items)
+        if isinstance(total, int) and total > shown and cursor:
             try:
-                items = items + _fetch_remaining_people(driver, imdb_id, category["id"], len(items), total, cursor)
+                items = items + _fetch_remaining_people(
+                    driver, imdb_id, category["id"], shown, total, cursor,
+                    seen_ids if group == "cast" else None,
+                )
             except (PageContentError, WebDriverException):
                 pass  # keep the rows the page lists; the group is flagged in credits_incomplete below
         people = list({item["id"]: item for item in items if item.get("id") and item.get("rowTitle")}.values())
         result[group] = [item["rowTitle"] for item in people] or None
         result[f"{group}_ids"] = [item["id"] for item in people] or None
-        if isinstance(total, int) and len(items) < total:
+        completeness_count = len(people) if group == "cast" else len(items)
+        if isinstance(total, int) and completeness_count < total:
             incomplete.append(group)  # the page lists only part of this group
         if group == "cast":
             result["cast_characters"] = [item.get("characters") or [] for item in people] or None
